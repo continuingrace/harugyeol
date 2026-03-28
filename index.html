@@ -5,10 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>하루결</title>
 <link rel="apple-touch-icon" href="https://img.icons8.com/fluency/180/planner.png">
-
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="하루결">
-
 <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Noto+Serif+KR:wght@400;600&family=DM+Mono&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#F7F4EF;--surface:#FFFFFF;--surface2:#F0EBE3;--border:#E2D9CE;--text:#2C2418;--muted:#8C7B6A;--light:#B8A898;--accent:#E8613A;--accent-bg:#FDEEE9;--green:#4CAF7C;--blue:#4A7FC1;--gold:#C9A227;--gold2:#E8C84A;--r:14px;--rs:8px;--nav:64px;}
@@ -73,7 +71,8 @@ textarea,input{font-family:inherit;}
 .cal-full-day.selected{background:var(--accent);color:white;}.cal-full-day.other{color:var(--light);}
 .cal-emojis{font-size:8px;display:flex;flex-wrap:wrap;justify-content:center;}
 .selected-day-detail{margin-top:12px;background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r);padding:16px;}
-.sel-day-title{font-family:'Noto Serif KR',serif;font-size:15px;font-weight:600;margin-bottom:12px;}
+.sel-day-title{font-family:'Noto Serif KR',serif;font-size:15px;font-weight:600;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;}
+.sel-edit-btn{font-size:11px;color:var(--accent);background:var(--accent-bg);border:none;border-radius:7px;padding:4px 10px;cursor:pointer;}
 .sel-emotions{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;}
 .sel-emotion-chip{display:flex;align-items:center;gap:5px;background:var(--surface2);border-radius:20px;padding:5px 10px;font-size:12px;}
 .sel-section{margin-top:10px;}.sel-section-title{font-size:11px;color:var(--muted);margin-bottom:5px;}
@@ -164,7 +163,7 @@ textarea,input{font-family:inherit;}
   </div>
   <div class="pages">
     <div class="page active" id="page-today">
-      <div class="section-label">감정 기록</div>
+      <div class="section-label" id="todayLabel">감정 기록</div>
       <div class="emotion-grid">
         <div class="emotion-card morning" onclick="openEmotionSheet('morning')"><div class="emotion-time">☀️ 아침</div><div class="emotion-display" id="disp-morning"><span class="emotion-empty">기분이 어때요?</span></div></div>
         <div class="emotion-card noon" onclick="openEmotionSheet('noon')"><div class="emotion-time">🌤 점심</div><div class="emotion-display" id="disp-noon"><span class="emotion-empty">기분이 어때요?</span></div></div>
@@ -248,7 +247,9 @@ const ADD_CFG={gratitude:{title:'🌱 감사한 것',sub:'오늘 감사했던 �
 const SLOT_LABELS={morning:'☀️ 아침',noon:'🌤 점심',evening:'🌆 저녁',night:'🌙 자기 전'};
 let appData=JSON.parse(localStorage.getItem('hg')||'{}');
 let prayers=JSON.parse(localStorage.getItem('hg-p')||'[]');
-let todayKey=getKey(new Date()),calYear=new Date().getFullYear(),calMonth=new Date().getMonth(),selCalDate=todayKey;
+let currentKey=getKey(new Date());
+let todayKey=getKey(new Date());
+let calYear=new Date().getFullYear(),calMonth=new Date().getMonth(),selCalDate=todayKey;
 let curSlot='',curType='',selEmo=null,selStk=null,curStkCat=0,drawerOpen=false;
 function getKey(d){return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
 function getDay(k){return appData[k]||{emotions:{},gratitude:[],resolved:[],strength:[],stickers:[]};}
@@ -256,26 +257,75 @@ function saveDay(k,d){appData[k]=d;localStorage.setItem('hg',JSON.stringify(appD
 function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 function init(){renderTopDate();renderEmotions();renderLists();renderStickers();renderCalendar();updateStreak();initPrayerStars();renderPrayerDrawer();}
 function switchPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));document.getElementById('page-'+id).classList.add('active');document.querySelector('[data-page="'+id+'"]').classList.add('active');}
-function renderTopDate(){const days=['일','월','화','수','목','금','토'],d=new Date();document.getElementById('topDate').textContent=`${d.getMonth()+1}월 ${d.getDate()}일 (${days[d.getDay()]})`;}
+function renderTopDate(){
+  const days=['일','월','화','수','목','금','토'],d=new Date();
+  document.getElementById('topDate').textContent=`${d.getMonth()+1}월 ${d.getDate()}일 (${days[d.getDay()]})`;
+}
 function updateStreak(){let s=0,d=new Date();while(true){const k=getKey(d),e=appData[k];if(!e)break;const has=Object.keys(e.emotions||{}).length||(e.gratitude||[]).length||(e.resolved||[]).length||(e.strength||[]).length;if(!has)break;s++;d.setDate(d.getDate()-1);}document.getElementById('streakNum').textContent=s;}
-function renderEmotions(){const d=getDay(todayKey);['morning','noon','evening','night'].forEach(slot=>{const el=document.getElementById('disp-'+slot),e=d.emotions[slot];el.innerHTML=e?`<span class="emotion-emoji">${e.emoji}</span><span class="emotion-name">${e.name}</span>`:`<span class="emotion-empty">기분이 어때요?</span>`;});}
-function openEmotionSheet(slot){curSlot=slot;selEmo=null;document.getElementById('emotionSheetTitle').textContent=SLOT_LABELS[slot]+' 감정 기록';document.getElementById('customEmoji').value='';document.getElementById('customName').value='';const current=getDay(todayKey).emotions[slot];const picker=document.getElementById('emotionPicker');picker.innerHTML='';EMOTIONS.forEach(e=>{const d=document.createElement('div');d.className='emotion-opt'+(current&&current.name===e.name?' sel':'');d.innerHTML=`<span class="e-emoji">${e.emoji}</span><span class="e-name">${e.name}</span>`;d.onclick=()=>{document.querySelectorAll('.emotion-opt').forEach(o=>o.classList.remove('sel'));d.classList.add('sel');selEmo=e;document.getElementById('customEmoji').value='';document.getElementById('customName').value='';};picker.appendChild(d);});if(current&&!EMOTIONS.find(e=>e.name===current.name)){document.getElementById('customEmoji').value=current.emoji;document.getElementById('customName').value=current.name;}openSheet('emotionSheetOverlay');}
-function saveEmotion(){const emoji=document.getElementById('customEmoji').value.trim();const name=document.getElementById('customName').value.trim();let em=selEmo;if(name)em={emoji:emoji||'💭',name};if(!em){closeSheet('emotionSheetOverlay');return;}const d=getDay(todayKey);d.emotions[curSlot]=em;saveDay(todayKey,d);renderEmotions();renderCalendar();updateStreak();closeSheet('emotionSheetOverlay');}
-function renderLists(){const d=getDay(todayKey);['gratitude','resolved','strength'].forEach(type=>{document.getElementById('list-'+type).innerHTML=(d[type]||[]).map(item=>`<div class="record-item"><span class="record-dot"></span><span>${esc(item)}</span></div>`).join('');});}
-function openAddSheet(type){curType=type;const cfg=ADD_CFG[type];document.getElementById('addSheetTitle').textContent=cfg.title;document.getElementById('addSheetSub').textContent=cfg.sub;document.getElementById('addTextarea').placeholder=cfg.placeholder;document.getElementById('addTextarea').value='';const items=getDay(todayKey)[type]||[];document.getElementById('existingItems').innerHTML=items.map((item,i)=>`<div class="existing-item"><span>${esc(item)}</span><button class="del-item" onclick="deleteRecord('${type}',${i})">×</button></div>`).join('');openSheet('addSheetOverlay');}
-function saveRecord(){const val=document.getElementById('addTextarea').value.trim();if(!val){closeSheet('addSheetOverlay');return;}const d=getDay(todayKey);if(!d[curType])d[curType]=[];d[curType].push(val);saveDay(todayKey,d);renderLists();updateStreak();closeSheet('addSheetOverlay');}
-function deleteRecord(type,idx){const d=getDay(todayKey);d[type].splice(idx,1);saveDay(todayKey,d);renderLists();openAddSheet(type);}
-function renderStickers(){const board=document.getElementById('stickerBoard');board.innerHTML='';const d=getDay(todayKey);(d.stickers||[]).forEach((s,idx)=>{const el=document.createElement('div');el.className='sticker';el.style.left=s.x+'px';el.style.top=s.y+'px';el.textContent=s.emoji;makeDraggable(el,board,s,idx);board.appendChild(el);});}
+function renderEmotions(){
+  const d=getDay(currentKey);
+  const isToday=currentKey===todayKey;
+  document.getElementById('todayLabel').textContent=isToday?'감정 기록':currentKey.replace(/-/g,'년 ').replace(/-/,'월 ')+'일 감정 기록';
+  ['morning','noon','evening','night'].forEach(slot=>{
+    const el=document.getElementById('disp-'+slot),e=d.emotions[slot];
+    el.innerHTML=e?`<span class="emotion-emoji">${e.emoji}</span><span class="emotion-name">${e.name}</span>`:`<span class="emotion-empty">기분이 어때요?</span>`;
+  });
+}
+function renderLists(){const d=getDay(currentKey);['gratitude','resolved','strength'].forEach(type=>{document.getElementById('list-'+type).innerHTML=(d[type]||[]).map(item=>`<div class="record-item"><span class="record-dot"></span><span>${esc(item)}</span></div>`).join('');});}
+function openEmotionSheet(slot){curSlot=slot;selEmo=null;document.getElementById('emotionSheetTitle').textContent=SLOT_LABELS[slot]+' 감정 기록';document.getElementById('customEmoji').value='';document.getElementById('customName').value='';const current=getDay(currentKey).emotions[slot];const picker=document.getElementById('emotionPicker');picker.innerHTML='';EMOTIONS.forEach(e=>{const d=document.createElement('div');d.className='emotion-opt'+(current&&current.name===e.name?' sel':'');d.innerHTML=`<span class="e-emoji">${e.emoji}</span><span class="e-name">${e.name}</span>`;d.onclick=()=>{document.querySelectorAll('.emotion-opt').forEach(o=>o.classList.remove('sel'));d.classList.add('sel');selEmo=e;document.getElementById('customEmoji').value='';document.getElementById('customName').value='';};picker.appendChild(d);});if(current&&!EMOTIONS.find(e=>e.name===current.name)){document.getElementById('customEmoji').value=current.emoji;document.getElementById('customName').value=current.name;}openSheet('emotionSheetOverlay');}
+function saveEmotion(){const emoji=document.getElementById('customEmoji').value.trim();const name=document.getElementById('customName').value.trim();let em=selEmo;if(name)em={emoji:emoji||'💭',name};if(!em){closeSheet('emotionSheetOverlay');return;}const d=getDay(currentKey);d.emotions[curSlot]=em;saveDay(currentKey,d);renderEmotions();renderCalendar();updateStreak();closeSheet('emotionSheetOverlay');}
+function openAddSheet(type){curType=type;const cfg=ADD_CFG[type];document.getElementById('addSheetTitle').textContent=cfg.title;document.getElementById('addSheetSub').textContent=cfg.sub;document.getElementById('addTextarea').placeholder=cfg.placeholder;document.getElementById('addTextarea').value='';const items=getDay(currentKey)[type]||[];document.getElementById('existingItems').innerHTML=items.map((item,i)=>`<div class="existing-item"><span>${esc(item)}</span><button class="del-item" onclick="deleteRecord('${type}',${i})">×</button></div>`).join('');openSheet('addSheetOverlay');}
+function saveRecord(){const val=document.getElementById('addTextarea').value.trim();if(!val){closeSheet('addSheetOverlay');return;}const d=getDay(currentKey);if(!d[curType])d[curType]=[];d[curType].push(val);saveDay(currentKey,d);renderLists();updateStreak();closeSheet('addSheetOverlay');}
+function deleteRecord(type,idx){const d=getDay(currentKey);d[type].splice(idx,1);saveDay(currentKey,d);renderLists();openAddSheet(type);}
+function renderStickers(){const board=document.getElementById('stickerBoard');board.innerHTML='';const d=getDay(currentKey);(d.stickers||[]).forEach((s,idx)=>{const el=document.createElement('div');el.className='sticker';el.style.left=s.x+'px';el.style.top=s.y+'px';el.textContent=s.emoji;makeDraggable(el,board,s,idx);board.appendChild(el);});}
 function makeDraggable(el,board,s,idx){let sx,sy,ox,oy,drag=false;el.addEventListener('mousedown',e=>{e.preventDefault();drag=true;sx=e.clientX;sy=e.clientY;ox=s.x;oy=s.y;el.classList.add('dragging');});document.addEventListener('mousemove',e=>{if(!drag)return;const r=board.getBoundingClientRect();s.x=Math.max(0,Math.min(r.width-36,ox+e.clientX-sx));s.y=Math.max(0,Math.min(r.height-36,oy+e.clientY-sy));el.style.left=s.x+'px';el.style.top=s.y+'px';});document.addEventListener('mouseup',()=>{if(!drag)return;drag=false;el.classList.remove('dragging');persistSticker(idx,s);});el.addEventListener('touchstart',e=>{const t=e.touches[0];sx=t.clientX;sy=t.clientY;ox=s.x;oy=s.y;el.classList.add('dragging');},{passive:true});el.addEventListener('touchmove',e=>{e.preventDefault();const t=e.touches[0],r=board.getBoundingClientRect();s.x=Math.max(0,Math.min(r.width-36,ox+t.clientX-sx));s.y=Math.max(0,Math.min(r.height-36,oy+t.clientY-sy));el.style.left=s.x+'px';el.style.top=s.y+'px';},{passive:false});el.addEventListener('touchend',()=>{el.classList.remove('dragging');persistSticker(idx,s);});let lp;el.addEventListener('touchstart',()=>{lp=setTimeout(()=>deleteSticker(idx),600);},{passive:true});el.addEventListener('touchend',()=>clearTimeout(lp));el.addEventListener('touchmove',()=>clearTimeout(lp));el.addEventListener('dblclick',()=>deleteSticker(idx));}
-function persistSticker(idx,s){const d=getDay(todayKey);if(d.stickers&&d.stickers[idx]){d.stickers[idx].x=s.x;d.stickers[idx].y=s.y;saveDay(todayKey,d);}}
-function deleteSticker(idx){const d=getDay(todayKey);d.stickers.splice(idx,1);saveDay(todayKey,d);renderStickers();}
+function persistSticker(idx,s){const d=getDay(currentKey);if(d.stickers&&d.stickers[idx]){d.stickers[idx].x=s.x;d.stickers[idx].y=s.y;saveDay(currentKey,d);}}
+function deleteSticker(idx){const d=getDay(currentKey);d.stickers.splice(idx,1);saveDay(currentKey,d);renderStickers();}
 function openStickerSheet(){selStk=null;curStkCat=0;renderStickerCats();renderStickerGrid(0);openSheet('stickerSheetOverlay');}
 function renderStickerCats(){const el=document.getElementById('stickerCats');el.innerHTML='';STICKER_CATS.forEach((c,i)=>{const b=document.createElement('button');b.className='sticker-cat-btn'+(i===curStkCat?' active':'');b.textContent=c.label;b.onclick=()=>{curStkCat=i;renderStickerCats();renderStickerGrid(i);};el.appendChild(b);});}
 function renderStickerGrid(ci){const el=document.getElementById('stickerGrid');el.innerHTML='';STICKER_CATS[ci].s.forEach(emoji=>{const d=document.createElement('div');d.className='sticker-opt'+(selStk===emoji?' sel':'');d.textContent=emoji;d.onclick=()=>{document.querySelectorAll('.sticker-opt').forEach(o=>o.classList.remove('sel'));d.classList.add('sel');selStk=emoji;};el.appendChild(d);});}
-function addSticker(){if(!selStk){closeSheet('stickerSheetOverlay');return;}const board=document.getElementById('stickerBoard'),bw=board.offsetWidth,bh=board.offsetHeight;const d=getDay(todayKey);if(!d.stickers)d.stickers=[];d.stickers.push({emoji:selStk,x:Math.random()*(bw-40)+4,y:Math.random()*(bh-40)+4});saveDay(todayKey,d);renderStickers();closeSheet('stickerSheetOverlay');}
-function renderCalendar(){const MONTHS=['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];const DOWS=['일','월','화','수','목','금','토'];document.getElementById('calPageMonth').textContent=`${calYear}년 ${MONTHS[calMonth]}`;const grid=document.getElementById('calFullGrid');grid.innerHTML='';DOWS.forEach(d=>{const el=document.createElement('div');el.className='cal-full-dow';el.textContent=d;grid.appendChild(el);});const today=getKey(new Date()),first=new Date(calYear,calMonth,1).getDay(),days=new Date(calYear,calMonth+1,0).getDate(),prev=new Date(calYear,calMonth,0).getDate();for(let i=first-1;i>=0;i--){const el=document.createElement('div');el.className='cal-full-day other';el.textContent=prev-i;grid.appendChild(el);}for(let d=1;d<=days;d++){const key=`${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;const el=document.createElement('div');let cls='cal-full-day';if(key===today)cls+=' today';if(key===selCalDate)cls+=' selected';const dd=appData[key],emojis=dd?.emotions?Object.values(dd.emotions).map(e=>e.emoji).filter(Boolean).join(''):'' ;el.className=cls;el.innerHTML=`<span>${d}</span>${emojis?`<span class="cal-emojis">${emojis}</span>`:''}`;el.onclick=()=>{selCalDate=key;renderCalendar();renderSelDetail();};grid.appendChild(el);}renderSelDetail();}
+function addSticker(){if(!selStk){closeSheet('stickerSheetOverlay');return;}const board=document.getElementById('stickerBoard'),bw=board.offsetWidth,bh=board.offsetHeight;const d=getDay(currentKey);if(!d.stickers)d.stickers=[];d.stickers.push({emoji:selStk,x:Math.random()*(bw-40)+4,y:Math.random()*(bh-40)+4});saveDay(currentKey,d);renderStickers();closeSheet('stickerSheetOverlay');}
+function renderCalendar(){
+  const MONTHS=['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
+  const DOWS=['일','월','화','수','목','금','토'];
+  document.getElementById('calPageMonth').textContent=`${calYear}년 ${MONTHS[calMonth]}`;
+  const grid=document.getElementById('calFullGrid');grid.innerHTML='';
+  DOWS.forEach(d=>{const el=document.createElement('div');el.className='cal-full-dow';el.textContent=d;grid.appendChild(el);});
+  const today=getKey(new Date()),first=new Date(calYear,calMonth,1).getDay(),days=new Date(calYear,calMonth+1,0).getDate(),prev=new Date(calYear,calMonth,0).getDate();
+  for(let i=first-1;i>=0;i--){const el=document.createElement('div');el.className='cal-full-day other';el.textContent=prev-i;grid.appendChild(el);}
+  for(let d=1;d<=days;d++){
+    const key=`${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const el=document.createElement('div');
+    let cls='cal-full-day';if(key===today)cls+=' today';if(key===selCalDate)cls+=' selected';
+    const dd=appData[key],emojis=dd?.emotions?Object.values(dd.emotions).map(e=>e.emoji).filter(Boolean).join(''):'' ;
+    el.className=cls;el.innerHTML=`<span>${d}</span>${emojis?`<span class="cal-emojis">${emojis}</span>`:''}`;
+    el.onclick=()=>{selCalDate=key;renderCalendar();renderSelDetail();};grid.appendChild(el);
+  }
+  renderSelDetail();
+}
 function changeMonth(dir){calMonth+=dir;if(calMonth<0){calMonth=11;calYear--;}if(calMonth>11){calMonth=0;calYear++;}renderCalendar();}
-function renderSelDetail(){const el=document.getElementById('selDayDetail');const d=appData[selCalDate];const[y,m,day]=selCalDate.split('-');el.innerHTML=`<div class="sel-day-title">${parseInt(m)}월 ${parseInt(day)}일</div>`;if(!d){el.innerHTML+=`<div class="sel-empty">이 날의 기록이 없어요</div>`;return;}const chips=Object.entries(d.emotions||{}).map(([k,v])=>`<span class="sel-emotion-chip">${v.emoji}<span>${v.name}</span></span>`).join('');if(chips)el.innerHTML+=`<div class="sel-emotions">${chips}</div>`;[{key:'gratitude',label:'🌱 감사한 것'},{key:'resolved',label:'🌀 걱정이 별일 없이'},{key:'strength',label:'✨ 힘이 되었던 것'}].forEach(r=>{const items=(d[r.key]||[]);if(!items.length)return;el.innerHTML+=`<div class="sel-section"><div class="sel-section-title">${r.label}</div>${items.map(i=>`<div class="sel-item">· ${esc(i)}</div>`).join('')}</div>`;});if(!chips&&![...(d.gratitude||[]),...(d.resolved||[]),...(d.strength||[])].length)el.innerHTML+=`<div class="sel-empty">이 날의 기록이 없어요</div>`;}
+function renderSelDetail(){
+  const el=document.getElementById('selDayDetail');
+  const d=appData[selCalDate];
+  const[y,m,day]=selCalDate.split('-');
+  const isToday=selCalDate===todayKey;
+  el.innerHTML=`<div class="sel-day-title"><span>${parseInt(m)}월 ${parseInt(day)}일</span><button class="sel-edit-btn" onclick="goToDate('${selCalDate}')">${isToday?'오늘 기록':'이 날 기록하기'}</button></div>`;
+  if(!d){el.innerHTML+=`<div class="sel-empty">이 날의 기록이 없어요</div>`;return;}
+  const chips=Object.entries(d.emotions||{}).map(([k,v])=>`<span class="sel-emotion-chip">${v.emoji}<span>${v.name}</span></span>`).join('');
+  if(chips)el.innerHTML+=`<div class="sel-emotions">${chips}</div>`;
+  [{key:'gratitude',label:'🌱 감사한 것'},{key:'resolved',label:'🌀 걱정이 별일 없이'},{key:'strength',label:'✨ 힘이 되었던 것'}].forEach(r=>{
+    const items=(d[r.key]||[]);if(!items.length)return;
+    el.innerHTML+=`<div class="sel-section"><div class="sel-section-title">${r.label}</div>${items.map(i=>`<div class="sel-item">· ${esc(i)}</div>`).join('')}</div>`;
+  });
+  if(!chips&&![...(d.gratitude||[]),...(d.resolved||[]),...(d.strength||[])].length)el.innerHTML+=`<div class="sel-empty">이 날의 기록이 없어요</div>`;
+}
+function goToDate(key){
+  currentKey=key;
+  switchPage('today');
+  renderEmotions();
+  renderLists();
+  renderStickers();
+}
 function initPrayerStars(){const c=document.getElementById('prayerStars');c.innerHTML='';for(let i=0;i<22;i++){const s=document.createElement('div'),sz=Math.random()*2+1;s.className='prayer-star';s.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--dur:${(Math.random()*3+2).toFixed(1)}s;--delay:${(Math.random()*3).toFixed(1)}s`;c.appendChild(s);}}
 function sendPrayer(){const text=document.getElementById('prayerInput').value.trim();if(!text)return;const btn=document.getElementById('prayerSendBtn');btn.disabled=true;const now=new Date(),dateStr=`${now.getFullYear()}년 ${now.getMonth()+1}월 ${now.getDate()}일`,timeStr=now.toTimeString().slice(0,5);prayers.unshift({text,date:dateStr,time:timeStr,ts:now.getTime()});localStorage.setItem('hg-p',JSON.stringify(prayers));showAscension(prayers.length);document.getElementById('prayerInput').value='';renderPrayerDrawer();btn.disabled=false;}
 function showAscension(count){const overlay=document.getElementById('ascOverlay'),starsEl=document.getElementById('ascStars');starsEl.innerHTML='';for(let i=0;i<50;i++){const s=document.createElement('div'),sz=Math.random()*2.5+.5;s.className='asc-star';s.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--dur:${(Math.random()*3+2).toFixed(1)}s;--delay:${(Math.random()*4).toFixed(1)}s`;starsEl.appendChild(s);}document.getElementById('bowlCount').textContent=`${count}번째 기도`;overlay.classList.add('show');setTimeout(()=>{document.getElementById('bowlFill').style.width=Math.min(100,count*5)+'%';},500);}
