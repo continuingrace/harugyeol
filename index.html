@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>하루결</title>
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Noto+Serif+KR:wght@400;600&family=DM+Mono&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F7F4EF;--surface:#FFFFFF;--surface2:#F0EBE3;--border:#E2D9CE;--text:#2C2418;--muted:#8C7B6A;--light:#B8A898;--accent:#E8613A;--accent-bg:#FDEEE9;--green:#4CAF7C;--blue:#4A7FC1;--gold:#C9A227;--gold2:#E8C84A;--r:14px;--rs:8px;--nav:64px;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;font-family:'Gowun Dodum',sans-serif;background:var(--bg);color:var(--text);overflow:hidden;-webkit-tap-highlight-color:transparent;}
+button{cursor:pointer;font-family:inherit;border:none;background:none;}
+textarea,input{font-family:inherit;}
+::-webkit-scrollbar{width:3px;}::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+.app{display:flex;flex-direction:column;height:100dvh;max-width:480px;margin:0 auto;background:var(--bg);}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 20px 10px;background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0;z-index:10;}
+.logo{font-family:'Noto Serif KR',serif;font-size:20px;font-weight:600;}.logo span{color:var(--accent);}
+.topbar-date{font-size:12px;color:var(--muted);}
+.topbar-streak{display:flex;align-items:center;gap:4px;font-size:12px;color:var(--muted);background:var(--accent-bg);border-radius:20px;padding:4px 10px;}
+.topbar-streak strong{color:var(--accent);font-family:'DM Mono',monospace;}
+.pages{flex:1;overflow:hidden;position:relative;}
+.page{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;padding:16px 16px 80px;opacity:0;pointer-events:none;transform:translateY(6px);transition:opacity .22s,transform .22s;}
+.page.active{opacity:1;pointer-events:all;transform:translateY(0);}
+.bottom-nav{display:flex;background:var(--surface);border-top:1px solid var(--border);flex-shrink:0;height:var(--nav);}
+.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:10px;color:var(--light);transition:color .15s;padding:6px 0;}
+.nav-btn.active{color:var(--accent);}.nav-icon{font-size:22px;line-height:1;}
+.section-label{font-size:10px;letter-spacing:1.4px;color:var(--muted);text-transform:uppercase;margin:20px 0 8px;}
+.section-label:first-child{margin-top:4px;}
+.emotion-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.emotion-card{background:var(--surface);border-radius:var(--r);padding:14px;border:1.5px solid var(--border);cursor:pointer;position:relative;overflow:hidden;transition:transform .15s;}
+.emotion-card:active{transform:scale(.97);}
+.emotion-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+.emotion-card.morning::before{background:#F4A35A;}.emotion-card.noon::before{background:#5BAF8C;}
+.emotion-card.evening::before{background:#7C6FCD;}.emotion-card.night::before{background:#3D5A7A;}
+.emotion-card.morning{border-color:#F9C98A;}.emotion-card.noon{border-color:#96D4BB;}
+.emotion-card.evening{border-color:#B5AEED;}.emotion-card.night{border-color:#8BAAC8;}
+.emotion-time{font-size:10px;font-weight:600;letter-spacing:.4px;margin-bottom:7px;display:flex;align-items:center;gap:4px;}
+.emotion-card.morning .emotion-time{color:#F4A35A;}.emotion-card.noon .emotion-time{color:#5BAF8C;}
+.emotion-card.evening .emotion-time{color:#7C6FCD;}.emotion-card.night .emotion-time{color:#3D5A7A;}
+.emotion-display{display:flex;align-items:center;gap:7px;min-height:34px;}
+.emotion-emoji{font-size:24px;line-height:1;}.emotion-name{font-family:'Noto Serif KR',serif;font-size:13px;}
+.emotion-empty{font-size:11px;color:var(--light);font-style:italic;}
+.record-list{display:flex;flex-direction:column;gap:8px;}
+.record-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r);padding:14px;}
+.record-card-title{font-size:12px;font-weight:600;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;}
+.record-card-title.gratitude{color:var(--green);}.record-card-title.resolved{color:var(--blue);}.record-card-title.strength{color:var(--accent);}
+.record-items{display:flex;flex-direction:column;gap:5px;margin-bottom:4px;}
+.record-item{display:flex;gap:7px;align-items:flex-start;font-size:12px;line-height:1.55;}
+.record-dot{width:5px;height:5px;border-radius:50%;margin-top:5px;flex-shrink:0;}
+.gratitude .record-dot{background:var(--green);}.resolved .record-dot{background:var(--blue);}.strength .record-dot{background:var(--accent);}
+.add-item-btn{font-size:11px;color:var(--light);display:flex;align-items:center;gap:3px;}
+.sticker-board-wrap{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r);overflow:hidden;}
+.sticker-board-header{display:flex;align-items:center;justify-content:space-between;padding:11px 14px 9px;border-bottom:1px solid var(--border);}
+.sticker-board-title{font-size:11px;color:var(--muted);font-weight:600;}
+.sticker-add-btn{font-size:11px;color:var(--accent);background:var(--accent-bg);border-radius:7px;padding:4px 10px;}
+.sticker-board{position:relative;width:100%;height:130px;background:radial-gradient(circle at 18px 18px,rgba(226,217,206,.5) 1px,transparent 1px);background-size:20px 20px;overflow:hidden;user-select:none;}
+.sticker{position:absolute;font-size:26px;line-height:1;cursor:grab;touch-action:none;filter:drop-shadow(0 2px 4px rgba(44,36,24,.15));}
+.sticker.dragging{transform:scale(1.2) rotate(5deg);z-index:100;}
+.cal-page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.cal-page-month{font-family:'Noto Serif KR',serif;font-size:18px;font-weight:600;}
+.cal-nav-row{display:flex;gap:6px;}
+.cal-nav-btn{width:32px;height:32px;border-radius:8px;border:1.5px solid var(--border);color:var(--muted);font-size:14px;display:flex;align-items:center;justify-content:center;background:var(--surface);}
+.cal-full-grid{display:grid;grid-template-columns:repeat(7,1fr);background:var(--surface);border-radius:var(--r);border:1.5px solid var(--border);overflow:hidden;}
+.cal-full-dow{text-align:center;font-size:10px;color:var(--light);padding:10px 0 6px;font-family:'DM Mono',monospace;background:var(--surface2);border-bottom:1px solid var(--border);}
+.cal-full-day{aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:13px;cursor:pointer;border-right:1px solid var(--border);border-bottom:1px solid var(--border);gap:2px;padding:2px;transition:background .12s;}
+.cal-full-day:nth-child(7n){border-right:none;}.cal-full-day:active{background:var(--surface2);}
+.cal-full-day.today{background:var(--accent-bg);color:var(--accent);font-weight:600;}
+.cal-full-day.selected{background:var(--accent);color:white;}.cal-full-day.other{color:var(--light);}
+.cal-emojis{font-size:8px;display:flex;flex-wrap:wrap;justify-content:center;}
+.selected-day-detail{margin-top:12px;background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r);padding:16px;}
+.sel-day-title{font-family:'Noto Serif KR',serif;font-size:15px;font-weight:600;margin-bottom:12px;}
+.sel-emotions{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;}
+.sel-emotion-chip{display:flex;align-items:center;gap:5px;background:var(--surface2);border-radius:20px;padding:5px 10px;font-size:12px;}
+.sel-section{margin-top:10px;}.sel-section-title{font-size:11px;color:var(--muted);margin-bottom:5px;}
+.sel-item{font-size:12px;line-height:1.6;padding:2px 0;}
+.sel-empty{font-size:12px;color:var(--light);font-style:italic;padding:20px 0;text-align:center;}
+.prayer-wrap{background:linear-gradient(160deg,#1a1030 0%,#2d1f5e 55%,#1a2a4a 100%);border-radius:var(--r);overflow:hidden;position:relative;margin-bottom:12px;}
+.prayer-stars{position:absolute;inset:0;pointer-events:none;overflow:hidden;}
+.prayer-star{position:absolute;background:white;border-radius:50%;animation:twinkle var(--dur,3s) ease-in-out infinite;animation-delay:var(--delay,0s);}
+@keyframes twinkle{0%,100%{opacity:.15;}50%{opacity:.85;}}
+.prayer-inner{padding:20px 18px 16px;position:relative;z-index:1;}
+.prayer-title{font-family:'Noto Serif KR',serif;font-size:15px;font-weight:600;color:#f0e8c8;margin-bottom:2px;}
+.prayer-sub{font-size:10px;color:rgba(240,232,200,.45);font-style:italic;margin-bottom:14px;}
+.prayer-textarea{width:100%;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);border-radius:11px;padding:12px 14px;font-size:14px;color:#f0e8c8;resize:none;outline:none;min-height:110px;line-height:1.75;margin-bottom:12px;}
+.prayer-textarea::placeholder{color:rgba(240,232,200,.28);}
+.prayer-bottom{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;}
+.prayer-verse{font-size:9.5px;color:rgba(240,232,200,.32);font-style:italic;line-height:1.65;flex:1;}
+.prayer-send-btn{display:flex;align-items:center;gap:6px;background:rgba(240,232,200,.12);color:#f0e8c8;border:1px solid rgba(240,232,200,.3);border-radius:11px;padding:11px 16px;font-size:13px;font-weight:600;white-space:nowrap;cursor:pointer;}
+.drawer-toggle{width:100%;display:flex;align-items:center;justify-content:space-between;background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r);padding:14px 16px;}
+.drawer-toggle-left{display:flex;align-items:center;gap:10px;}
+.drawer-toggle-title{font-family:'Noto Serif KR',serif;font-size:14px;font-weight:600;}
+.drawer-toggle-count{font-size:11px;color:rgba(200,162,39,.9);background:rgba(200,162,39,.12);border:1px solid rgba(200,162,39,.25);border-radius:20px;padding:2px 9px;}
+.prayer-letters{display:flex;flex-direction:column;gap:8px;margin-top:10px;}
+.prayer-letter{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r);padding:14px;}
+.prayer-letter-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.prayer-letter-date{font-size:10px;color:var(--light);font-family:'DM Mono',monospace;}
+.prayer-letter-text{font-size:13px;line-height:1.75;white-space:pre-wrap;}
+.prayer-letter-del{font-size:11px;color:var(--light);margin-top:8px;}
+.prayer-empty{text-align:center;padding:32px 20px;color:var(--light);font-size:13px;line-height:2;}
+.prayer-empty-icon{font-size:40px;display:block;margin-bottom:10px;}
+.ascension-overlay{position:fixed;inset:0;background:radial-gradient(ellipse at center bottom,#0d0825,#1a1040 45%,#080520);z-index:1000;display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .5s;}
+.ascension-overlay.show{opacity:1;pointer-events:all;}
+.asc-stars{position:absolute;inset:0;overflow:hidden;}
+.asc-star{position:absolute;background:white;border-radius:50%;animation:asc-twinkle var(--dur) ease-in-out infinite;animation-delay:var(--delay);}
+@keyframes asc-twinkle{0%,100%{opacity:.08;}50%{opacity:.8;}}
+.asc-content{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;}
+.asc-envelope{font-size:56px;animation:asc-rise 3s cubic-bezier(.2,0,.4,1) forwards;filter:drop-shadow(0 0 18px rgba(232,200,74,.8));}
+@keyframes asc-rise{0%{transform:translateY(80px) scale(.75);opacity:0;}12%{transform:translateY(40px) scale(1.05);opacity:1;}60%{transform:translateY(-50px);opacity:1;}85%{transform:translateY(-150px) scale(.88);opacity:.6;}100%{transform:translateY(-280px) scale(.4);opacity:0;}}
+.asc-bowl-section{margin-top:28px;display:flex;flex-direction:column;align-items:center;gap:8px;animation:bowl-appear .7s ease .3s both;}
+@keyframes bowl-appear{from{opacity:0;transform:scale(.75) translateY(14px);}to{opacity:1;transform:none;}}
+.asc-bowl{font-size:72px;animation:bowl-glow 2.2s ease-in-out infinite;}
+@keyframes bowl-glow{0%,100%{filter:drop-shadow(0 0 18px rgba(232,200,74,.6));}50%{filter:drop-shadow(0 0 32px rgba(232,200,74,1));}}
+.bowl-bar{width:120px;height:5px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden;}
+.bowl-bar-fill{height:100%;background:linear-gradient(90deg,#C9A227,#E8C84A);border-radius:3px;width:0%;transition:width 1.4s ease .5s;}
+.bowl-count{font-family:'Noto Serif KR',serif;font-size:12px;color:rgba(240,232,200,.5);}
+.asc-msg{margin-top:22px;font-family:'Noto Serif KR',serif;font-size:17px;color:#f0e8c8;text-align:center;line-height:1.85;animation:asc-msg-in .8s ease 2.2s both;}
+.asc-msg-sub{font-size:11px;color:rgba(240,232,200,.38);font-style:italic;}
+@keyframes asc-msg-in{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
+.asc-close{margin-top:24px;font-size:12px;color:rgba(240,232,200,.35);border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:7px 20px;background:none;cursor:pointer;animation:asc-msg-in .8s ease 2.8s both;}
+.sheet-overlay{position:fixed;inset:0;background:rgba(44,36,24,.45);backdrop-filter:blur(3px);z-index:400;opacity:0;pointer-events:none;transition:opacity .25s;display:flex;align-items:flex-end;justify-content:center;}
+.sheet-overlay.open{opacity:1;pointer-events:all;}
+.sheet{width:100%;max-width:480px;background:var(--surface);border-radius:22px 22px 0 0;max-height:88vh;display:flex;flex-direction:column;transform:translateY(100%);transition:transform .28s cubic-bezier(.32,0,.67,0);}
+.sheet-overlay.open .sheet{transform:translateY(0);transition-timing-function:cubic-bezier(.33,1,.68,1);}
+.sheet-handle{width:38px;height:4px;background:var(--border);border-radius:2px;margin:12px auto 0;flex-shrink:0;}
+.sheet-header{padding:14px 20px 12px;border-bottom:1px solid var(--border);flex-shrink:0;}
+.sheet-title{font-family:'Noto Serif KR',serif;font-size:16px;font-weight:600;}
+.sheet-sub{font-size:12px;color:var(--muted);margin-top:3px;}
+.sheet-body{overflow-y:auto;flex:1;padding:16px 20px 20px;}
+.sheet-footer{padding:12px 20px;border-top:1px solid var(--border);display:flex;gap:8px;flex-shrink:0;}
+.btn{padding:12px 20px;border-radius:12px;font-size:14px;border:none;cursor:pointer;}
+.btn-ghost{background:var(--surface2);color:var(--muted);}
+.btn-primary{background:var(--accent);color:white;flex:1;font-weight:600;}
+.emotion-picker{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px;}
+.emotion-opt{border:1.5px solid var(--border);border-radius:10px;padding:10px 4px;text-align:center;cursor:pointer;background:var(--bg);}
+.emotion-opt.sel{border-color:var(--accent);background:var(--accent-bg);}
+.e-emoji{font-size:22px;display:block;margin-bottom:3px;}.e-name{font-size:10px;color:var(--muted);}
+.emotion-opt.sel .e-name{color:var(--accent);}
+.custom-row{display:flex;gap:8px;margin-top:12px;}
+.custom-emoji{width:50px;border:1.5px solid var(--border);border-radius:var(--rs);padding:10px;font-size:18px;text-align:center;background:var(--bg);color:var(--text);}
+.custom-text{flex:1;border:1.5px solid var(--border);border-radius:var(--rs);padding:10px 13px;font-size:14px;background:var(--bg);color:var(--text);outline:none;}
+.existing-items{display:flex;flex-direction:column;gap:6px;margin-bottom:12px;}
+.existing-item{display:flex;align-items:center;justify-content:space-between;padding:9px 12px;background:var(--surface2);border-radius:var(--rs);font-size:13px;}
+.del-item{color:var(--light);font-size:18px;line-height:1;}
+.add-textarea{width:100%;border:1.5px solid var(--border);border-radius:var(--rs);padding:12px 14px;font-size:14px;background:var(--bg);color:var(--text);resize:none;outline:none;min-height:80px;line-height:1.65;}
+.sticker-cats{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;}
+.sticker-cat-btn{font-size:11px;padding:5px 11px;border-radius:20px;border:1.5px solid var(--border);color:var(--muted);background:none;}
+.sticker-cat-btn.active{background:var(--accent);border-color:var(--accent);color:white;}
+.sticker-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;}
+.sticker-opt{font-size:28px;text-align:center;padding:8px 2px;border-radius:10px;cursor:pointer;border:2px solid transparent;}
+.sticker-opt.sel{border-color:var(--accent);background:var(--accent-bg);}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <div class="logo">하루<span>결</span></div>
+    <div class="topbar-date" id="topDate"></div>
+    <div class="topbar-streak">🔥 <strong id="streakNum">0</strong>일째</div>
+  </div>
+  <div class="pages">
+    <div class="page active" id="page-today">
+      <div class="section-label">감정 기록</div>
+      <div class="emotion-grid">
+        <div class="emotion-card morning" onclick="openEmotionSheet('morning')"><div class="emotion-time">☀️ 아침</div><div class="emotion-display" id="disp-morning"><span class="emotion-empty">기분이 어때요?</span></div></div>
+        <div class="emotion-card noon" onclick="openEmotionSheet('noon')"><div class="emotion-time">🌤 점심</div><div class="emotion-display" id="disp-noon"><span class="emotion-empty">기분이 어때요?</span></div></div>
+        <div class="emotion-card evening" onclick="openEmotionSheet('evening')"><div class="emotion-time">🌆 저녁</div><div class="emotion-display" id="disp-evening"><span class="emotion-empty">기분이 어때요?</span></div></div>
+        <div class="emotion-card night" onclick="openEmotionSheet('night')"><div class="emotion-time">🌙 자기 전</div><div class="emotion-display" id="disp-night"><span class="emotion-empty">기분이 어때요?</span></div></div>
+      </div>
+      <div class="section-label">오늘의 기록</div>
+      <div class="record-list">
+        <div class="record-card"><div class="record-card-title gratitude">🌱 감사한 것 <button class="add-item-btn" onclick="openAddSheet('gratitude')">+ 추가</button></div><div class="record-items" id="list-gratitude"></div></div>
+        <div class="record-card"><div class="record-card-title resolved">🌀 걱정이 별일 없이 <button class="add-item-btn" onclick="openAddSheet('resolved')">+ 추가</button></div><div class="record-items" id="list-resolved"></div></div>
+        <div class="record-card"><div class="record-card-title strength">✨ 힘이 되었던 것 <button class="add-item-btn" onclick="openAddSheet('strength')">+ 추가</button></div><div class="record-items" id="list-strength"></div></div>
+      </div>
+      <div class="section-label">감정 스티커</div>
+      <div class="sticker-board-wrap">
+        <div class="sticker-board-header"><div class="sticker-board-title">🎀 오늘을 꾸며보세요</div><button class="sticker-add-btn" onclick="openStickerSheet()">+ 스티커</button></div>
+        <div class="sticker-board" id="stickerBoard"></div>
+      </div>
+    </div>
+    <div class="page" id="page-calendar">
+      <div class="cal-page-header"><div class="cal-page-month" id="calPageMonth"></div><div class="cal-nav-row"><button class="cal-nav-btn" onclick="changeMonth(-1)">←</button><button class="cal-nav-btn" onclick="changeMonth(1)">→</button></div></div>
+      <div class="cal-full-grid" id="calFullGrid"></div>
+      <div class="selected-day-detail" id="selDayDetail"></div>
+    </div>
+    <div class="page" id="page-prayer">
+      <div class="prayer-wrap">
+        <div class="prayer-stars" id="prayerStars"></div>
+        <div class="prayer-inner">
+          <div class="prayer-title">🙏 하나님께 드리는 감사의 기도</div>
+          <div class="prayer-sub">오늘 하루를 주님께 올려드려요</div>
+          <textarea class="prayer-textarea" id="prayerInput" placeholder="주님, 오늘 하루도..."></textarea>
+          <div class="prayer-bottom">
+            <div class="prayer-verse">"이 대접들은 성도의<br>기도들이라" — 계 5:8</div>
+            <button class="prayer-send-btn" id="prayerSendBtn" onclick="sendPrayer()">✉️ 올려드리기</button>
+          </div>
+        </div>
+      </div>
+      <button class="drawer-toggle" onclick="toggleDrawer()">
+        <div class="drawer-toggle-left"><span style="font-size:22px;">🏺</span><div><div class="drawer-toggle-title">하나님의 서랍</div><div style="font-size:11px;color:var(--muted);margin-top:1px;">쌓인 기도를 볼 수 있어요</div></div></div>
+        <div style="display:flex;align-items:center;gap:8px;"><span class="drawer-toggle-count" id="prayerCountBadge">0편</span><span style="font-size:16px;color:var(--light);" id="drawerArrow">›</span></div>
+      </button>
+      <div id="drawerLetters" style="display:none;"><div class="prayer-letters" id="prayerLetterList"></div></div>
+    </div>
+  </div>
+  <nav class="bottom-nav">
+    <button class="nav-btn active" data-page="today" onclick="switchPage('today')"><span class="nav-icon">☀️</span>오늘</button>
+    <button class="nav-btn" data-page="calendar" onclick="switchPage('calendar')"><span class="nav-icon">📅</span>달력</button>
+    <button class="nav-btn" data-page="prayer" onclick="switchPage('prayer')"><span class="nav-icon">🙏</span>기도</button>
+  </nav>
+</div>
+<div class="ascension-overlay" id="ascOverlay">
+  <div class="asc-stars" id="ascStars"></div>
+  <div class="asc-content">
+    <div style="position:relative;display:flex;flex-direction:column;align-items:center;">
+      <div class="asc-envelope">✉️</div>
+      <div style="position:absolute;bottom:-8px;left:50%;transform:translateX(-50%);" id="smokeParticles"></div>
+    </div>
+    <div class="asc-bowl-section"><div class="asc-bowl">🏺</div><div class="bowl-bar"><div class="bowl-bar-fill" id="bowlFill"></div></div><div class="bowl-count" id="bowlCount"></div></div>
+    <div class="asc-msg">기도가 올려졌습니다<br><span class="asc-msg-sub">금 대접에 향기로 쌓여 있어요</span></div>
+    <button class="asc-close" onclick="closeAscension()">닫기</button>
+  </div>
+</div>
+<div class="sheet-overlay" id="emotionSheetOverlay" onclick="closeSheetOnBg(event,'emotionSheetOverlay')">
+  <div class="sheet"><div class="sheet-handle"></div><div class="sheet-header"><div class="sheet-title" id="emotionSheetTitle">감정 기록</div><div class="sheet-sub">이 순간의 감정에 이름을 붙여보세요</div></div>
+  <div class="sheet-body"><div style="font-size:11px;color:var(--muted);margin-bottom:8px;">감정 선택</div><div class="emotion-picker" id="emotionPicker"></div><div style="font-size:11px;color:var(--muted);margin-bottom:8px;">직접 입력</div><div class="custom-row"><input class="custom-emoji" id="customEmoji" placeholder="🙂" maxlength="2"><input class="custom-text" id="customName" placeholder="감정 이름을 직접 입력해요..."></div></div>
+  <div class="sheet-footer"><button class="btn btn-ghost" onclick="closeSheet('emotionSheetOverlay')">취소</button><button class="btn btn-primary" onclick="saveEmotion()">저장하기</button></div></div>
+</div>
+<div class="sheet-overlay" id="addSheetOverlay" onclick="closeSheetOnBg(event,'addSheetOverlay')">
+  <div class="sheet"><div class="sheet-handle"></div><div class="sheet-header"><div class="sheet-title" id="addSheetTitle"></div><div class="sheet-sub" id="addSheetSub"></div></div>
+  <div class="sheet-body"><div class="existing-items" id="existingItems"></div><textarea class="add-textarea" id="addTextarea"></textarea></div>
+  <div class="sheet-footer"><button class="btn btn-ghost" onclick="closeSheet('addSheetOverlay')">취소</button><button class="btn btn-primary" onclick="saveRecord()">추가하기</button></div></div>
+</div>
+<div class="sheet-overlay" id="stickerSheetOverlay" onclick="closeSheetOnBg(event,'stickerSheetOverlay')">
+  <div class="sheet"><div class="sheet-handle"></div><div class="sheet-header"><div class="sheet-title">감정 스티커 고르기</div><div class="sheet-sub">스티커를 눌러 선택하고 보드에 붙여요</div></div>
+  <div class="sheet-body"><div class="sticker-cats" id="stickerCats"></div><div class="sticker-grid" id="stickerGrid"></div></div>
+  <div class="sheet-footer"><button class="btn btn-ghost" onclick="closeSheet('stickerSheetOverlay')">취소</button><button class="btn btn-primary" onclick="addSticker()">붙이기</button></div></div>
+</div>
+<script>
+const EMOTIONS=[{emoji:'😊',name:'기쁨'},{emoji:'😌',name:'평온'},{emoji:'🥰',name:'사랑스러움'},{emoji:'😤',name:'뿌듯함'},{emoji:'😔',name:'슬픔'},{emoji:'😰',name:'불안'},{emoji:'😠',name:'화남'},{emoji:'🥲',name:'서러움'},{emoji:'😶',name:'공허함'},{emoji:'😴',name:'피곤함'},{emoji:'🤗',name:'따뜻함'},{emoji:'🫠',name:'멍함'}];
+const STICKER_CATS=[{label:'💛 감정',s:['😊','😌','🥰','😤','😔','😰','😠','🥲','😶','😴','🤗','🫠','😍','🤩','😎','🥳']},{label:'🌿 자연',s:['🌸','🌺','🌻','🌹','🌷','🍀','🌿','🍃','🌱','🪴','🌾','🍂','🌊','🌙','⭐','✨']},{label:'☕ 일상',s:['☕','🍵','🫖','🍰','🧁','🎵','🎶','📖','✏️','🕯️','🏡','🎨','🧸','💌','📷','🌠']},{label:'💬 마음',s:['💛','💙','💚','🧡','💜','🤍','💗','💖','💝','💫','🙏','👏','🫂','💪','💐','🎁']}];
+const ADD_CFG={gratitude:{title:'🌱 감사한 것',sub:'오늘 감사했던 순간, 사람, 작은 것들',placeholder:'오늘 감사했던 것은...'},resolved:{title:'🌀 걱정이 별일 없이',sub:'걱정했지만 잘 지나간 일들',placeholder:'걱정했지만 괜찮았던 것은...'},strength:{title:'✨ 힘이 되었던 것',sub:'존재, 문장, 장면 — 무엇이든',placeholder:'힘이 되었던 사람, 말, 순간은...'}};
+const SLOT_LABELS={morning:'☀️ 아침',noon:'🌤 점심',evening:'🌆 저녁',night:'🌙 자기 전'};
+let appData=JSON.parse(localStorage.getItem('hg')||'{}');
+let prayers=JSON.parse(localStorage.getItem('hg-p')||'[]');
+let todayKey=getKey(new Date()),calYear=new Date().getFullYear(),calMonth=new Date().getMonth(),selCalDate=todayKey;
+let curSlot='',curType='',selEmo=null,selStk=null,curStkCat=0,drawerOpen=false;
+function getKey(d){return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
+function getDay(k){return appData[k]||{emotions:{},gratitude:[],resolved:[],strength:[],stickers:[]};}
+function saveDay(k,d){appData[k]=d;localStorage.setItem('hg',JSON.stringify(appData));}
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function init(){renderTopDate();renderEmotions();renderLists();renderStickers();renderCalendar();updateStreak();initPrayerStars();renderPrayerDrawer();}
+function switchPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));document.getElementById('page-'+id).classList.add('active');document.querySelector('[data-page="'+id+'"]').classList.add('active');}
+function renderTopDate(){const days=['일','월','화','수','목','금','토'],d=new Date();document.getElementById('topDate').textContent=`${d.getMonth()+1}월 ${d.getDate()}일 (${days[d.getDay()]})`;}
+function updateStreak(){let s=0,d=new Date();while(true){const k=getKey(d),e=appData[k];if(!e)break;const has=Object.keys(e.emotions||{}).length||(e.gratitude||[]).length||(e.resolved||[]).length||(e.strength||[]).length;if(!has)break;s++;d.setDate(d.getDate()-1);}document.getElementById('streakNum').textContent=s;}
+function renderEmotions(){const d=getDay(todayKey);['morning','noon','evening','night'].forEach(slot=>{const el=document.getElementById('disp-'+slot),e=d.emotions[slot];el.innerHTML=e?`<span class="emotion-emoji">${e.emoji}</span><span class="emotion-name">${e.name}</span>`:`<span class="emotion-empty">기분이 어때요?</span>`;});}
+function openEmotionSheet(slot){curSlot=slot;selEmo=null;document.getElementById('emotionSheetTitle').textContent=SLOT_LABELS[slot]+' 감정 기록';document.getElementById('customEmoji').value='';document.getElementById('customName').value='';const current=getDay(todayKey).emotions[slot];const picker=document.getElementById('emotionPicker');picker.innerHTML='';EMOTIONS.forEach(e=>{const d=document.createElement('div');d.className='emotion-opt'+(current&&current.name===e.name?' sel':'');d.innerHTML=`<span class="e-emoji">${e.emoji}</span><span class="e-name">${e.name}</span>`;d.onclick=()=>{document.querySelectorAll('.emotion-opt').forEach(o=>o.classList.remove('sel'));d.classList.add('sel');selEmo=e;document.getElementById('customEmoji').value='';document.getElementById('customName').value='';};picker.appendChild(d);});if(current&&!EMOTIONS.find(e=>e.name===current.name)){document.getElementById('customEmoji').value=current.emoji;document.getElementById('customName').value=current.name;}openSheet('emotionSheetOverlay');}
+function saveEmotion(){const emoji=document.getElementById('customEmoji').value.trim();const name=document.getElementById('customName').value.trim();let em=selEmo;if(name)em={emoji:emoji||'💭',name};if(!em){closeSheet('emotionSheetOverlay');return;}const d=getDay(todayKey);d.emotions[curSlot]=em;saveDay(todayKey,d);renderEmotions();renderCalendar();updateStreak();closeSheet('emotionSheetOverlay');}
+function renderLists(){const d=getDay(todayKey);['gratitude','resolved','strength'].forEach(type=>{document.getElementById('list-'+type).innerHTML=(d[type]||[]).map(item=>`<div class="record-item"><span class="record-dot"></span><span>${esc(item)}</span></div>`).join('');});}
+function openAddSheet(type){curType=type;const cfg=ADD_CFG[type];document.getElementById('addSheetTitle').textContent=cfg.title;document.getElementById('addSheetSub').textContent=cfg.sub;document.getElementById('addTextarea').placeholder=cfg.placeholder;document.getElementById('addTextarea').value='';const items=getDay(todayKey)[type]||[];document.getElementById('existingItems').innerHTML=items.map((item,i)=>`<div class="existing-item"><span>${esc(item)}</span><button class="del-item" onclick="deleteRecord('${type}',${i})">×</button></div>`).join('');openSheet('addSheetOverlay');}
+function saveRecord(){const val=document.getElementById('addTextarea').value.trim();if(!val){closeSheet('addSheetOverlay');return;}const d=getDay(todayKey);if(!d[curType])d[curType]=[];d[curType].push(val);saveDay(todayKey,d);renderLists();updateStreak();closeSheet('addSheetOverlay');}
+function deleteRecord(type,idx){const d=getDay(todayKey);d[type].splice(idx,1);saveDay(todayKey,d);renderLists();openAddSheet(type);}
+function renderStickers(){const board=document.getElementById('stickerBoard');board.innerHTML='';const d=getDay(todayKey);(d.stickers||[]).forEach((s,idx)=>{const el=document.createElement('div');el.className='sticker';el.style.left=s.x+'px';el.style.top=s.y+'px';el.textContent=s.emoji;makeDraggable(el,board,s,idx);board.appendChild(el);});}
+function makeDraggable(el,board,s,idx){let sx,sy,ox,oy,drag=false;el.addEventListener('mousedown',e=>{e.preventDefault();drag=true;sx=e.clientX;sy=e.clientY;ox=s.x;oy=s.y;el.classList.add('dragging');});document.addEventListener('mousemove',e=>{if(!drag)return;const r=board.getBoundingClientRect();s.x=Math.max(0,Math.min(r.width-36,ox+e.clientX-sx));s.y=Math.max(0,Math.min(r.height-36,oy+e.clientY-sy));el.style.left=s.x+'px';el.style.top=s.y+'px';});document.addEventListener('mouseup',()=>{if(!drag)return;drag=false;el.classList.remove('dragging');persistSticker(idx,s);});el.addEventListener('touchstart',e=>{const t=e.touches[0];sx=t.clientX;sy=t.clientY;ox=s.x;oy=s.y;el.classList.add('dragging');},{passive:true});el.addEventListener('touchmove',e=>{e.preventDefault();const t=e.touches[0],r=board.getBoundingClientRect();s.x=Math.max(0,Math.min(r.width-36,ox+t.clientX-sx));s.y=Math.max(0,Math.min(r.height-36,oy+t.clientY-sy));el.style.left=s.x+'px';el.style.top=s.y+'px';},{passive:false});el.addEventListener('touchend',()=>{el.classList.remove('dragging');persistSticker(idx,s);});let lp;el.addEventListener('touchstart',()=>{lp=setTimeout(()=>deleteSticker(idx),600);},{passive:true});el.addEventListener('touchend',()=>clearTimeout(lp));el.addEventListener('touchmove',()=>clearTimeout(lp));el.addEventListener('dblclick',()=>deleteSticker(idx));}
+function persistSticker(idx,s){const d=getDay(todayKey);if(d.stickers&&d.stickers[idx]){d.stickers[idx].x=s.x;d.stickers[idx].y=s.y;saveDay(todayKey,d);}}
+function deleteSticker(idx){const d=getDay(todayKey);d.stickers.splice(idx,1);saveDay(todayKey,d);renderStickers();}
+function openStickerSheet(){selStk=null;curStkCat=0;renderStickerCats();renderStickerGrid(0);openSheet('stickerSheetOverlay');}
+function renderStickerCats(){const el=document.getElementById('stickerCats');el.innerHTML='';STICKER_CATS.forEach((c,i)=>{const b=document.createElement('button');b.className='sticker-cat-btn'+(i===curStkCat?' active':'');b.textContent=c.label;b.onclick=()=>{curStkCat=i;renderStickerCats();renderStickerGrid(i);};el.appendChild(b);});}
+function renderStickerGrid(ci){const el=document.getElementById('stickerGrid');el.innerHTML='';STICKER_CATS[ci].s.forEach(emoji=>{const d=document.createElement('div');d.className='sticker-opt'+(selStk===emoji?' sel':'');d.textContent=emoji;d.onclick=()=>{document.querySelectorAll('.sticker-opt').forEach(o=>o.classList.remove('sel'));d.classList.add('sel');selStk=emoji;};el.appendChild(d);});}
+function addSticker(){if(!selStk){closeSheet('stickerSheetOverlay');return;}const board=document.getElementById('stickerBoard'),bw=board.offsetWidth,bh=board.offsetHeight;const d=getDay(todayKey);if(!d.stickers)d.stickers=[];d.stickers.push({emoji:selStk,x:Math.random()*(bw-40)+4,y:Math.random()*(bh-40)+4});saveDay(todayKey,d);renderStickers();closeSheet('stickerSheetOverlay');}
+function renderCalendar(){const MONTHS=['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];const DOWS=['일','월','화','수','목','금','토'];document.getElementById('calPageMonth').textContent=`${calYear}년 ${MONTHS[calMonth]}`;const grid=document.getElementById('calFullGrid');grid.innerHTML='';DOWS.forEach(d=>{const el=document.createElement('div');el.className='cal-full-dow';el.textContent=d;grid.appendChild(el);});const today=getKey(new Date()),first=new Date(calYear,calMonth,1).getDay(),days=new Date(calYear,calMonth+1,0).getDate(),prev=new Date(calYear,calMonth,0).getDate();for(let i=first-1;i>=0;i--){const el=document.createElement('div');el.className='cal-full-day other';el.textContent=prev-i;grid.appendChild(el);}for(let d=1;d<=days;d++){const key=`${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;const el=document.createElement('div');let cls='cal-full-day';if(key===today)cls+=' today';if(key===selCalDate)cls+=' selected';const dd=appData[key],emojis=dd?.emotions?Object.values(dd.emotions).map(e=>e.emoji).filter(Boolean).join(''):'' ;el.className=cls;el.innerHTML=`<span>${d}</span>${emojis?`<span class="cal-emojis">${emojis}</span>`:''}`;el.onclick=()=>{selCalDate=key;renderCalendar();renderSelDetail();};grid.appendChild(el);}renderSelDetail();}
+function changeMonth(dir){calMonth+=dir;if(calMonth<0){calMonth=11;calYear--;}if(calMonth>11){calMonth=0;calYear++;}renderCalendar();}
+function renderSelDetail(){const el=document.getElementById('selDayDetail');const d=appData[selCalDate];const[y,m,day]=selCalDate.split('-');el.innerHTML=`<div class="sel-day-title">${parseInt(m)}월 ${parseInt(day)}일</div>`;if(!d){el.innerHTML+=`<div class="sel-empty">이 날의 기록이 없어요</div>`;return;}const chips=Object.entries(d.emotions||{}).map(([k,v])=>`<span class="sel-emotion-chip">${v.emoji}<span>${v.name}</span></span>`).join('');if(chips)el.innerHTML+=`<div class="sel-emotions">${chips}</div>`;[{key:'gratitude',label:'🌱 감사한 것'},{key:'resolved',label:'🌀 걱정이 별일 없이'},{key:'strength',label:'✨ 힘이 되었던 것'}].forEach(r=>{const items=(d[r.key]||[]);if(!items.length)return;el.innerHTML+=`<div class="sel-section"><div class="sel-section-title">${r.label}</div>${items.map(i=>`<div class="sel-item">· ${esc(i)}</div>`).join('')}</div>`;});if(!chips&&![...(d.gratitude||[]),...(d.resolved||[]),...(d.strength||[])].length)el.innerHTML+=`<div class="sel-empty">이 날의 기록이 없어요</div>`;}
+function initPrayerStars(){const c=document.getElementById('prayerStars');c.innerHTML='';for(let i=0;i<22;i++){const s=document.createElement('div'),sz=Math.random()*2+1;s.className='prayer-star';s.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--dur:${(Math.random()*3+2).toFixed(1)}s;--delay:${(Math.random()*3).toFixed(1)}s`;c.appendChild(s);}}
+function sendPrayer(){const text=document.getElementById('prayerInput').value.trim();if(!text)return;const btn=document.getElementById('prayerSendBtn');btn.disabled=true;const now=new Date(),dateStr=`${now.getFullYear()}년 ${now.getMonth()+1}월 ${now.getDate()}일`,timeStr=now.toTimeString().slice(0,5);prayers.unshift({text,date:dateStr,time:timeStr,ts:now.getTime()});localStorage.setItem('hg-p',JSON.stringify(prayers));showAscension(prayers.length);document.getElementById('prayerInput').value='';renderPrayerDrawer();btn.disabled=false;}
+function showAscension(count){const overlay=document.getElementById('ascOverlay'),starsEl=document.getElementById('ascStars');starsEl.innerHTML='';for(let i=0;i<50;i++){const s=document.createElement('div'),sz=Math.random()*2.5+.5;s.className='asc-star';s.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--dur:${(Math.random()*3+2).toFixed(1)}s;--delay:${(Math.random()*4).toFixed(1)}s`;starsEl.appendChild(s);}document.getElementById('bowlCount').textContent=`${count}번째 기도`;overlay.classList.add('show');setTimeout(()=>{document.getElementById('bowlFill').style.width=Math.min(100,count*5)+'%';},500);}
+function closeAscension(){document.getElementById('ascOverlay').classList.remove('show');document.getElementById('bowlFill').style.width='0%';}
+function toggleDrawer(){drawerOpen=!drawerOpen;document.getElementById('drawerLetters').style.display=drawerOpen?'block':'none';document.getElementById('drawerArrow').textContent=drawerOpen?'˅':'›';}
+function renderPrayerDrawer(){document.getElementById('prayerCountBadge').textContent=prayers.length+'편';const list=document.getElementById('prayerLetterList');if(!prayers.length){list.innerHTML='<div class="prayer-empty"><span class="prayer-empty-icon">🏺</span>아직 올려드린 기도가 없어요</div>';return;}list.innerHTML=prayers.map((p,i)=>`<div class="prayer-letter"><div class="prayer-letter-meta"><span class="prayer-letter-date">${p.date} ${p.time}</span><span>✉️</span></div><div class="prayer-letter-text">${esc(p.text)}</div><button class="prayer-letter-del" onclick="deletePrayer(${i})">삭제</button></div>`).join('');}
+function deletePrayer(idx){prayers.splice(idx,1);localStorage.setItem('hg-p',JSON.stringify(prayers));renderPrayerDrawer();}
+function openSheet(id){document.getElementById(id).classList.add('open');}
+function closeSheet(id){document.getElementById(id).classList.remove('open');}
+function closeSheetOnBg(e,id){if(e.target.id===id)closeSheet(id);}
+document.getElementById('ascOverlay').addEventListener('click',e=>{if(e.target.id==='ascOverlay')closeAscension();});
+init();
+</script>
+</body>
+</html>
