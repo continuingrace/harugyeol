@@ -65,8 +65,65 @@ textarea,input{font-family:inherit;}
 .cal-nav-btn{width:32px;height:32px;border-radius:8px;border:1.5px solid var(--border);color:var(--muted);font-size:14px;display:flex;align-items:center;justify-content:center;background:var(--surface);}
 .cal-full-grid{display:grid;grid-template-columns:repeat(7,1fr);background:var(--surface);border-radius:var(--r);border:1.5px solid var(--border);overflow:hidden;}
 .cal-full-dow{text-align:center;font-size:10px;color:var(--light);padding:10px 0 6px;font-family:'DM Mono',monospace;background:var(--surface2);border-bottom:1px solid var(--border);}
-.cal-full-day{aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:13px;cursor:pointer;border-right:1px solid var(--border);border-bottom:1px solid var(--border);gap​​​​​​​​​​​​​​​​
-:100%;max-width:480px;background:var(--surface);border-radius:22px 22px 0 0;max-height:88vh;display:flex;flex-direction:column;transform:translateY(100%);transition:transform .28s cubic-bezier(.32,0,.67,0);}
+.cal-full-day{aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:13px;cursor:pointer;border-right:1px solid var(--border);border-bottom:1px solid var(--border);gap:2px;padding:2px;transition:background .12s;}
+.cal-full-day:nth-child(7n){border-right:none;}.cal-full-day:active{background:var(--surface2);}
+.cal-full-day.today{background:var(--accent-bg);color:var(--accent);font-weight:600;}
+.cal-full-day.selected{background:var(--accent);color:white;}.cal-full-day.other{color:var(--light);}
+.cal-emojis{font-size:8px;display:flex;flex-wrap:wrap;justify-content:center;}
+.selected-day-detail{margin-top:12px;background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r);padding:16px;}
+.sel-day-title{font-family:'Noto Serif KR',serif;font-size:15px;font-weight:600;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;}
+.sel-edit-btn{font-size:11px;color:var(--accent);background:var(--accent-bg);border:none;border-radius:7px;padding:4px 10px;cursor:pointer;}
+.sel-emotions{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;}
+.sel-emotion-chip{display:flex;align-items:center;gap:5px;background:var(--surface2);border-radius:20px;padding:5px 10px;font-size:12px;}
+.sel-section{margin-top:10px;}.sel-section-title{font-size:11px;color:var(--muted);margin-bottom:5px;}
+.sel-item{font-size:12px;line-height:1.6;padding:2px 0;}
+.sel-empty{font-size:12px;color:var(--light);font-style:italic;padding:20px 0;text-align:center;}
+.prayer-wrap{background:linear-gradient(160deg,#1a1030 0%,#2d1f5e 55%,#1a2a4a 100%);border-radius:var(--r);overflow:hidden;position:relative;margin-bottom:12px;}
+.prayer-stars{position:absolute;inset:0;pointer-events:none;overflow:hidden;}
+.prayer-star{position:absolute;background:white;border-radius:50%;animation:twinkle var(--dur,3s) ease-in-out infinite;animation-delay:var(--delay,0s);}
+@keyframes twinkle{0%,100%{opacity:.15;}50%{opacity:.85;}}
+.prayer-inner{padding:20px 18px 16px;position:relative;z-index:1;}
+.prayer-title{font-family:'Noto Serif KR',serif;font-size:15px;font-weight:600;color:#f0e8c8;margin-bottom:2px;}
+.prayer-sub{font-size:10px;color:rgba(240,232,200,.45);font-style:italic;margin-bottom:14px;}
+.prayer-textarea{width:100%;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);border-radius:11px;padding:12px 14px;font-size:14px;color:#f0e8c8;resize:none;outline:none;min-height:110px;line-height:1.75;margin-bottom:12px;}
+.prayer-textarea::placeholder{color:rgba(240,232,200,.28);}
+.prayer-bottom{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;}
+.prayer-verse{font-size:9.5px;color:rgba(240,232,200,.32);font-style:italic;line-height:1.65;flex:1;}
+.prayer-send-btn{display:flex;align-items:center;gap:6px;background:rgba(240,232,200,.12);color:#f0e8c8;border:1px solid rgba(240,232,200,.3);border-radius:11px;padding:11px 16px;font-size:13px;font-weight:600;white-space:nowrap;cursor:pointer;}
+.drawer-toggle{width:100%;display:flex;align-items:center;justify-content:space-between;background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r);padding:14px 16px;}
+.drawer-toggle-left{display:flex;align-items:center;gap:10px;}
+.drawer-toggle-title{font-family:'Noto Serif KR',serif;font-size:14px;font-weight:600;}
+.drawer-toggle-count{font-size:11px;color:rgba(200,162,39,.9);background:rgba(200,162,39,.12);border:1px solid rgba(200,162,39,.25);border-radius:20px;padding:2px 9px;}
+.prayer-letters{display:flex;flex-direction:column;gap:8px;margin-top:10px;}
+.prayer-letter{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r);padding:14px;}
+.prayer-letter-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.prayer-letter-date{font-size:10px;color:var(--light);font-family:'DM Mono',monospace;}
+.prayer-letter-text{font-size:13px;line-height:1.75;white-space:pre-wrap;}
+.prayer-letter-del{font-size:11px;color:var(--light);margin-top:8px;}
+.prayer-empty{text-align:center;padding:32px 20px;color:var(--light);font-size:13px;line-height:2;}
+.prayer-empty-icon{font-size:40px;display:block;margin-bottom:10px;}
+.ascension-overlay{position:fixed;inset:0;background:radial-gradient(ellipse at center bottom,#0d0825,#1a1040 45%,#080520);z-index:1000;display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .5s;}
+.ascension-overlay.show{opacity:1;pointer-events:all;}
+.asc-stars{position:absolute;inset:0;overflow:hidden;}
+.asc-star{position:absolute;background:white;border-radius:50%;animation:asc-twinkle var(--dur) ease-in-out infinite;animation-delay:var(--delay);}
+@keyframes asc-twinkle{0%,100%{opacity:.08;}50%{opacity:.8;}}
+.asc-content{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;}
+.asc-envelope{font-size:56px;animation:asc-rise 3s cubic-bezier(.2,0,.4,1) forwards;filter:drop-shadow(0 0 18px rgba(232,200,74,.8));}
+@keyframes asc-rise{0%{transform:translateY(80px) scale(.75);opacity:0;}12%{transform:translateY(40px) scale(1.05);opacity:1;}60%{transform:translateY(-50px);opacity:1;}85%{transform:translateY(-150px) scale(.88);opacity:.6;}100%{transform:translateY(-280px) scale(.4);opacity:0;}}
+.asc-bowl-section{margin-top:28px;display:flex;flex-direction:column;align-items:center;gap:8px;animation:bowl-appear .7s ease .3s both;}
+@keyframes bowl-appear{from{opacity:0;transform:scale(.75) translateY(14px);}to{opacity:1;transform:none;}}
+.asc-bowl{font-size:72px;animation:bowl-glow 2.2s ease-in-out infinite;}
+@keyframes bowl-glow{0%,100%{filter:drop-shadow(0 0 18px rgba(232,200,74,.6));}50%{filter:drop-shadow(0 0 32px rgba(232,200,74,1));}}
+.bowl-bar{width:120px;height:5px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden;}
+.bowl-bar-fill{height:100%;background:linear-gradient(90deg,#C9A227,#E8C84A);border-radius:3px;width:0%;transition:width 1.4s ease .5s;}
+.bowl-count{font-family:'Noto Serif KR',serif;font-size:12px;color:rgba(240,232,200,.5);}
+.asc-msg{margin-top:22px;font-family:'Noto Serif KR',serif;font-size:17px;color:#f0e8c8;text-align:center;line-height:1.85;animation:asc-msg-in .8s ease 2.2s both;}
+.asc-msg-sub{font-size:11px;color:rgba(240,232,200,.38);font-style:italic;}
+@keyframes asc-msg-in{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
+.asc-close{margin-top:24px;font-size:12px;color:rgba(240,232,200,.35);border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:7px 20px;background:none;cursor:pointer;animation:asc-msg-in .8s ease 2.8s both;}
+.sheet-overlay{position:fixed;inset:0;background:rgba(44,36,24,.45);backdrop-filter:blur(3px);z-index:400;opacity:0;pointer-events:none;transition:opacity .25s;display:flex;align-items:flex-end;justify-content:center;}
+.sheet-overlay.open{opacity:1;pointer-events:all;}
+.sheet{width:100%;max-width:480px;background:var(--surface);border-radius:22px 22px 0 0;max-height:88vh;display:flex;flex-direction:column;transform:translateY(100%);transition:transform .28s cubic-bezier(.32,0,.67,0);}
 .sheet-overlay.open .sheet{transform:translateY(0);transition-timing-function:cubic-bezier(.33,1,.68,1);}
 .sheet-handle{width:38px;height:4px;background:var(--border);border-radius:2px;margin:12px auto 0;flex-shrink:0;}
 .sheet-header{padding:14px 20px 12px;border-bottom:1px solid var(--border);flex-shrink:0;}
@@ -95,7 +152,6 @@ textarea,input{font-family:inherit;}
 .sticker-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;}
 .sticker-opt{font-size:28px;text-align:center;padding:8px 2px;border-radius:10px;cursor:pointer;border:2px solid transparent;}
 .sticker-opt.sel{border-color:var(--accent);background:var(--accent-bg);}
-/* 마음 신호 */
 .signal-card{background:var(--surface);border:1.5px solid #B5AEED;border-radius:var(--r);padding:14px;position:relative;overflow:hidden;}
 .signal-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--purple);}
 .signal-card-title{font-size:12px;font-weight:600;color:var(--purple);margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;}
@@ -150,219 +206,114 @@ textarea,input{font-family:inherit;}
       <div class="selected-day-detail" id="selDayDetail"></div>
     </div>
     <div class="page" id="page-prayer">
-      <div class="prayer​​​​​​​​​​​​​​​​
+      <div class="prayer-wrap">
+        <div class="prayer-stars" id="prayerStars"></div>
+        <div class="prayer-inner">
+          <div class="prayer-title">🙏 하나님께 드리는 감사의 기도</div>
+          <div class="prayer-sub">오늘 하루를 주님께 올려드려요</div>
+          <textarea class="prayer-textarea" id="prayerInput" placeholder="주님, 오늘 하루도..."></textarea>
+          <div class="prayer-bottom">
+            <div class="prayer-verse">"이 대접들은 성도의<br>기도들이라" — 계 5:8</div>
+            <button class="prayer-send-btn" id="prayerSendBtn" onclick="sendPrayer()">✉️ 올려드리기</button>
+          </div>
+        </div>
+      </div>
+      <button class="drawer-toggle" onclick="toggleDrawer()">
+        <div class="drawer-toggle-left"><span style="font-size:22px;">🏺</span><div><div class="drawer-toggle-title">하나님의 서랍</div><div style="font-size:11px;color:var(--muted);margin-top:1px;">쌓인 기도를 볼 수 있어요</div></div></div>
+        <div style="display:flex;align-items:center;gap:8px;"><span class="drawer-toggle-count" id="prayerCountBadge">0편</span><span style="font-size:16px;color:var(--light);" id="drawerArrow">›</span></div>
+      </button>
+      <div id="drawerLetters" style="display:none;"><div class="prayer-letters" id="prayerLetterList"></div></div>
+    </div>
+  </div>
+  <nav class="bottom-nav">
+    <button class="nav-btn active" data-page="today" onclick="switchPage('today')"><span class="nav-icon">☀️</span>오늘</button>
+    <button class="nav-btn" data-page="calendar" onclick="switchPage('calendar')"><span class="nav-icon">📅</span>달력</button>
+    <button class="nav-btn" data-page="prayer" onclick="switchPage('prayer')"><span class="nav-icon">🙏</span>기도</button>
+  </nav>
+</div>
+<div class="ascension-overlay" id="ascOverlay">
+  <div class="asc-stars" id="ascStars"></div>
+  <div class="asc-content">
+    <div style="position:relative;display:flex;flex-direction:column;align-items:center;"><div class="asc-envelope">✉️</div></div>
+    <div class="asc-bowl-section"><div class="asc-bowl">🏺</div><div class="bowl-bar"><div class="bowl-bar-fill" id="bowlFill"></div></div><div class="bowl-count" id="bowlCount"></div></div>
+    <div class="asc-msg">기도가 올려졌습니다<br><span class="asc-msg-sub">금 대접에 향기로 쌓여 있어요</span></div>
+    <button class="asc-close" onclick="closeAscension()">닫기</button>
+  </div>
+</div>
+<div class="sheet-overlay" id="emotionSheetOverlay" onclick="closeSheetOnBg(event,'emotionSheetOverlay')">
+  <div class="sheet"><div class="sheet-handle"></div><div class="sheet-header"><div class="sheet-title" id="emotionSheetTitle">감정 기록</div><div class="sheet-sub">이 순간의 감정에 이름을 붙여보세요</div></div>
+  <div class="sheet-body"><div style="font-size:11px;color:var(--muted);margin-bottom:8px;">감정 선택</div><div class="emotion-picker" id="emotionPicker"></div><div style="font-size:11px;color:var(--muted);margin-bottom:8px;">직접 입력</div><div class="custom-row"><input class="custom-emoji" id="customEmoji" placeholder="🙂" maxlength="2"><input class="custom-text" id="customName" placeholder="감정 이름을 직접 입력해요..."></div></div>
+  <div class="sheet-footer"><button class="btn btn-ghost" onclick="closeSheet('emotionSheetOverlay')">취소</button><button class="btn btn-primary" onclick="saveEmotion()">저장하기</button></div></div>
+</div>
+<div class="sheet-overlay" id="addSheetOverlay" onclick="closeSheetOnBg(event,'addSheetOverlay')">
+  <div class="sheet"><div class="sheet-handle"></div><div class="sheet-header"><div class="sheet-title" id="addSheetTitle"></div><div class="sheet-sub" id="addSheetSub"></div></div>
+  <div class="sheet-body"><div class="existing-items" id="existingItems"></div><textarea class="add-textarea" id="addTextarea"></textarea></div>
+  <div class="sheet-footer"><button class="btn btn-ghost" onclick="closeSheet('addSheetOverlay')">취소</button><button class="btn btn-primary" onclick="saveRecord()">추가하기</button></div></div>
+</div>
+<div class="sheet-overlay" id="signalSheetOverlay" onclick="closeSheetOnBg(event,'signalSheetOverlay')">
+  <div class="sheet"><div class="sheet-handle"></div>
+  <div class="sheet-header"><div class="sheet-title">🫧 마음의 신호</div><div class="sheet-sub">지금 알아차린 것을 적어요</div></div>
+  <div class="sheet-body">
+    <textarea class="add-textarea" id="signalTextarea" placeholder="어떤 것이 불편했나요? 무엇이 느껴졌나요..."></textarea>
+    <div style="font-size:11px;color:var(--muted);margin:14px 0 8px;">이 순간 느낀 감정</div>
+    <div class="emotion-picker" id="signalEmotionPicker"></div>
+    <div id="signalQuoteBox"></div>
+  </div>
+  <div class="sheet-footer"><button class="btn btn-ghost" onclick="closeSheet('signalSheetOverlay')">취소</button><button class="btn btn-primary" onclick="saveSignal()">저장하기</button></div></div>
+</div>
+<div class="sheet-overlay" id="stickerSheetOverlay" onclick="closeSheetOnBg(event,'stickerSheetOverlay')">
+  <div class="sheet"><div class="sheet-handle"></div><div class="sheet-header"><div class="sheet-title">감정 스티커 고르기</div><div class="sheet-sub">스티커를 눌러 선택하고 보드에 붙여요</div></div>
+  <div class="sheet-body"><div class="sticker-cats" id="stickerCats"></div><div class="sticker-grid" id="stickerGrid"></div></div>
+  <div class="sheet-footer"><button class="btn btn-ghost" onclick="closeSheet('stickerSheetOverlay')">취소</button><button class="btn btn-primary" onclick="addSticker()">붙이기</button></div></div>
+</div>
 <script>
 const EMOTIONS=[{emoji:'😊',name:'기쁨'},{emoji:'😌',name:'평온'},{emoji:'🥰',name:'사랑스러움'},{emoji:'😤',name:'뿌듯함'},{emoji:'😔',name:'슬픔'},{emoji:'😰',name:'불안'},{emoji:'😠',name:'화남'},{emoji:'🥲',name:'서러움'},{emoji:'😶',name:'공허함'},{emoji:'😴',name:'피곤함'},{emoji:'🤗',name:'따뜻함'},{emoji:'🫠',name:'멍함'}];
-const QUOTES={
-  '기쁨':['기쁨으로 가득 찬 하루는 하나님의 선물이다.,
-'즐거움이 있는 곳에 하나님도 계신다. — 마르틴 루터','감사하는 마음이 기쁨의 뿌리다. — 데이비드 스타인들-라스트','오늘의 기쁨을 충분히 누려라. 그것이 내일의 힘이 된다.','작은 것에 기뻐할 수 있는 사람이 진정 행복한 사람이다.'],
-  '평온':['고요함 속에 하나님의 음성이 들린다. — 엘리야','내 마음이 평온할 때 세상이 아름다워 보인다.','평화는 밖에서 찾는 것이 아니라 안에서 발견하는 것이다.','잠잠하라 내가 하나님임을 알지어다. — 시편 46:10','고요한 물이 깊이 흐른다.'],
-  '사랑스러움':['사랑은 오래 참고 온유하며. — 고린도전서 13:4','사랑받고 있음을 아는 것, 그것이 모든 것의 시작이다.','당신은 사랑받기 위해 태어난 사람. — 찬양','작은 사랑의 표현이 세상을 바꾼다. — 마더 테레사','사랑은 가장 강한 힘이다.'],
-  '뿌듯함':['수고하고 무거운 짐 진 자들아 다 내게로 오라. — 마태복음 11:28','오늘의 노력이 내일의 열매가 된다.','작은 성취도 충분히 기뻐할 가치가 있다.','최선을 다한 하루는 그 자체로 완전하다.','땀 흘린 만큼 더 달콤한 결실이 온다.'],
-  '슬픔':['눈물을 흘리는 자는 기쁨으로 거두리로다. — 시편 126:5','슬픔도 지나간다. 이 또한 지나가리라.','울어도 괜찮다. 비 온 뒤에 땅이 굳는다.','하나님은 상한 마음 가까이 계신다. — 시편 34:18','슬픔은 더 깊이 사랑할 수 있게 해주는 선물이다.'],
-  '불안':['내가 너와 함께 하노라 두려워하지 말라. — 이사야 41:10','염려를 주께 맡겨라. 그가 너를 돌보신다. — 베드로전서 5:7','지금 이 순간에 집중하라. 불안은 미래를 상상할 때 온다.','두려움은 믿음의 반대가 아니다. 두 가지가 함께 있어도 괜찮다.','폭풍 속에도 배는 항구로 돌아온다.'],
-  '화남':['분을 내어도 죄를 짓지 말며. — 에베소서 4:26','감정을 느끼는 것과 그것에 지배당하는 것은 다르다.','화는 내 안의 무언가가 상처받았다는 신호다.','깊이 숨을 들이쉬어라. 폭풍도 잠잠해진다.','내 반응을 선택할 자유가 내게 있다. — 빅터 프랭클'],
-  '서러움':['하나님이 모든 눈물을 닦아 주실 것이다. — 요한계시록 21:4','서러움은 깊이 느꼈다는 증거다. 그만큼 소중했던 것이다.','마음의 상처도 시간이 치유한다.','혼자가 아니다. 누군가 늘 함께한다.','이 슬픔도 나를 더 단단하게 만들 것이다.'],
-  '공허함':['주님, 당신 안에 쉬기까지 내 마음은 쉬지 못합니다. — 아우구스티누스','공허함은 채워질 무언가를 기다리는 공간이다.','잠잠히 기다리라. 새 힘을 얻으리니. — 이사야 40:31','지금의 공허함은 더 깊은 충만함을 위한 준비다.','작은 것에 감사할 때 공허함이 채워지기 시작한다.'],
-  '피곤함':['쉬어라. 들의 꽃도 쉬는 시간이 있다.','피곤함은 열심히 살았다는 증거다.','안식은 게으름이 아니라 지혜다. — 존 러스킨','내 영혼아 잠잠히 하나님만 바라라. — 시편 62:5','오늘 충분히 쉬는 것이 내일을 위한 가장 좋은 준비다.'],
-  '따뜻함':['사랑은 전염된다. 오늘 받은 따뜻함을 나누어라.','작은 친절이 세상을 바꾼다. — 마더 테레사','따뜻한 마음이 있는 곳에 하나님이 계신다.','오늘 누군가의 마음을 데워준 것, 그것이 가장 위대한 일이다.','사랑은 행동이다. — C.S. 루이스'],
-  '멍함':['고요함도 하나의 언어다.','아무것도 하지 않는 시간이 창조의 씨앗이 된다.','멍함 속에서 내면의 소리를 들을 수 있다.','쉬어가는 것도 여정의 일부다.','지금 이 순간, 그냥 존재하는 것으로 충분하다.'],
-};
+const QUOTES={'기쁨':['즐거움이 있는 곳에 하나님도 계신다. — 마르틴 루터','감사하는 마음이 기쁨의 뿌리다. — 데이비드 스타인들-라스트','오늘의 기쁨을 충분히 누려라. 그것이 내일의 힘이 된다.','작은 것에 기뻐할 수 있는 사람이 진정 행복한 사람이다.','기쁨으로 가득 찬 하루는 하나님의 선물이다.'],'평온':['고요함 속에 하나님의 음성이 들린다.','내 마음이 평온할 때 세상이 아름다워 보인다.','평화는 밖에서 찾는 것이 아니라 안에서 발견하는 것이다.','잠잠하라 내가 하나님임을 알지어다. — 시편 46:10','고요한 물이 깊이 흐른다.'],'사랑스러움':['사랑은 오래 참고 온유하며. — 고린도전서 13:4','사랑받고 있음을 아는 것이 모든 것의 시작이다.','당신은 사랑받기 위해 태어난 사람.','작은 사랑의 표현이 세상을 바꾼다. — 마더 테레사','사랑은 가장 강한 힘이다.'],'뿌듯함':['수고하고 무거운 짐 진 자들아 다 내게로 오라. — 마태복음 11:28','오늘의 노력이 내일의 열매가 된다.','작은 성취도 충분히 기뻐할 가치가 있다.','최선을 다한 하루는 그 자체로 완전하다.','땀 흘린 만큼 더 달콤한 결실이 온다.'],'슬픔':['눈물을 흘리는 자는 기쁨으로 거두리로다. — 시편 126:5','슬픔도 지나간다. 이 또한 지나가리라.','울어도 괜찮다. 비 온 뒤에 땅이 굳는다.','하나님은 상한 마음 가까이 계신다. — 시편 34:18','슬픔은 더 깊이 사랑할 수 있게 해주는 선물이다.'],'불안':['내가 너와 함께 하노라 두려워하지 말라. — 이사야 41:10','염려를 주께 맡겨라. 그가 너를 돌보신다. — 베드로전서 5:7','지금 이 순간에 집중하라. 불안은 미래를 상상할 때 온다.','두려움은 믿음의 반대가 아니다. 두 가지가 함께 있어도 괜찮다.','폭풍 속에도 배는 항구로 돌아온다.'],'화남':['분을 내어도 죄를 짓지 말며. — 에베소서 4:26','감정을 느끼는 것과 그것에 지배당하는 것은 다르다.','화는 내 안의 무언가가 상처받았다는 신호다.','깊이 숨을 들이쉬어라. 폭풍도 잠잠해진다.','내 반응을 선택할 자유가 내게 있다. — 빅터 프랭클'],'서러움':['하나님이 모든 눈물을 닦아 주실 것이다. — 요한계시록 21:4','서러움은 깊이 느꼈다는 증거다. 그만큼 소중했던 것이다.','마음의 상처도 시간이 치유한다.','혼자가 아니다. 누군가 늘 함께한다.','이 슬픔도 나를 더 단단하게 만들 것이다.'],'공허함':['주님 당신 안에 쉬기까지 내 마음은 쉬지 못합니다. — 아우구스티누스','공허함은 채워질 무언가를 기다리는 공간이다.','잠잠히 기다리라. 새 힘을 얻으리니. — 이사야 40:31','지금의 공허함은 더 깊은 충만함을 위한 준비다.','작은 것에 감사할 때 공허함이 채워지기 시작한다.'],'피곤함':['쉬어라. 들의 꽃도 쉬는 시간이 있다.','피곤함은 열심히 살았다는 증거다.','안식은 게으름이 아니라 지혜다. — 존 러스킨','내 영혼아 잠잠히 하나님만 바라라. — 시편 62:5','오늘 충분히 쉬는 것이 내일을 위한 가장 좋은 준비다.'],'따뜻함':['사랑은 전염된다. 오늘 받은 따뜻함을 나누어라.','작은 친절이 세상을 바꾼다. — 마더 테레사','따뜻한 마음이 있는 곳에 하나님이 계신다.','오늘 누군가의 마음을 데워준 것이 가장 위대한 일이다.','사랑은 행동이다. — C.S. 루이스'],'멍함':['고요함도 하나의 언어다.','아무것도 하지 않는 시간이 창조의 씨앗이 된다.','멍함 속에서 내면의 소리를 들을 수 있다.','쉬어가는 것도 여정의 일부다.','지금 이 순간 그냥 존재하는 것으로 충분하다.']};
 const STICKER_CATS=[{label:'💛 감정',s:['😊','😌','🥰','😤','😔','😰','😠','🥲','😶','😴','🤗','🫠','😍','🤩','😎','🥳']},{label:'🌿 자연',s:['🌸','🌺','🌻','🌹','🌷','🍀','🌿','🍃','🌱','🪴','🌾','🍂','🌊','🌙','⭐','✨']},{label:'☕ 일상',s:['☕','🍵','🫖','🍰','🧁','🎵','🎶','📖','✏️','🕯️','🏡','🎨','🧸','💌','📷','🌠']},{label:'💬 마음',s:['💛','💙','💚','🧡','💜','🤍','💗','💖','💝','💫','🙏','👏','🫂','💪','💐','🎁']}];
 const ADD_CFG={gratitude:{title:'🌱 감사한 것',sub:'오늘 감사했던 순간, 사람, 작은 것들',placeholder:'오늘 감사했던 것은...'},resolved:{title:'🌀 걱정이 별일 없이',sub:'걱정했지만 잘 지나간 일들',placeholder:'걱정했지만 괜찮았던 것은...'},strength:{title:'✨ 힘이 되었던 것',sub:'존재, 문장, 장면 — 무엇이든',placeholder:'힘이 되었던 사람, 말, 순간은...'}};
 const SLOT_LABELS={morning:'☀️ 아침',noon:'🌤 점심',evening:'🌆 저녁',night:'🌙 자기 전'};
 let appData=JSON.parse(localStorage.getItem('hg')||'{}');
 let prayers=JSON.parse(localStorage.getItem('hg-p')||'[]');
-let currentKey=getKey(new Date());
-let todayKey=getKey(new Date());
+let currentKey=getKey(new Date()),todayKey=getKey(new Date());
 let calYear=new Date().getFullYear(),calMonth=new Date().getMonth(),selCalDate=todayKey;
-let curSlot='',curType='',selEmo=null,selStk=null,curStkCat=0,drawerOpen=false;
-let selSignalEmo=null;
-
+let curSlot='',curType='',selEmo=null,selStk=null,curStkCat=0,drawerOpen=false,selSignalEmo=null;
 function getKey(d){return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
 function getDay(k){return appData[k]||{emotions:{},gratitude:[],resolved:[],strength:[],stickers:[],signals:[]};}
 function saveDay(k,d){appData[k]=d;localStorage.setItem('hg',JSON.stringify(appData));}
 function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-function getRandomQuote(emotionName){const q=QUOTES[emotionName];if(!q)return null;return q[Math.floor(Math.random()*q.length)];}
-
+function getRandomQuote(name){const q=QUOTES[name];if(!q)return null;return q[Math.floor(Math.random()*q.length)];}
 function init(){renderTopDate();renderEmotions();renderLists();renderSignals();renderStickers();renderCalendar();updateStreak();initPrayerStars();renderPrayerDrawer();}
-
 function switchPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));document.getElementById('page-'+id).classList.add('active');document.querySelector('[data-page="'+id+'"]').classList.add('active');}
-
 function renderTopDate(){const days=['일','월','화','수','목','금','토'],d=new Date();document.getElementById('topDate').textContent=`${d.getMonth()+1}월 ${d.getDate()}일 (${days[d.getDay()]})`;}
-
 function updateStreak(){let s=0,d=new Date();while(true){const k=getKey(d),e=appData[k];if(!e)break;const has=Object.keys(e.emotions||{}).length||(e.gratitude||[]).length||(e.resolved||[]).length||(e.strength||[]).length||(e.signals||[]).length;if(!has)break;s++;d.setDate(d.getDate()-1);}document.getElementById('streakNum').textContent=s;}
-
-function renderEmotions(){
-  const d=getDay(currentKey);
-  const isToday=currentKey===todayKey;
-  document.getElementById('todayLabel').textContent=isToday?'감정 기록':currentKey.replace(/-/g,'년 ').replace(/-/,'월 ')+'일 감정 기록';
-  ['morning','noon','evening','night'].forEach(slot=>{
-    const el=document.getElementById('disp-'+slot),e=d.emotions[slot];
-    el.innerHTML=e?`<span class="emotion-emoji">${e.emoji}</span><span class="emotion-name">${e.name}</span>`:`<span class="emotion-empty">기분이 어때요?</span>`;
-  });
-}
-
+function renderEmotions(){const d=getDay(currentKey);const isToday=currentKey===todayKey;document.getElementById('todayLabel').textContent=isToday?'감정 기록':currentKey.replace(/-/g,'년 ').replace(/-/,'월 ')+'일 감정 기록';['morning','noon','evening','night'].forEach(slot=>{const el=document.getElementById('disp-'+slot),e=d.emotions[slot];el.innerHTML=e?`<span class="emotion-emoji">${e.emoji}</span><span class="emotion-name">${e.name}</span>`:`<span class="emotion-empty">기분이 어때요?</span>`;});}
 function renderLists(){const d=getDay(currentKey);['gratitude','resolved','strength'].forEach(type=>{document.getElementById('list-'+type).innerHTML=(d[type]||[]).map(item=>`<div class="record-item"><span class="record-dot"></span><span>${esc(item)}</span></div>`).join('');});}
-
-function renderSignals(){
-  const d=getDay(currentKey);
-  const list=document.getElementById('signalList');
-  const signals=d.signals||[];
-  if(!signals.length){list.innerHTML='<div style="font-size:12px;color:var(--light);font-style:italic;padding:8px 0;">아직 알아차린 신호가 없어요</div>';return;}
-  list.innerHTML=signals.map((s,i)=>`
-    <div class="signal-item">
-      <div class="signal-item-text">${esc(s.text)}</div>
-      <div class="signal-item-meta">
-        <span class="signal-item-time">${s.time}</span>
-        <div style="display:flex;align-items:center;gap:6px;">
-          ${s.emotion?`<span class="signal-item-emotion">${s.emotion.emoji} ${s.emotion.name}</span>`:''}
-          <button class="signal-del" onclick="deleteSignal(${i})">×</button>
-        </div>
-      </div>
-      ${s.emotion&&s.quote?`<div class="quote-box"><div class="quote-text">"${esc(s.quote.text)}"</div><div class="quote-author">— ${esc(s.quote.author)}</div><button class="quote-refresh" onclick="refreshQuote(${i})">🔄 다른 명언</button></div>`:''}
-    </div>
-  `).join('');
-}
-
-function openSignalSheet(){
-  selSignalEmo=null;
-  document.getElementById('signalTextarea').value='';
-  document.getElementById('signalQuoteBox').innerHTML='';
-  const picker=document.getElementById('signalEmotionPicker');
-  picker.innerHTML='';
-  EMOTIONS.forEach(e=>{
-    const d=document.createElement('div');
-    d.className='emotion-opt';
-    d.innerHTML=`<span class="e-emoji">${e.emoji}</span><span class="e-name">${e.name}</span>`;
-    d.onclick=()=>{
-      document.querySelectorAll('#signalEmotionPicker .emotion-opt').forEach(o=>o.classList.remove('sel'));
-      d.classList.add('sel');
-      selSignalEmo=e;
-      showSignalQuote(e.name);
-    };
-    picker.appendChild(d);
-  });
-  openSheet('signalSheetOverlay');
-}
-
-function showSignalQuote(emotionName){
-  const q=getRandomQuote(emotionName);
-  if(!q) return;
-  const parts=q.split(' — ');
-  const text=parts[0];
-  const author=parts[1]||'';
-  document.getElementById('signalQuoteBox').innerHTML=`
-    <div class="quote-box">
-      <div class="quote-text">"${esc(text)}"</div>
-      ${author?`<div class="quote-author">— ${esc(author)}</div>`:''}
-      <button class="quote-refresh" onclick="showSignalQuote('${emotionName}')">🔄 다른 명언</button>
-    </div>`;
-}
-
-function saveSignal(){
-  const text=document.getElementById('signalTextarea').value.trim();
-  if(!text){closeSheet('signalSheetOverlay');return;}
-  const now=new Date();
-  const time=now.toTimeString().slice(0,5);
-  let quote=null;
-  if(selSignalEmo){
-    const q=getRandomQuote(selSignalEmo.name);
-    if(q){const parts=q.split(' — ');quote={text:parts[0],author:parts[1]||''};}
-  }
-  const d=getDay(currentKey);
-  if(!d.signals)d.signals=[];
-  d.signals.push({text,time,emotion:selSignalEmo,quote});
-  saveDay(currentKey,d);
-  renderSignals();
-  updateStreak();
-  closeSheet('signalSheetOverlay');
-}
-
-function deleteSignal(idx){
-  const d=getDay(currentKey);
-  d.signals.splice(idx,1);
-  saveDay(currentKey,d);
-  renderSignals();
-}
-
-function refreshQuote(idx){
-  const d=getDay(currentKey);
-  const signal=d.signals[idx];
-  if(!signal||!signal.emotion)return;
-  const q=getRandomQuote(signal.emotion.name);
-  if(q){const parts=q.split(' — ');signal.quote={text:parts[0],author:parts[1]||''};}
-  saveDay(currentKey,d);
-  renderSignals();
-}
-
+function renderSignals(){const d=getDay(currentKey);const list=document.getElementById('signalList');const signals=d.signals||[];if(!signals.length){list.innerHTML='<div style="font-size:12px;color:var(--light);font-style:italic;padding:8px 0;">아직 알아차린 신호가 없어요</div>';return;}list.innerHTML=signals.map((s,i)=>`<div class="signal-item"><div class="signal-item-text">${esc(s.text)}</div><div class="signal-item-meta"><span class="signal-item-time">${s.time}</span><div style="display:flex;align-items:center;gap:6px;">${s.emotion?`<span class="signal-item-emotion">${s.emotion.emoji} ${s.emotion.name}</span>`:''}<button class="signal-del" onclick="deleteSignal(${i})">×</button></div></div>${s.emotion&&s.quote?`<div class="quote-box"><div class="quote-text">"${esc(s.quote.text)}"</div><div class="quote-author">— ${esc(s.quote.author)}</div><button class="quote-refresh" onclick="refreshQuote(${i})">🔄 다른 명언</button></div>`:''}</div>`).join('');}
+function openSignalSheet(){selSignalEmo=null;document.getElementById('signalTextarea').value='';document.getElementById('signalQuoteBox').innerHTML='';const picker=document.getElementById('signalEmotionPicker');picker.innerHTML='';EMOTIONS.forEach(e=>{const d=document.createElement('div');d.className='emotion-opt';d.innerHTML=`<span class="e-emoji">${e.emoji}</span><span class="e-name">${e.name}</span>`;d.onclick=()=>{document.querySelectorAll('#signalEmotionPicker .emotion-opt').forEach(o=>o.classList.remove('sel'));d.classList.add('sel');selSignalEmo=e;showSignalQuote(e.name);};picker.appendChild(d);});openSheet('signalSheetOverlay');}
+function showSignalQuote(name){const q=getRandomQuote(name);if(!q)return;const parts=q.split(' — ');document.getElementById('signalQuoteBox').innerHTML=`<div class="quote-box"><div class="quote-text">"${esc(parts[0])}"</div>${parts[1]?`<div class="quote-author">— ${esc(parts[1])}</div>`:''}<button class="quote-refresh" onclick="showSignalQuote('${name}')">🔄 다른 명언</button></div>`;}
+function saveSignal(){const text=document.getElementById('signalTextarea').value.trim();if(!text){closeSheet('signalSheetOverlay');return;}const now=new Date();const time=now.toTimeString().slice(0,5);let quote=null;if(selSignalEmo){const q=getRandomQuote(selSignalEmo.name);if(q){const parts=q.split(' — ');quote={text:parts[0],author:parts[1]||''};}}const d=getDay(currentKey);if(!d.signals)d.signals=[];d.signals.push({text,time,emotion:selSignalEmo,quote});saveDay(currentKey,d);renderSignals();updateStreak();closeSheet('signalSheetOverlay');}
+function deleteSignal(idx){const d=getDay(currentKey);d.signals.splice(idx,1);saveDay(currentKey,d);renderSignals();}
+function refreshQuote(idx){const d=getDay(currentKey);const signal=d.signals[idx];if(!signal||!signal.emotion)return;const q=getRandomQuote(signal.emotion.name);if(q){const parts=q.split(' — ');signal.quote={text:parts[0],author:parts[1]||''};}saveDay(currentKey,d);renderSignals();}
 function openEmotionSheet(slot){curSlot=slot;selEmo=null;document.getElementById('emotionSheetTitle').textContent=SLOT_LABELS[slot]+' 감정 기록';document.getElementById('customEmoji').value='';document.getElementById('customName').value='';const current=getDay(currentKey).emotions[slot];const picker=document.getElementById('emotionPicker');picker.innerHTML='';EMOTIONS.forEach(e=>{const d=document.createElement('div');d.className='emotion-opt'+(current&&current.name===e.name?' sel':'');d.innerHTML=`<span class="e-emoji">${e.emoji}</span><span class="e-name">${e.name}</span>`;d.onclick=()=>{document.querySelectorAll('#emotionPicker .emotion-opt').forEach(o=>o.classList.remove('sel'));d.classList.add('sel');selEmo=e;document.getElementById('customEmoji').value='';document.getElementById('customName').value='';};picker.appendChild(d);});if(current&&!EMOTIONS.find(e=>e.name===current.name)){document.getElementById('customEmoji').value=current.emoji;document.getElementById('customName').value=current.name;}openSheet('emotionSheetOverlay');}
-
 function saveEmotion(){const emoji=document.getElementById('customEmoji').value.trim();const name=document.getElementById('customName').value.trim();let em=selEmo;if(name)em={emoji:emoji||'💭',name};if(!em){closeSheet('emotionSheetOverlay');return;}const d=getDay(currentKey);d.emotions[curSlot]=em;saveDay(currentKey,d);renderEmotions();renderCalendar();updateStreak();closeSheet('emotionSheetOverlay');}
-
 function openAddSheet(type){curType=type;const cfg=ADD_CFG[type];document.getElementById('addSheetTitle').textContent=cfg.title;document.getElementById('addSheetSub').textContent=cfg.sub;document.getElementById('addTextarea').placeholder=cfg.placeholder;document.getElementById('addTextarea').value='';const items=getDay(currentKey)[type]||[];document.getElementById('existingItems').innerHTML=items.map((item,i)=>`<div class="existing-item"><span>${esc(item)}</span><button class="del-item" onclick="deleteRecord('${type}',${i})">×</button></div>`).join('');openSheet('addSheetOverlay');}
-
 function saveRecord(){const val=document.getElementById('addTextarea').value.trim();if(!val){closeSheet('addSheetOverlay');return;}const d=getDay(currentKey);if(!d[curType])d[curType]=[];d[curType].push(val);saveDay(currentKey,d);renderLists();updateStreak();closeSheet('addSheetOverlay');}
-
 function deleteRecord(type,idx){const d=getDay(currentKey);d[type].splice(idx,1);saveDay(currentKey,d);renderLists();openAddSheet(type);}
-
 function renderStickers(){const board=document.getElementById('stickerBoard');board.innerHTML='';const d=getDay(currentKey);(d.stickers||[]).forEach((s,idx)=>{const el=document.createElement('div');el.className='sticker';el.style.left=s.x+'px';el.style.top=s.y+'px';el.textContent=s.emoji;makeDraggable(el,board,s,idx);board.appendChild(el);});}
-
 function makeDraggable(el,board,s,idx){let sx,sy,ox,oy,drag=false;el.addEventListener('mousedown',e=>{e.preventDefault();drag=true;sx=e.clientX;sy=e.clientY;ox=s.x;oy=s.y;el.classList.add('dragging');});document.addEventListener('mousemove',e=>{if(!drag)return;const r=board.getBoundingClientRect();s.x=Math.max(0,Math.min(r.width-36,ox+e.clientX-sx));s.y=Math.max(0,Math.min(r.height-36,oy+e.clientY-sy));el.style.left=s.x+'px';el.style.top=s.y+'px';});document.addEventListener('mouseup',()=>{if(!drag)return;drag=false;el.classList.remove('dragging');persistSticker(idx,s);});el.addEventListener('touchstart',e=>{const t=e.touches[0];sx=t.clientX;sy=t.clientY;ox=s.x;oy=s.y;el.classList.add('dragging');},{passive:true});el.addEventListener('touchmove',e=>{e.preventDefault();const t=e.touches[0],r=board.getBoundingClientRect();s.x=Math.max(0,Math.min(r.width-36,ox+t.clientX-sx));s.y=Math.max(0,Math.min(r.height-36,oy+t.clientY-sy));el.style.left=s.x+'px';el.style.top=s.y+'px';},{passive:false});el.addEventListener('touchend',()=>{el.classList.remove('dragging');persistSticker(idx,s);});let lp;el.addEventListener('touchstart',()=>{lp=setTimeout(()=>deleteSticker(idx),600);},{passive:true});el.addEventListener('touchend',()=>clearTimeout(lp));el.addEventListener('touchmove',()=>clearTimeout(lp));el.addEventListener('dblclick',()=>deleteSticker(idx));}
-
 function persistSticker(idx,s){const d=getDay(currentKey);if(d.stickers&&d.stickers[idx]){d.stickers[idx].x=s.x;d.stickers[idx].y=s.y;saveDay(currentKey,d);}}
 function deleteSticker(idx){const d=getDay(currentKey);d.stickers.splice(idx,1);saveDay(currentKey,d);renderStickers();}
 function openStickerSheet(){selStk=null;curStkCat=0;renderStickerCats();renderStickerGrid(0);openSheet('stickerSheetOverlay');}
 function renderStickerCats(){const el=document.getElementById('stickerCats');el.innerHTML='';STICKER_CATS.forEach((c,i)=>{const b=document.createElement('button');b.className='sticker-cat-btn'+(i===curStkCat?' active':'');b.textContent=c.label;b.onclick=()=>{curStkCat=i;renderStickerCats();renderStickerGrid(i);};el.appendChild(b);});}
 function renderStickerGrid(ci){const el=document.getElementById('stickerGrid');el.innerHTML='';STICKER_CATS[ci].s.forEach(emoji=>{const d=document.createElement('div');d.className='sticker-opt'+(selStk===emoji?' sel':'');d.textContent=emoji;d.onclick=()=>{document.querySelectorAll('.sticker-opt').forEach(o=>o.classList.remove('sel'));d.classList.add('sel');selStk=emoji;};el.appendChild(d);});}
 function addSticker(){if(!selStk){closeSheet('stickerSheetOverlay');return;}const board=document.getElementById('stickerBoard'),bw=board.offsetWidth,bh=board.offsetHeight;const d=getDay(currentKey);if(!d.stickers)d.stickers=[];d.stickers.push({emoji:selStk,x:Math.random()*(bw-40)+4,y:Math.random()*(bh-40)+4});saveDay(currentKey,d);renderStickers();closeSheet('stickerSheetOverlay');}
-
-function renderCalendar(){
-  const MONTHS=['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
-  const DOWS=['일','월','화','수','목','금','토'];
-  document.getElementById('calPageMonth').textContent=`${calYear}년 ${MONTHS[calMonth]}`;
-  const grid=document.getElementById('calFullGrid');grid.innerHTML='';
-  DOWS.forEach(d=>{const el=document.createElement('div');el.className='cal-full-dow';el.textContent=d;grid.appendChild(el);});
-  const today=getKey(new Date()),first=new Date(calYear,calMonth,1).getDay(),days=new Date(calYear,calMonth+1,0).getDate(),prev=new Date(calYear,calMonth,0).getDate();
-  for(let i=first-1;i>=0;i--){const el=document.createElement('div');el.className='cal-full-day other';el.textContent=prev-i;grid.appendChild(el);}
-  for(let d=1;d<=days;d++){
-    const key=`${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-    const el=document.createElement('div');
-    let cls='cal-full-day';if(key===today)cls+=' today';if(key===selCalDate)cls+=' selected';
-    const dd=appData[key],emojis=dd?.emotions?Object.values(dd.emotions).map(e=>e.emoji).filter(Boolean).join(''):'' ;
-    el.className=cls;el.innerHTML=`<span>${d}</span>${emojis?`<span class="cal-emojis">${emojis}</span>`:''}`;
-    el.onclick=()=>{selCalDate=key;renderCalendar();renderSelDetail();};grid.appendChild(el);
-  }
-  renderSelDetail();
-}
-
+function renderCalendar(){const MONTHS=['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];const DOWS=['일','월','화','수','목','금','토'];document.getElementById('calPageMonth').textContent=`${calYear}년 ${MONTHS[calMonth]}`;const grid=document.getElementById('calFullGrid');grid.innerHTML='';DOWS.forEach(d=>{const el=document.createElement('div');el.className='cal-full-dow';el.textContent=d;grid.appendChild(el);});const today=getKey(new Date()),first=new Date(calYear,calMonth,1).getDay(),days=new Date(calYear,calMonth+1,0).getDate(),prev=new Date(calYear,calMonth,0).getDate();for(let i=first-1;i>=0;i--){const el=document.createElement('div');el.className='cal-full-day other';el.textContent=prev-i;grid.appendChild(el);}for(let d=1;d<=days;d++){const key=`${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;const el=document.createElement('div');let cls='cal-full-day';if(key===today)cls+=' today';if(key===selCalDate)cls+=' selected';const dd=appData[key],emojis=dd?.emotions?Object.values(dd.emotions).map(e=>e.emoji).filter(Boolean).join(''):'';el.className=cls;el.innerHTML=`<span>${d}</span>${emojis?`<span class="cal-emojis">${emojis}</span>`:''}`;el.onclick=()=>{selCalDate=key;renderCalendar();renderSelDetail();};grid.appendChild(el);}renderSelDetail();}
 function changeMonth(dir){calMonth+=dir;if(calMonth<0){calMonth=11;calYear--;}if(calMonth>11){calMonth=0;calYear++;}renderCalendar();}
-
-function renderSelDetail(){
-  const el=document.getElementById('selDayDetail');
-  const d=appData[selCalDate];
-  const[y,m,day]=selCalDate.split('-');
-  const isToday=selCalDate===todayKey;
-  el.innerHTML=`<div class="sel-day-title"><span>${parseInt(m)}월 ${parseInt(day)}일</span><button class="sel-edit-btn" onclick="goToDate('${selCalDate}')">${isToday?'오늘 기록':'이 날 기록하기'}</button></div>`;
-  if(!d){el.innerHTML+=`<div class="sel-empty">이 날의 기록이 없어요</div>`;return;}
-  const chips=Object.entries(d.emotions||{}).map(([k,v])=>`<span class="sel-emotion-chip">${v.emoji}<span>${v.name}</span></span>`).join('');
-  if(chips)el.innerHTML+=`<div class="sel-emotions">${chips}</div>`;
-  [{key:'gratitude',label:'🌱 감사한 것'},{key:'resolved',label:'🌀 걱정이 별일 없이'},{key:'strength',label:'✨ 힘이 되었던 것'},{key:'signals',label:'🫧 마음의 신호'}].forEach(r=>{
-    const items=(d[r.key]||[]);if(!items.length)return;
-    const itemsHtml=r.key==='signals'?items.map(s=>`<div class="sel-item">· ${esc(s.text)} <span style="color:var(--light);font-size:10px;">${s.time}</span></div>`).join(''):items.map(i=>`<div class="sel-item">· ${esc(i)}</div>`).join('');
-    el.innerHTML+=`<div class="sel-section"><div class="sel-section-title">${r.label}</div>${itemsHtml}</div>`;
-  });
-  if(!chips&&!['gratitude','resolved','strength','signals'].some(k=>(d[k]||[]).length))el.innerHTML+=`<div class="sel-empty">이 날의 기록이 없어요</div>`;
-}
-
+function renderSelDetail(){const el=document.getElementById('selDayDetail');const d=appData[selCalDate];const[y,m,day]=selCalDate.split('-');const isToday=selCalDate===todayKey;el.innerHTML=`<div class="sel-day-title"><span>${parseInt(m)}월 ${parseInt(day)}일</span><button class="sel-edit-btn" onclick="goToDate('${selCalDate}')">${isToday?'오늘 기록':'이 날 기록하기'}</button></div>`;if(!d){el.innerHTML+=`<div class="sel-empty">이 날의 기록이 없어요</div>`;return;}const chips=Object.entries(d.emotions||{}).map(([k,v])=>`<span class="sel-emotion-chip">${v.emoji}<span>${v.name}</span></span>`).join('');if(chips)el.innerHTML+=`<div class="sel-emotions">${chips}</div>`;[{key:'gratitude',label:'🌱 감사한 것'},{key:'resolved',label:'🌀 걱정이 별일 없이'},{key:'strength',label:'✨ 힘이 되었던 것'},{key:'signals',label:'🫧 마음의 신호'}].forEach(r=>{const items=(d[r.key]||[]);if(!items.length)return;const itemsHtml=r.key==='signals'?items.map(s=>`<div class="sel-item">· ${esc(s.text)} <span style="color:var(--light);font-size:10px;">${s.time}</span></div>`).join(''):items.map(i=>`<div class="sel-item">· ${esc(i)}</div>`).join('');el.innerHTML+=`<div class="sel-section"><div class="sel-section-title">${r.label}</div>${itemsHtml}</div>`;});if(!chips&&!['gratitude','resolved','strength','signals'].some(k=>(d[k]||[]).length))el.innerHTML+=`<div class="sel-empty">이 날의 기록이 없어요</div>`;}
 function goToDate(key){currentKey=key;switchPage('today');renderEmotions();renderLists();renderSignals();renderStickers();}
-
 function initPrayerStars(){const c=document.getElementById('prayerStars');c.innerHTML='';for(let i=0;i<22;i++){const s=document.createElement('div'),sz=Math.random()*2+1;s.className='prayer-star';s.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--dur:${(Math.random()*3+2).toFixed(1)}s;--delay:${(Math.random()*3).toFixed(1)}s`;c.appendChild(s);}}
-
 function sendPrayer(){const text=document.getElementById('prayerInput').value.trim();if(!text)return;const btn=document.getElementById('prayerSendBtn');btn.disabled=true;const now=new Date(),dateStr=`${now.getFullYear()}년 ${now.getMonth()+1}월 ${now.getDate()}일`,timeStr=now.toTimeString().slice(0,5);prayers.unshift({text,date:dateStr,time:timeStr,ts:now.getTime()});localStorage.setItem('hg-p',JSON.stringify(prayers));showAscension(prayers.length);document.getElementById('prayerInput').value='';renderPrayerDrawer();btn.disabled=false;}
-
 function showAscension(count){const overlay=document.getElementById('ascOverlay'),starsEl=document.getElementById('ascStars');starsEl.innerHTML='';for(let i=0;i<50;i++){const s=document.createElement('div'),sz=Math.random()*2.5+.5;s.className='asc-star';s.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--dur:${(Math.random()*3+2).toFixed(1)}s;--delay:${(Math.random()*4).toFixed(1)}s`;starsEl.appendChild(s);}document.getElementById('bowlCount').textContent=`${count}번째 기도`;overlay.classList.add('show');setTimeout(()=>{document.getElementById('bowlFill').style.width=Math.min(100,count*5)+'%';},500);}
-
 function closeAscension(){document.getElementById('ascOverlay').classList.remove('show');document.getElementById('bowlFill').style.width='0%';}
 function toggleDrawer(){drawerOpen=!drawerOpen;document.getElementById('drawerLetters').style.display=drawerOpen?'block':'none';document.getElementById('drawerArrow').textContent=drawerOpen?'˅':'›';}
 function renderPrayerDrawer(){document.getElementById('prayerCountBadge').textContent=prayers.length+'편';const list=document.getElementById('prayerLetterList');if(!prayers.length){list.innerHTML='<div class="prayer-empty"><span class="prayer-empty-icon">🏺</span>아직 올려드린 기도가 없어요</div>';return;}list.innerHTML=prayers.map((p,i)=>`<div class="prayer-letter"><div class="prayer-letter-meta"><span class="prayer-letter-date">${p.date} ${p.time}</span><span>✉️</span></div><div class="prayer-letter-text">${esc(p.text)}</div><button class="prayer-letter-del" onclick="deletePrayer(${i})">삭제</button></div>`).join('');}
@@ -375,6 +326,3 @@ init();
 </script>
 </body>
 </html>
-
-              
-              
