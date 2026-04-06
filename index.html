@@ -99,7 +99,9 @@ textarea,input{font-family:inherit;}
 .prayer-letter-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
 .prayer-letter-date{font-size:10px;color:var(--light);font-family:'DM Mono',monospace;}
 .prayer-letter-text{font-size:13px;line-height:1.75;white-space:pre-wrap;}
-.prayer-letter-del{font-size:11px;color:var(--light);margin-top:8px;}
+.prayer-letter-actions{display:flex;gap:10px;margin-top:8px;}
+.prayer-letter-edit{font-size:11px;color:var(--gold);cursor:pointer;}
+.prayer-letter-del{font-size:11px;color:var(--light);cursor:pointer;}
 .prayer-empty{text-align:center;padding:32px 20px;color:var(--light);font-size:13px;line-height:2;}
 .prayer-empty-icon{font-size:40px;display:block;margin-bottom:10px;}
 .ascension-overlay{position:fixed;inset:0;background:radial-gradient(ellipse at center bottom,#0d0825,#1a1040 45%,#080520);z-index:1000;display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .5s;}
@@ -281,6 +283,14 @@ textarea,input{font-family:inherit;}
   </div>
   <div class="sheet-footer"><button class="btn btn-ghost" onclick="closeSheet('cheerSheetOverlay')">취소</button><button class="btn btn-primary" onclick="saveCheer()">저장하기</button></div></div>
 </div>
+<div class="sheet-overlay" id="prayerEditSheetOverlay" onclick="closeSheetOnBg(event,'prayerEditSheetOverlay')">
+  <div class="sheet"><div class="sheet-handle"></div>
+  <div class="sheet-header"><div class="sheet-title">✏️ 기도 수정</div><div class="sheet-sub">기도문을 수정할 수 있어요</div></div>
+  <div class="sheet-body">
+    <textarea class="add-textarea" id="prayerEditTextarea" style="min-height:160px;"></textarea>
+  </div>
+  <div class="sheet-footer"><button class="btn btn-ghost" onclick="closeSheet('prayerEditSheetOverlay')">취소</button><button class="btn btn-primary" onclick="savePrayerEdit()">수정 저장</button></div></div>
+</div>
 <div class="sheet-overlay" id="stickerSheetOverlay" onclick="closeSheetOnBg(event,'stickerSheetOverlay')">
   <div class="sheet"><div class="sheet-handle"></div><div class="sheet-header"><div class="sheet-title">감정 스티커 고르기</div><div class="sheet-sub">스티커를 눌러 선택하고 보드에 붙여요</div></div>
   <div class="sheet-body"><div class="sticker-cats" id="stickerCats"></div><div class="sticker-grid" id="stickerGrid"></div></div>
@@ -331,7 +341,7 @@ let appData=JSON.parse(localStorage.getItem('hg')||'{}');
 let prayers=JSON.parse(localStorage.getItem('hg-p')||'[]');
 let currentKey=getKey(new Date()),todayKey=getKey(new Date());
 let calYear=new Date().getFullYear(),calMonth=new Date().getMonth(),selCalDate=todayKey;
-let curSlot='',curType='',selEmo=null,selStk=null,curStkCat=0,drawerOpen=false,selSignalEmo=null;
+let curSlot='',curType='',selEmo=null,selStk=null,curStkCat=0,drawerOpen=false,selSignalEmo=null,editingPrayerIdx=-1;
 function getKey(d){return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
 function getDay(k){return appData[k]||{emotions:{},gratitude:[],resolved:[],strength:[],stickers:[],signals:[],cheers:[]};}
 function saveDay(k,d){appData[k]=d;localStorage.setItem('hg',JSON.stringify(appData));}
@@ -375,7 +385,9 @@ function sendPrayer(){const text=document.getElementById('prayerInput').value.tr
 function showAscension(count){const overlay=document.getElementById('ascOverlay'),starsEl=document.getElementById('ascStars');starsEl.innerHTML='';for(let i=0;i<50;i++){const s=document.createElement('div'),sz=Math.random()*2.5+.5;s.className='asc-star';s.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--dur:${(Math.random()*3+2).toFixed(1)}s;--delay:${(Math.random()*4).toFixed(1)}s`;starsEl.appendChild(s);}document.getElementById('bowlCount').textContent=`${count}번째 기도`;overlay.classList.add('show');setTimeout(()=>{document.getElementById('bowlFill').style.width=Math.min(100,count*5)+'%';},500);}
 function closeAscension(){document.getElementById('ascOverlay').classList.remove('show');document.getElementById('bowlFill').style.width='0%';}
 function toggleDrawer(){drawerOpen=!drawerOpen;document.getElementById('drawerLetters').style.display=drawerOpen?'block':'none';document.getElementById('drawerArrow').textContent=drawerOpen?'˅':'›';}
-function renderPrayerDrawer(){document.getElementById('prayerCountBadge').textContent=prayers.length+'편';const list=document.getElementById('prayerLetterList');if(!prayers.length){list.innerHTML='<div class="prayer-empty"><span class="prayer-empty-icon">🏺</span>아직 올려드린 기도가 없어요</div>';return;}list.innerHTML=prayers.map((p,i)=>`<div class="prayer-letter"><div class="prayer-letter-meta"><span class="prayer-letter-date">${p.date} ${p.time}</span><span>✉️</span></div><div class="prayer-letter-text">${esc(p.text)}</div><button class="prayer-letter-del" onclick="deletePrayer(${i})">삭제</button></div>`).join('');}
+function renderPrayerDrawer(){document.getElementById('prayerCountBadge').textContent=prayers.length+'편';const list=document.getElementById('prayerLetterList');if(!prayers.length){list.innerHTML='<div class="prayer-empty"><span class="prayer-empty-icon">🏺</span>아직 올려드린 기도가 없어요</div>';return;}list.innerHTML=prayers.map((p,i)=>`<div class="prayer-letter"><div class="prayer-letter-meta"><span class="prayer-letter-date">${p.date} ${p.time}</span><span>✉️</span></div><div class="prayer-letter-text">${esc(p.text)}</div><div class="prayer-letter-actions"><button class="prayer-letter-edit" onclick="openPrayerEdit(${i})">✏️ 수정</button><button class="prayer-letter-del" onclick="deletePrayer(${i})">삭제</button></div></div>`).join('');}
+function openPrayerEdit(idx){editingPrayerIdx=idx;document.getElementById('prayerEditTextarea').value=prayers[idx].text;openSheet('prayerEditSheetOverlay');}
+function savePrayerEdit(){const text=document.getElementById('prayerEditTextarea').value.trim();if(!text){closeSheet('prayerEditSheetOverlay');return;}prayers[editingPrayerIdx].text=text;localStorage.setItem('hg-p',JSON.stringify(prayers));renderPrayerDrawer();closeSheet('prayerEditSheetOverlay');}
 function deletePrayer(idx){prayers.splice(idx,1);localStorage.setItem('hg-p',JSON.stringify(prayers));renderPrayerDrawer();}
 function openSheet(id){document.getElementById(id).classList.add('open');}
 function closeSheet(id){document.getElementById(id).classList.remove('open');}
