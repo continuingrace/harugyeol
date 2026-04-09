@@ -174,6 +174,9 @@ textarea,input{font-family:inherit;}
 .cheer-item-text{font-family:'Noto Serif KR',serif;font-size:13px;line-height:1.75;color:var(--text);}
 .cheer-item-time{font-size:10px;color:var(--light);font-family:'DM Mono',monospace;margin-top:6px;}
 .cheer-del{position:absolute;top:8px;right:8px;color:var(--light);font-size:14px;background:none;border:none;cursor:pointer;}
+.verse-card{background:linear-gradient(135deg,#F7F4EF,#F0EBE3);border:1px solid var(--border);border-radius:var(--r);padding:16px 18px;margin-top:8px;text-align:center;}
+.verse-text{font-family:'Noto Serif KR',serif;font-size:13px;color:var(--text);line-height:1.85;font-style:italic;}
+.verse-ref{font-size:11px;color:var(--muted);margin-top:8px;}
 </style>
 </head>
 <body>
@@ -212,6 +215,11 @@ textarea,input{font-family:inherit;}
       <div class="sticker-board-wrap">
         <div class="sticker-board-header"><div class="sticker-board-title">🎀 오늘을 꾸며보세요</div><button class="sticker-add-btn" onclick="openStickerSheet()">+ 스티커</button></div>
         <div class="sticker-board" id="stickerBoard"></div>
+      </div>
+      <div class="section-label">오늘의 말씀</div>
+      <div class="verse-card">
+        <div class="verse-text" id="verseText"></div>
+        <div class="verse-ref" id="verseRef"></div>
       </div>
     </div>
     <div class="page" id="page-calendar">
@@ -268,9 +276,14 @@ textarea,input{font-family:inherit;}
   <div class="sheet"><div class="sheet-handle"></div>
   <div class="sheet-header"><div class="sheet-title">🫧 마음의 신호</div><div class="sheet-sub">지금 알아차린 것을 적어요</div></div>
   <div class="sheet-body">
-    <textarea class="add-textarea" id="signalTextarea" placeholder="어떤 것이 불편했나요? 무엇이 느껴졌나요..."></textarea>
-    <div style="font-size:11px;color:var(--muted);margin:14px 0 8px;">이 순간 느낀 감정</div>
+    <textarea class="add-textarea" id="signalTextarea" placeholder="무엇이 느껴졌나요..."></textarea>
+    <div style="font-size:11px;color:var(--muted);margin:14px 0 8px;">이 순간 느낀 감정 선택</div>
     <div class="emotion-picker" id="signalEmotionPicker"></div>
+    <div style="font-size:11px;color:var(--muted);margin:8px 0 6px;">직접 입력</div>
+    <div class="custom-row">
+      <input class="custom-emoji" id="signalCustomEmoji" placeholder="🙂" maxlength="2">
+      <input class="custom-text" id="signalCustomName" placeholder="감정을 직접 입력해요...">
+    </div>
     <div id="signalQuoteBox"></div>
   </div>
   <div class="sheet-footer"><button class="btn btn-ghost" onclick="closeSheet('signalSheetOverlay')">취소</button><button class="btn btn-primary" onclick="saveSignal()">저장하기</button></div></div>
@@ -286,9 +299,7 @@ textarea,input{font-family:inherit;}
 <div class="sheet-overlay" id="prayerEditSheetOverlay" onclick="closeSheetOnBg(event,'prayerEditSheetOverlay')">
   <div class="sheet"><div class="sheet-handle"></div>
   <div class="sheet-header"><div class="sheet-title">✏️ 기도 수정</div><div class="sheet-sub">기도문을 수정할 수 있어요</div></div>
-  <div class="sheet-body">
-    <textarea class="add-textarea" id="prayerEditTextarea" style="min-height:160px;"></textarea>
-  </div>
+  <div class="sheet-body"><textarea class="add-textarea" id="prayerEditTextarea" style="min-height:160px;"></textarea></div>
   <div class="sheet-footer"><button class="btn btn-ghost" onclick="closeSheet('prayerEditSheetOverlay')">취소</button><button class="btn btn-primary" onclick="savePrayerEdit()">수정 저장</button></div></div>
 </div>
 <div class="sheet-overlay" id="stickerSheetOverlay" onclick="closeSheetOnBg(event,'stickerSheetOverlay')">
@@ -305,7 +316,8 @@ const EMOTIONS=[
   {emoji:'😔',name:'슬픔'},{emoji:'😰',name:'불안'},{emoji:'😠',name:'화남'},{emoji:'🥲',name:'서러움'},
   {emoji:'😶',name:'공허함'},{emoji:'😤',name:'억울함'},{emoji:'😢',name:'외로움'},
   {emoji:'😩',name:'지침'},{emoji:'😨',name:'두려움'},{emoji:'😳',name:'부끄러움'},
-  {emoji:'😞',name:'죄책감'},{emoji:'😟',name:'실망감'},{emoji:'😦',name:'막막함'}
+  {emoji:'😞',name:'죄책감'},{emoji:'😟',name:'실망감'},{emoji:'😦',name:'막막함'},
+  {emoji:'😟',name:'걱정스러움'}
 ];
 const QUOTES={
   '기쁨':['즐거움이 있는 곳에 하나님도 계신다. — 마르틴 루터','감사하는 마음이 기쁨의 뿌리다. — 데이비드 스타인들-라스트','오늘의 기쁨을 충분히 누려라. 그것이 내일의 힘이 된다.','작은 것에 기뻐할 수 있는 사람이 진정 행복한 사람이다.','기쁨으로 가득 찬 하루는 하나님의 선물이다.'],
@@ -332,8 +344,41 @@ const QUOTES={
   '부끄러움':['완벽하지 않아도 괜찮다. 우리는 모두 성장 중이다.','부끄러움은 더 나아지고 싶다는 마음의 표현이다.','하나님 앞에서 있는 그대로의 나도 충분하다.','실수는 배움의 기회다. 자책하지 말라.','은혜는 부끄러움보다 항상 크다.'],
   '죄책감':['진정한 회개 후에는 자유가 온다.','하나님의 용서는 우리의 죄보다 크다.','자책보다 더 나은 선택을 하려는 의지가 중요하다.','죄책감을 느낀다는 것은 양심이 살아있다는 증거다.','용서받은 자로 살아가는 것이 은혜에 보답하는 길이다.'],
   '실망감':['실망은 기대했다는 증거다. 그만큼 소중했던 것이다.','모든 실망 뒤에는 새로운 방향이 있다.','하나님의 계획은 우리의 기대보다 크다.','이번 실망이 더 좋은 것을 위한 준비일 수 있다.','기대가 무너진 자리에서 믿음이 자란다.'],
-  '막막함':['한 걸음씩만 가도 된다. 전부 보이지 않아도 괜찮다.','막막할 때는 가장 작은 것부터 시작하면 된다.','하나님은 어둠 속에서도 길을 내신다. — 이사야 43:19','안개가 걷히면 길이 보인다. 지금은 기다릴 때다.','막막함은 새로운 시작 직전에 찾아온다.']
+  '막막함':['한 걸음씩만 가도 된다. 전부 보이지 않아도 괜찮다.','막막할 때는 가장 작은 것부터 시작하면 된다.','하나님은 어둠 속에서도 길을 내신다. — 이사야 43:19','안개가 걷히면 길이 보인다. 지금은 기다릴 때다.','막막함은 새로운 시작 직전에 찾아온다.'],
+  '걱정스러움':['염려를 주께 맡겨라. 그가 너를 돌보신다. — 베드로전서 5:7','걱정은 내일의 슬픔을 없애주지 않는다. 오늘의 힘을 빼앗을 뿐이다.','지금 이 순간에 집중하라. 걱정은 아직 오지 않은 것에 대한 것이다.','하나님은 내일도 함께 하신다. 오늘은 오늘의 것으로 충분하다.','두려워하지 말라. 내가 너의 하나님이 됨이라. — 이사야 41:10']
 };
+const VERSES=[
+  {text:'여호와는 나의 목자시니 내게 부족함이 없으리로다',ref:'시편 23:1'},
+  {text:'내가 너와 함께 하노라 두려워하지 말라 내가 너의 하나님이 됨이라',ref:'이사야 41:10'},
+  {text:'수고하고 무거운 짐 진 자들아 다 내게로 오라 내가 너희를 쉬게 하리라',ref:'마태복음 11:28'},
+  {text:'항상 기뻐하라 쉬지 말고 기도하라 범사에 감사하라',ref:'데살로니가전서 5:16-18'},
+  {text:'여호와를 기뻐하라 그가 네 마음의 소원을 네게 이루어 주시리로다',ref:'시편 37:4'},
+  {text:'잠잠하라 내가 하나님임을 알지어다',ref:'시편 46:10'},
+  {text:'내게 능력 주시는 자 안에서 내가 모든 것을 할 수 있느니라',ref:'빌립보서 4:13'},
+  {text:'하나님은 우리의 피난처시요 힘이시니 환난 중에 만날 큰 도움이시라',ref:'시편 46:1'},
+  {text:'여호와께서 너를 지키시고 모든 환난에서 네 생명을 보호하시리로다',ref:'시편 121:7'},
+  {text:'주는 나의 등불이시니 여호와께서 나의 어둠을 밝히시리이다',ref:'사무엘하 22:29'},
+  {text:'내 영혼아 잠잠히 하나님만 바라라 무릇 나의 소망이 그로부터 나오는도다',ref:'시편 62:5'},
+  {text:'눈물을 흘리며 씨를 뿌리는 자는 기쁨으로 거두리로다',ref:'시편 126:5'},
+  {text:'새 힘을 얻으리니 독수리가 날개치며 올라감 같을 것이요',ref:'이사야 40:31'},
+  {text:'하나님이 세상을 이처럼 사랑하사 독생자를 주셨으니',ref:'요한복음 3:16'},
+  {text:'두려워하지 말라 내가 너와 함께 함이라 놀라지 말라 나는 네 하나님이 됨이라',ref:'이사야 41:10'},
+  {text:'사람이 마음으로 자기의 길을 계획할지라도 그의 걸음을 인도하시는 이는 여호와시니라',ref:'잠언 16:9'},
+  {text:'여호와는 내 편이라 내가 두려워하지 아니하리니',ref:'시편 118:6'},
+  {text:'나의 힘이 되신 여호와여 내가 주를 사랑하나이다',ref:'시편 18:1'},
+  {text:'하나님은 사랑이시라',ref:'요한일서 4:8'},
+  {text:'내가 사망의 음침한 골짜기로 다닐지라도 해를 두려워하지 않을 것은 주께서 나와 함께 하심이라',ref:'시편 23:4'},
+  {text:'너희 염려를 다 주께 맡기라 이는 그가 너희를 돌보심이라',ref:'베드로전서 5:7'},
+  {text:'선한 일을 행하다 포기하지 말지니 포기하지 아니하면 때가 이르매 거두리라',ref:'갈라디아서 6:9'},
+  {text:'주 안에서 항상 기뻐하라 내가 다시 말하노니 기뻐하라',ref:'빌립보서 4:4'},
+  {text:'이는 내가 네 하나님 여호와로 네 오른손을 붙들고 네게 이르기를 두려워하지 말라',ref:'이사야 41:13'},
+  {text:'감사함으로 그 문에 들어가며 찬송함으로 그 궁정에 들어가서 그에게 감사하며',ref:'시편 100:4'},
+  {text:'하나님이 주시는 평강은 모든 지각에 뛰어나 너희 마음과 생각을 지키시리라',ref:'빌립보서 4:7'},
+  {text:'나는 포도나무요 너희는 가지라 그가 내 안에 내가 그 안에 거하면 사람이 열매를 많이 맺나니',ref:'요한복음 15:5'},
+  {text:'여호와여 주는 나의 하나님이시라 내가 주를 높이고 주의 이름을 찬송하오리니',ref:'이사야 25:1'},
+  {text:'강하고 담대하라 두려워하지 말며 놀라지 말라 네가 어디로 가든지 네 하나님 여호와가 너와 함께 하느니라',ref:'여호수아 1:9'},
+  {text:'오직 여호와를 앙망하는 자는 새 힘을 얻으리니',ref:'이사야 40:31'}
+];
 const STICKER_CATS=[{label:'💛 감정',s:['😊','😌','🥰','😤','😔','😰','😠','🥲','😶','😴','🤗','🫠','😍','🤩','😎','🥳']},{label:'🌿 자연',s:['🌸','🌺','🌻','🌹','🌷','🍀','🌿','🍃','🌱','🪴','🌾','🍂','🌊','🌙','⭐','✨']},{label:'☕ 일상',s:['☕','🍵','🫖','🍰','🧁','🎵','🎶','📖','✏️','🕯️','🏡','🎨','🧸','💌','📷','🌠']},{label:'💬 마음',s:['💛','💙','💚','🧡','💜','🤍','💗','💖','💝','💫','🙏','👏','🫂','💪','💐','🎁']}];
 const ADD_CFG={gratitude:{title:'🌱 감사한 것',sub:'오늘 감사했던 순간, 사람, 작은 것들',placeholder:'오늘 감사했던 것은...'},resolved:{title:'🌀 걱정이 별일 없이',sub:'걱정했지만 잘 지나간 일들',placeholder:'걱정했지만 괜찮았던 것은...'},strength:{title:'✨ 힘이 되었던 것',sub:'존재, 문장, 장면 — 무엇이든',placeholder:'힘이 되었던 사람, 말, 순간은...'}};
 const SLOT_LABELS={morning:'☀️ 아침',noon:'🌤 점심',evening:'🌆 저녁',night:'🌙 자기 전'};
@@ -347,7 +392,9 @@ function getDay(k){return appData[k]||{emotions:{},gratitude:[],resolved:[],stre
 function saveDay(k,d){appData[k]=d;localStorage.setItem('hg',JSON.stringify(appData));}
 function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 function getRandomQuote(name){const q=QUOTES[name];if(!q)return null;return q[Math.floor(Math.random()*q.length)];}
-function init(){renderTopDate();renderEmotions();renderLists();renderSignals();renderCheers();renderStickers();renderCalendar();updateStreak();initPrayerStars();renderPrayerDrawer();}
+function getTodayVerse(){const d=new Date();const idx=(d.getFullYear()*366+d.getMonth()*31+d.getDate())%VERSES.length;return VERSES[idx];}
+function init(){renderTopDate();renderEmotions();renderLists();renderSignals();renderCheers();renderStickers();renderCalendar();updateStreak();initPrayerStars();renderPrayerDrawer();renderVerse();}
+function renderVerse(){const v=getTodayVerse();document.getElementById('verseText').textContent=v.text;document.getElementById('verseRef').textContent=v.ref;}
 function switchPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));document.getElementById('page-'+id).classList.add('active');document.querySelector('[data-page="'+id+'"]').classList.add('active');}
 function renderTopDate(){const days=['일','월','화','수','목','금','토'],d=new Date();document.getElementById('topDate').textContent=`${d.getMonth()+1}월 ${d.getDate()}일 (${days[d.getDay()]})`;}
 function updateStreak(){let s=0,d=new Date();while(true){const k=getKey(d),e=appData[k];if(!e)break;const has=Object.keys(e.emotions||{}).length||(e.gratitude||[]).length||(e.resolved||[]).length||(e.strength||[]).length||(e.signals||[]).length||(e.cheers||[]).length;if(!has)break;s++;d.setDate(d.getDate()-1);}document.getElementById('streakNum').textContent=s;}
@@ -358,9 +405,60 @@ function renderCheers(){const d=getDay(currentKey);const list=document.getElemen
 function openCheerSheet(){document.getElementById('cheerTextarea').value='';openSheet('cheerSheetOverlay');}
 function saveCheer(){const text=document.getElementById('cheerTextarea').value.trim();if(!text){closeSheet('cheerSheetOverlay');return;}const now=new Date();const time=now.toTimeString().slice(0,5);const d=getDay(currentKey);if(!d.cheers)d.cheers=[];d.cheers.push({text,time});saveDay(currentKey,d);renderCheers();updateStreak();closeSheet('cheerSheetOverlay');}
 function deleteCheer(idx){const d=getDay(currentKey);d.cheers.splice(idx,1);saveDay(currentKey,d);renderCheers();}
-function openSignalSheet(){selSignalEmo=null;document.getElementById('signalTextarea').value='';document.getElementById('signalQuoteBox').innerHTML='';const picker=document.getElementById('signalEmotionPicker');picker.innerHTML='';EMOTIONS.forEach(e=>{const d=document.createElement('div');d.className='emotion-opt';d.innerHTML=`<span class="e-emoji">${e.emoji}</span><span class="e-name">${e.name}</span>`;d.onclick=()=>{document.querySelectorAll('#signalEmotionPicker .emotion-opt').forEach(o=>o.classList.remove('sel'));d.classList.add('sel');selSignalEmo=e;showSignalQuote(e.name);};picker.appendChild(d);});openSheet('signalSheetOverlay');}
+function openSignalSheet(){
+  selSignalEmo=null;
+  document.getElementById('signalTextarea').value='';
+  document.getElementById('signalQuoteBox').innerHTML='';
+  document.getElementById('signalCustomEmoji').value='';
+  document.getElementById('signalCustomName').value='';
+  const picker=document.getElementById('signalEmotionPicker');
+  picker.innerHTML='';
+  EMOTIONS.forEach(e=>{
+    const d=document.createElement('div');
+    d.className='emotion-opt';
+    d.innerHTML=`<span class="e-emoji">${e.emoji}</span><span class="e-name">${e.name}</span>`;
+    d.onclick=()=>{
+      document.querySelectorAll('#signalEmotionPicker .emotion-opt').forEach(o=>o.classList.remove('sel'));
+      d.classList.add('sel');
+      selSignalEmo=e;
+      document.getElementById('signalCustomEmoji').value='';
+      document.getElementById('signalCustomName').value='';
+      showSignalQuote(e.name);
+    };
+    picker.appendChild(d);
+  });
+  document.getElementById('signalCustomName').addEventListener('input',()=>{
+    if(document.getElementById('signalCustomName').value.trim()){
+      document.querySelectorAll('#signalEmotionPicker .emotion-opt').forEach(o=>o.classList.remove('sel'));
+      selSignalEmo=null;
+      document.getElementById('signalQuoteBox').innerHTML='';
+    }
+  });
+  openSheet('signalSheetOverlay');
+}
 function showSignalQuote(name){const q=getRandomQuote(name);if(!q)return;const parts=q.split(' — ');document.getElementById('signalQuoteBox').innerHTML=`<div class="quote-box"><div class="quote-text">"${esc(parts[0])}"</div>${parts[1]?`<div class="quote-author">— ${esc(parts[1])}</div>`:''}<button class="quote-refresh" onclick="showSignalQuote('${name}')">🔄 다른 명언</button></div>`;}
-function saveSignal(){const text=document.getElementById('signalTextarea').value.trim();if(!text){closeSheet('signalSheetOverlay');return;}const now=new Date();const time=now.toTimeString().slice(0,5);let quote=null;if(selSignalEmo){const q=getRandomQuote(selSignalEmo.name);if(q){const parts=q.split(' — ');quote={text:parts[0],author:parts[1]||''};}}const d=getDay(currentKey);if(!d.signals)d.signals=[];d.signals.push({text,time,emotion:selSignalEmo,quote});saveDay(currentKey,d);renderSignals();updateStreak();closeSheet('signalSheetOverlay');}
+function saveSignal(){
+  const text=document.getElementById('signalTextarea').value.trim();
+  if(!text){closeSheet('signalSheetOverlay');return;}
+  const now=new Date();
+  const time=now.toTimeString().slice(0,5);
+  const customEmoji=document.getElementById('signalCustomEmoji').value.trim();
+  const customName=document.getElementById('signalCustomName').value.trim();
+  let emotion=selSignalEmo;
+  if(customName)emotion={emoji:customEmoji||'💭',name:customName};
+  let quote=null;
+  if(emotion&&QUOTES[emotion.name]){
+    const q=getRandomQuote(emotion.name);
+    if(q){const parts=q.split(' — ');quote={text:parts[0],author:parts[1]||''};}
+  }
+  const d=getDay(currentKey);
+  if(!d.signals)d.signals=[];
+  d.signals.push({text,time,emotion,quote});
+  saveDay(currentKey,d);
+  renderSignals();
+  updateStreak();
+  closeSheet('signalSheetOverlay');
+}
 function deleteSignal(idx){const d=getDay(currentKey);d.signals.splice(idx,1);saveDay(currentKey,d);renderSignals();}
 function refreshQuote(idx){const d=getDay(currentKey);const signal=d.signals[idx];if(!signal||!signal.emotion)return;const q=getRandomQuote(signal.emotion.name);if(q){const parts=q.split(' — ');signal.quote={text:parts[0],author:parts[1]||''};}saveDay(currentKey,d);renderSignals();}
 function openEmotionSheet(slot){curSlot=slot;selEmo=null;document.getElementById('emotionSheetTitle').textContent=SLOT_LABELS[slot]+' 감정 기록';document.getElementById('customEmoji').value='';document.getElementById('customName').value='';const current=getDay(currentKey).emotions[slot];const picker=document.getElementById('emotionPicker');picker.innerHTML='';EMOTIONS.forEach(e=>{const d=document.createElement('div');d.className='emotion-opt'+(current&&current.name===e.name?' sel':'');d.innerHTML=`<span class="e-emoji">${e.emoji}</span><span class="e-name">${e.name}</span>`;d.onclick=()=>{document.querySelectorAll('#emotionPicker .emotion-opt').forEach(o=>o.classList.remove('sel'));d.classList.add('sel');selEmo=e;document.getElementById('customEmoji').value='';document.getElementById('customName').value='';};picker.appendChild(d);});if(current&&!EMOTIONS.find(e=>e.name===current.name)){document.getElementById('customEmoji').value=current.emoji;document.getElementById('customName').value=current.name;}openSheet('emotionSheetOverlay');}
