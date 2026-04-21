@@ -178,6 +178,23 @@ textarea,input{font-family:inherit;}
 .verse-ko{font-family:'Noto Serif KR',serif;font-size:14px;color:var(--text);line-height:1.9;margin-bottom:8px;}
 .verse-en{font-size:12px;color:var(--muted);line-height:1.7;font-style:italic;margin-bottom:8px;}
 .verse-ref{font-size:11px;color:var(--accent);font-weight:600;text-align:right;}
+.settings-btn{background:none;border:none;font-size:20px;cursor:pointer;padding:4px;}
+.settings-overlay{position:fixed;inset:0;background:rgba(44,36,24,.45);backdrop-filter:blur(3px);z-index:400;opacity:0;pointer-events:none;transition:opacity .25s;display:flex;align-items:flex-end;justify-content:center;}
+.settings-overlay.open{opacity:1;pointer-events:all;}
+.settings-sheet{width:100%;max-width:480px;background:var(--surface);border-radius:22px 22px 0 0;padding:20px;transform:translateY(100%);transition:transform .28s cubic-bezier(.32,0,.67,0);}
+.settings-overlay.open .settings-sheet{transform:translateY(0);transition-timing-function:cubic-bezier(.33,1,.68,1);}
+.settings-handle{width:38px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 20px;}
+.settings-title{font-family:'Noto Serif KR',serif;font-size:16px;font-weight:600;margin-bottom:16px;}
+.settings-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border);}
+.settings-row:last-child{border-bottom:none;}
+.settings-row-left{display:flex;align-items:center;gap:10px;font-size:14px;}
+.settings-row-icon{font-size:20px;}
+.settings-row-desc{font-size:11px;color:var(--muted);margin-top:2px;}
+.toggle{width:44px;height:26px;background:var(--border);border-radius:13px;position:relative;cursor:pointer;transition:background .2s;}
+.toggle.on{background:var(--accent);}
+.toggle-knob{position:absolute;top:3px;left:3px;width:20px;height:20px;background:white;border-radius:50%;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.2);}
+.toggle.on .toggle-knob{transform:translateX(18px);}
+body.dark{--bg:#1A1714;--surface:#242018;--surface2:#2E2920;--border:#3D3630;--text:#F0EBE3;--muted:#8C7B6A;--light:#5C4E42;}  
 </style>
 </head>
 <body>
@@ -186,6 +203,7 @@ textarea,input{font-family:inherit;}
     <div class="logo">하루<span>결</span></div>
     <div class="topbar-date" id="topDate"></div>
     <div class="topbar-streak">🔥 <strong id="streakNum">0</strong>일째</div>
+        <button class="settings-btn" onclick="openSettings()">⚙️</button>
   </div>
   <div class="pages">
     <div class="page active" id="page-today">
@@ -255,7 +273,33 @@ textarea,input{font-family:inherit;}
     <button class="nav-btn" data-page="prayer" onclick="switchPage('prayer')"><span class="nav-icon">🙏</span>기도</button>
   </nav>
 </div>
-<div class="ascension-overlay" id="ascOverlay">
+<div class="settings-overlay" id="settingsOverlay" onclick="closeSettingsOnBg(event)">
+  <div class="settings-sheet">
+    <div class="settings-handle"></div>
+    <div class="settings-title">⚙️ 설정</div>
+    <div class="settings-row">
+      <div class="settings-row-left">
+        <span class="settings-row-icon">🌙</span>
+        <div><div>다크모드</div><div class="settings-row-desc">어두운 테마로 변경해요</div></div>
+      </div>
+      <div class="toggle" id="darkToggle" onclick="toggleDark()"><div class="toggle-knob"></div></div>
+    </div>
+    <div class="settings-row">
+      <div class="settings-row-left">
+        <span class="settings-row-icon">📦</span>
+        <div><div>데이터 백업</div><div class="settings-row-desc">일기·기도 데이터를 파일로 저장해요</div></div>
+      </div>
+      <button class="btn btn-primary" style="flex:0;padding:8px 16px;font-size:12px;" onclick="backupData()">백업</button>
+    </div>
+    <div class="settings-row">
+      <div class="settings-row-left">
+        <span class="settings-row-icon">📥</span>
+        <div><div>데이터 복원</div><div class="settings-row-desc">백업 파일로 데이터를 복원해요</div></div>
+      </div>
+      <label class="btn btn-primary" style="flex:0;padding:8px 16px;font-size:12px;cursor:pointer;">복원<input type="file" accept=".json" style="display:none;" onchange="restoreData(event)"></label>
+    </div>
+  </div>
+</div>
   <div class="asc-stars" id="ascStars"></div>
   <div class="asc-content">
     <div style="position:relative;display:flex;flex-direction:column;align-items:center;"><div class="asc-envelope">✉️</div></div>
@@ -438,10 +482,17 @@ function renderPrayerDrawer(){document.getElementById('prayerCountBadge').textCo
 function openPrayerEdit(idx){editingPrayerIdx=idx;document.getElementById('prayerEditTextarea').value=prayers[idx].text;openSheet('prayerEditSheetOverlay');}
 function savePrayerEdit(){const text=document.getElementById('prayerEditTextarea').value.trim();if(!text){closeSheet('prayerEditSheetOverlay');return;}prayers[editingPrayerIdx].text=text;localStorage.setItem('hg-p',JSON.stringify(prayers));renderPrayerDrawer();closeSheet('prayerEditSheetOverlay');}
 function deletePrayer(idx){prayers.splice(idx,1);localStorage.setItem('hg-p',JSON.stringify(prayers));renderPrayerDrawer();}
+function openSettings(){document.getElementById('settingsOverlay').classList.add('open');const dark=localStorage.getItem('hg-dark')==='1';document.getElementById('darkToggle').classList.toggle('on',dark);}
+function closeSettings(){document.getElementById('settingsOverlay').classList.remove('open');}
+function closeSettingsOnBg(e){if(e.target.id==='settingsOverlay')closeSettings();}
+function toggleDark(){const isDark=document.body.classList.toggle('dark');localStorage.setItem('hg-dark',isDark?'1':'0');document.getElementById('darkToggle').classList.toggle('on',isDark);}
+function backupData(){const backup={version:1,date:new Date().toISOString(),diary:appData,prayers:prayers};const blob=new Blob([JSON.stringify(backup,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`하루결_백업_${new Date().toLocaleDateString('ko-KR').replace(/\./g,'').replace(/ /g,'_')}.json`;a.click();}
+function restoreData(e){const file=e.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=function(ev){try{const backup=JSON.parse(ev.target.result);if(backup.diary)appData=backup.diary;if(backup.prayers)prayers=backup.prayers;localStorage.setItem('hg',JSON.stringify(appData));localStorage.setItem('hg-p',JSON.stringify(prayers));renderEmotions();renderLists();renderSignals();renderCheers();renderStickers();renderCalendar();updateStreak();renderPrayerDrawer();renderVerse();alert('복원이 완료되었어요 😊');closeSettings();}catch(err){alert('파일을 읽을 수 없어요. 올바른 백업 파일인지 확인해주세요.');}};reader.readAsText(file);}
 function openSheet(id){document.getElementById(id).classList.add('open');}
 function closeSheet(id){document.getElementById(id).classList.remove('open');}
 function closeSheetOnBg(e,id){if(e.target.id===id)closeSheet(id);}
 document.getElementById('ascOverlay').addEventListener('click',e=>{if(e.target.id==='ascOverlay')closeAscension();});
+if(localStorage.getItem('hg-dark')==='1')document.body.classList.add('dark');
 init();
 </script>
 </body>
