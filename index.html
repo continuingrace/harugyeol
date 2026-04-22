@@ -142,9 +142,9 @@ textarea,input{font-family:'Noto Sans KR',sans-serif;}
 .selected-day-detail{margin:12px 20px 0;border:1px solid var(--border);background:var(--surface);overflow:hidden;}
 .sel-day-title{font-family:'Noto Serif KR',serif;font-size:14px;font-weight:600;padding:14px 16px 10px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);}
 .sel-edit-btn{font-size:10px;color:var(--text2);border:1px solid var(--border2);padding:3px 10px;background:var(--surface2);cursor:pointer;font-weight:400;letter-spacing:0.3px;}
-.sel-body{padding:12px 16px 16px;overflow:hidden;box-sizing:border-box;width:100%;}
-.sel-emotions{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;padding:0;}
-.sel-emotion-chip{display:flex;align-items:center;gap:4px;background:var(--surface2);border:1px solid var(--border);padding:3px 9px;font-size:11px;font-weight:300;}
+.sel-emotions{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;padding:0;max-width:100%;}
+.sel-emotions{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;padding:0;max-width:100%;}
+.sel-emotion-chip{display:flex;align-items:center;gap:4px;background:var(--surface2);border:1px solid var(--border);padding:3px 9px;font-size:11px;font-weight:300;flex-shrink:0;}
 .sel-section{margin-top:10px;}
 .sel-section-title{font-size:9px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:4px;font-weight:400;display:block;width:100%;}
 .sel-item{font-size:12px;line-height:1.7;padding:1px 0;color:var(--text2);font-weight:300;word-break:break-all;overflow-wrap:break-word;}
@@ -913,7 +913,7 @@ function renderSelDetail(){
   const d=appData[selCalDate];
   const[,m,day]=selCalDate.split('-');
   const isToday=selCalDate===todayKey;
-  el.innerHTML=`<div class="sel-day-title"><span>${parseInt(m)}월 ${parseInt(day)}일${d?.weather?' '+d.weather:''}</span><button class="sel-edit-btn" onclick="goToDate('${selCalDate}')">${isToday?'오늘 기록':'이 날 기록하기'}</button></div><div class="sel-body">`;
+  el.innerHTML=`<div class="sel-day-title"><span>${parseInt(m)}월 ${parseInt(day)}일${d?.weather?' '+d.weather:''}</span><button class="sel-edit-btn" onclick="goToDate('${selCalDate}')">${isToday?'오늘 기록':'이 날 기록하기'}</button></div><div style="padding:12px 16px 16px;">`;
   if(!d){el.innerHTML+=`<div class="sel-empty">이 날의 기록이 없어요</div></div>`;return;}
   if(d.oneline)el.innerHTML+=`<div style="font-size:13px;color:var(--text);line-height:1.7;margin-bottom:10px;font-weight:400;">${esc(d.oneline)}</div>`;
   const chips=Object.entries(d.emotions||{}).map(([,v])=>`<span class="sel-emotion-chip">${v.emoji} ${v.name}</span>`).join('');
