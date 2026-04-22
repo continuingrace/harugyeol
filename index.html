@@ -7,234 +7,302 @@
 <link rel="apple-touch-icon" href="https://img.icons8.com/fluency/180/planner.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="하루결">
-<link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Noto+Serif+KR:wght@400;600&family=DM+Mono&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500&family=Noto+Serif+KR:wght@400;600&family=DM+Mono&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#F7F4EF;--surface:#FFFFFF;--surface2:#F0EBE3;--border:#E2D9CE;--text:#2C2418;--muted:#8C7B6A;--light:#B8A898;--accent:#E8613A;--accent-bg:#FDEEE9;--green:#4CAF7C;--blue:#4A7FC1;--gold:#C9A227;--gold2:#E8C84A;--purple:#7C6FCD;--pink:#E8829A;--r:14px;--rs:8px;--nav:64px;}
+:root{
+  --bg:#F5F2ED;
+  --bg2:#EFEBE4;
+  --surface:#FAF8F5;
+  --surface2:#F0EDE8;
+  --border:#DDD8D0;
+  --border2:#C8C2B8;
+  --text:#1C1917;
+  --text2:#4A4540;
+  --muted:#8A837A;
+  --light:#B5AFA8;
+  --accent:#2C2520;
+  --accent2:#6B5E52;
+  --r:6px;
+  --rs:4px;
+  --nav:60px;
+}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-html,body{height:100%;font-family:'Gowun Dodum',sans-serif;background:var(--bg);color:var(--text);overflow:hidden;-webkit-tap-highlight-color:transparent;}
-button{cursor:pointer;font-family:inherit;border:none;background:none;}
-textarea,input{font-family:inherit;}
-::-webkit-scrollbar{width:3px;}::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+html,body{height:100%;font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);overflow:hidden;-webkit-tap-highlight-color:transparent;font-weight:300;}
+button{cursor:pointer;font-family:'Noto Sans KR',sans-serif;border:none;background:none;}
+textarea,input{font-family:'Noto Sans KR',sans-serif;}
+::-webkit-scrollbar{width:2px;}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:1px;}
 .app{display:flex;flex-direction:column;height:100dvh;max-width:480px;margin:0 auto;background:var(--bg);}
-.topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 20px 10px;background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0;z-index:10;}
-.logo{font-family:'Noto Serif KR',serif;font-size:20px;font-weight:600;}.logo span{color:var(--accent);}
-.topbar-date{font-size:12px;color:var(--muted);}
-.topbar-streak{display:flex;align-items:center;gap:4px;font-size:12px;color:var(--muted);background:var(--accent-bg);border-radius:20px;padding:4px 10px;}
-.topbar-streak strong{color:var(--accent);font-family:'DM Mono',monospace;}
+
+/* TOPBAR */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 20px 12px;background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0;z-index:10;}
+.logo{font-family:'Noto Serif KR',serif;font-size:18px;font-weight:600;letter-spacing:-0.5px;color:var(--text);}
+.logo span{color:var(--accent2);}
+.topbar-center{display:flex;align-items:center;gap:10px;}
+.topbar-date{font-size:11px;color:var(--muted);letter-spacing:0.3px;font-weight:300;}
+.weather-btn{font-size:18px;cursor:pointer;background:none;border:none;line-height:1;padding:2px;}
+.settings-btn{background:none;border:none;font-size:16px;cursor:pointer;color:var(--muted);padding:2px;}
+
+/* PAGES */
 .pages{flex:1;overflow:hidden;position:relative;}
-.page{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;padding:16px 16px 80px;opacity:0;pointer-events:none;transform:translateY(6px);transition:opacity .22s,transform .22s;}
+.page{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;padding:0 0 80px;opacity:0;pointer-events:none;transform:translateY(4px);transition:opacity .2s,transform .2s;}
 .page.active{opacity:1;pointer-events:all;transform:translateY(0);}
+
+/* BOTTOM NAV */
 .bottom-nav{display:flex;background:var(--surface);border-top:1px solid var(--border);flex-shrink:0;height:var(--nav);}
-.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:10px;color:var(--light);transition:color .15s;padding:6px 0;}
-.nav-btn.active{color:var(--accent);}.nav-icon{font-size:22px;line-height:1;}
-.section-label{font-size:10px;letter-spacing:1.4px;color:var(--muted);text-transform:uppercase;margin:20px 0 8px;}
-.section-label:first-child{margin-top:4px;}
-.emotion-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-.emotion-card{background:var(--surface);border-radius:var(--r);padding:14px;border:1.5px solid var(--border);cursor:pointer;position:relative;overflow:hidden;transition:transform .15s;}
-.emotion-card:active{transform:scale(.97);}
-.emotion-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
-.emotion-card.morning::before{background:#F4A35A;}.emotion-card.noon::before{background:#5BAF8C;}
-.emotion-card.evening::before{background:#7C6FCD;}.emotion-card.night::before{background:#3D5A7A;}
-.emotion-card.morning{border-color:#F9C98A;}.emotion-card.noon{border-color:#96D4BB;}
-.emotion-card.evening{border-color:#B5AEED;}.emotion-card.night{border-color:#8BAAC8;}
-.emotion-time{font-size:10px;font-weight:600;letter-spacing:.4px;margin-bottom:7px;display:flex;align-items:center;gap:4px;}
-.emotion-card.morning .emotion-time{color:#F4A35A;}.emotion-card.noon .emotion-time{color:#5BAF8C;}
-.emotion-card.evening .emotion-time{color:#7C6FCD;}.emotion-card.night .emotion-time{color:#3D5A7A;}
-.emotion-display{display:flex;align-items:center;gap:7px;min-height:34px;}
-.emotion-emoji{font-size:24px;line-height:1;}.emotion-name{font-family:'Noto Serif KR',serif;font-size:13px;}
-.emotion-empty{font-size:11px;color:var(--light);font-style:italic;}
-.record-list{display:flex;flex-direction:column;gap:8px;}
-.record-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r);padding:14px;}
-.record-card-title{font-size:12px;font-weight:600;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;}
-.record-card-title.gratitude{color:var(--green);}.record-card-title.resolved{color:var(--blue);}.record-card-title.strength{color:var(--accent);}
-.record-items{display:flex;flex-direction:column;gap:5px;margin-bottom:4px;}
-.record-item{display:flex;gap:7px;align-items:flex-start;font-size:12px;line-height:1.55;}
-.record-dot{width:5px;height:5px;border-radius:50%;margin-top:5px;flex-shrink:0;}
-.gratitude .record-dot{background:var(--green);}.resolved .record-dot{background:var(--blue);}.strength .record-dot{background:var(--accent);}
-.add-item-btn{font-size:11px;color:var(--light);display:flex;align-items:center;gap:3px;}
-.sticker-board-wrap{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r);overflow:hidden;}
-.sticker-board-header{display:flex;align-items:center;justify-content:space-between;padding:11px 14px 9px;border-bottom:1px solid var(--border);}
-.sticker-board-title{font-size:11px;color:var(--muted);font-weight:600;}
-.sticker-add-btn{font-size:11px;color:var(--accent);background:var(--accent-bg);border-radius:7px;padding:4px 10px;}
-.sticker-board{position:relative;width:100%;height:130px;background:radial-gradient(circle at 18px 18px,rgba(226,217,206,.5) 1px,transparent 1px);background-size:20px 20px;overflow:hidden;user-select:none;}
-.sticker{position:absolute;font-size:26px;line-height:1;cursor:grab;touch-action:none;filter:drop-shadow(0 2px 4px rgba(44,36,24,.15));}
-.sticker.dragging{transform:scale(1.2) rotate(5deg);z-index:100;}
-.cal-page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
-.cal-page-month{font-family:'Noto Serif KR',serif;font-size:18px;font-weight:600;}
-.cal-nav-row{display:flex;gap:6px;}
-.cal-nav-btn{width:32px;height:32px;border-radius:8px;border:1.5px solid var(--border);color:var(--muted);font-size:14px;display:flex;align-items:center;justify-content:center;background:var(--surface);}
-.cal-full-grid{display:grid;grid-template-columns:repeat(7,1fr);background:var(--surface);border-radius:var(--r);border:1.5px solid var(--border);overflow:hidden;}
-.cal-full-dow{text-align:center;font-size:10px;color:var(--light);padding:10px 0 6px;font-family:'DM Mono',monospace;background:var(--surface2);border-bottom:1px solid var(--border);}
-.cal-full-day{aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:13px;cursor:pointer;border-right:1px solid var(--border);border-bottom:1px solid var(--border);gap:2px;padding:2px;transition:background .12s;}
-.cal-full-day:nth-child(7n){border-right:none;}.cal-full-day:active{background:var(--surface2);}
-.cal-full-day.today{background:var(--accent-bg);color:var(--accent);font-weight:600;}
-.cal-full-day.selected{background:var(--accent);color:white;}.cal-full-day.other{color:var(--light);}
-.cal-emojis{font-size:8px;display:flex;flex-wrap:wrap;justify-content:center;}
-.selected-day-detail{margin-top:12px;background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r);padding:16px;}
-.sel-day-title{font-family:'Noto Serif KR',serif;font-size:15px;font-weight:600;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;}
-.sel-edit-btn{font-size:11px;color:var(--accent);background:var(--accent-bg);border:none;border-radius:7px;padding:4px 10px;cursor:pointer;}
-.sel-emotions{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;}
-.sel-emotion-chip{display:flex;align-items:center;gap:5px;background:var(--surface2);border-radius:20px;padding:5px 10px;font-size:12px;}
-.sel-section{margin-top:10px;}.sel-section-title{font-size:11px;color:var(--muted);margin-bottom:5px;}
-.sel-item{font-size:12px;line-height:1.6;padding:2px 0;}
-.sel-empty{font-size:12px;color:var(--light);font-style:italic;padding:20px 0;text-align:center;}
-.prayer-wrap{background:linear-gradient(160deg,#1a1030 0%,#2d1f5e 55%,#1a2a4a 100%);border-radius:var(--r);overflow:hidden;position:relative;margin-bottom:12px;}
-.prayer-stars{position:absolute;inset:0;pointer-events:none;overflow:hidden;}
-.prayer-star{position:absolute;background:white;border-radius:50%;animation:twinkle var(--dur,3s) ease-in-out infinite;animation-delay:var(--delay,0s);}
-@keyframes twinkle{0%,100%{opacity:.15;}50%{opacity:.85;}}
-.prayer-inner{padding:20px 18px 16px;position:relative;z-index:1;}
-.prayer-title{font-family:'Noto Serif KR',serif;font-size:15px;font-weight:600;color:#f0e8c8;margin-bottom:2px;}
-.prayer-sub{font-size:10px;color:rgba(240,232,200,.45);font-style:italic;margin-bottom:14px;}
-.prayer-textarea{width:100%;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);border-radius:11px;padding:12px 14px;font-size:14px;color:#f0e8c8;resize:none;outline:none;min-height:110px;line-height:1.75;margin-bottom:12px;}
-.prayer-textarea::placeholder{color:rgba(240,232,200,.28);}
+.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:9px;color:var(--light);letter-spacing:0.8px;font-weight:400;text-transform:uppercase;}
+.nav-btn.active{color:var(--accent);}
+.nav-icon{font-size:18px;line-height:1;}
+
+/* TODAY HEADER */
+.today-header{padding:20px 20px 0;}
+.today-oneline{width:100%;border:none;outline:none;background:transparent;font-family:'Noto Sans KR',sans-serif;font-size:16px;font-weight:400;color:var(--text);line-height:1.6;resize:none;padding:0;min-height:28px;max-height:80px;}
+.today-oneline::placeholder{color:var(--light);font-weight:300;}
+.today-meta{display:flex;align-items:center;gap:8px;margin-top:6px;padding-bottom:16px;border-bottom:1px solid var(--border);}
+.today-date-full{font-size:11px;color:var(--muted);font-weight:300;letter-spacing:0.3px;}
+
+/* SECTION */
+.section-label{font-size:9px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;font-weight:400;padding:20px 20px 8px;}
+
+/* EMOTION GRID */
+.emotion-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);margin:0 20px;border:1px solid var(--border);}
+.emotion-card{background:var(--surface);padding:14px;cursor:pointer;position:relative;transition:background .12s;}
+.emotion-card:active{background:var(--surface2);}
+.emotion-time{font-size:9px;font-weight:400;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+.emotion-display{display:flex;align-items:center;gap:6px;min-height:30px;}
+.emotion-emoji{font-size:20px;line-height:1;}
+.emotion-name{font-size:12px;color:var(--text2);font-weight:300;}
+.emotion-empty{font-size:11px;color:var(--light);font-weight:300;}
+
+/* RECORD */
+.record-list{display:flex;flex-direction:column;gap:1px;margin:0 20px;background:var(--border);}
+.record-card{background:var(--surface);padding:14px 16px;}
+.record-card-title{font-size:10px;font-weight:500;margin-bottom:6px;display:flex;align-items:center;justify-content:space-between;letter-spacing:0.5px;color:var(--text2);}
+.record-items{display:flex;flex-direction:column;gap:4px;}
+.record-item{display:flex;gap:8px;align-items:flex-start;font-size:12px;line-height:1.6;color:var(--text2);font-weight:300;}
+.record-dot{width:3px;height:3px;border-radius:50%;background:var(--border2);margin-top:7px;flex-shrink:0;}
+.add-item-btn{font-size:10px;color:var(--light);font-weight:300;letter-spacing:0.3px;}
+.add-item-btn:hover{color:var(--muted);}
+
+/* SIGNAL */
+.signal-card{margin:0 20px;border:1px solid var(--border);background:var(--surface);}
+.signal-card-title{font-size:9px;font-weight:400;letter-spacing:2px;text-transform:uppercase;color:var(--muted);padding:14px 16px 10px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);}
+.signal-body{padding:10px 16px 14px;}
+.signal-item{padding:8px 0;border-bottom:1px solid var(--border);}
+.signal-item:last-child{border-bottom:none;}
+.signal-item-text{font-size:12px;line-height:1.65;color:var(--text2);font-weight:300;}
+.signal-item-meta{display:flex;align-items:center;justify-content:space-between;margin-top:4px;}
+.signal-item-time{font-size:10px;color:var(--light);font-family:'DM Mono',monospace;}
+.signal-item-emotion{font-size:10px;color:var(--muted);background:var(--surface2);border:1px solid var(--border);padding:1px 7px;border-radius:20px;}
+.signal-del{color:var(--light);font-size:14px;background:none;border:none;cursor:pointer;}
+.signal-empty{font-size:11px;color:var(--light);font-weight:300;padding:10px 0;}
+.quote-box{margin-top:8px;padding:10px 12px;background:var(--bg2);border-left:2px solid var(--border2);}
+.quote-text{font-family:'Noto Serif KR',serif;font-size:12px;color:var(--text2);line-height:1.75;font-style:italic;}
+.quote-author{font-size:10px;color:var(--muted);margin-top:4px;text-align:right;}
+.quote-refresh{font-size:10px;color:var(--light);background:none;border:none;cursor:pointer;margin-top:4px;display:flex;align-items:center;gap:2px;}
+
+/* CHEER */
+.cheer-card{margin:0 20px;border:1px solid var(--border);background:var(--surface);}
+.cheer-card-title{font-size:9px;font-weight:400;letter-spacing:2px;text-transform:uppercase;color:var(--muted);padding:14px 16px 10px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);}
+.cheer-body{padding:10px 16px 14px;}
+.cheer-item{padding:8px 0;border-bottom:1px solid var(--border);position:relative;}
+.cheer-item:last-child{border-bottom:none;}
+.cheer-item-text{font-family:'Noto Serif KR',serif;font-size:13px;line-height:1.8;color:var(--text);font-style:italic;}
+.cheer-item-time{font-size:10px;color:var(--light);font-family:'DM Mono',monospace;margin-top:3px;}
+.cheer-del{position:absolute;top:8px;right:0;color:var(--light);font-size:14px;background:none;border:none;cursor:pointer;}
+.cheer-empty{font-size:11px;color:var(--light);font-weight:300;padding:10px 0;}
+
+/* STICKER */
+.sticker-board-wrap{margin:0 20px;border:1px solid var(--border);background:var(--surface);}
+.sticker-board-header{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 10px;border-bottom:1px solid var(--border);}
+.sticker-board-title{font-size:9px;font-weight:400;letter-spacing:2px;text-transform:uppercase;color:var(--muted);}
+.sticker-add-btn{font-size:10px;color:var(--muted);border:1px solid var(--border);padding:3px 10px;background:var(--bg2);font-weight:300;}
+.sticker-board{position:relative;width:100%;height:110px;overflow:hidden;user-select:none;background:var(--bg);}
+.sticker{position:absolute;font-size:24px;line-height:1;cursor:grab;touch-action:none;}
+.sticker.dragging{transform:scale(1.15);z-index:100;}
+
+/* VERSE */
+.verse-card{margin:0 20px;padding:20px;border:1px solid var(--border);background:var(--surface);}
+.verse-ko{font-family:'Noto Serif KR',serif;font-size:14px;color:var(--text);line-height:1.95;margin-bottom:10px;}
+.verse-en{font-size:11px;color:var(--muted);line-height:1.8;font-style:italic;margin-bottom:8px;font-weight:300;}
+.verse-ref{font-size:10px;color:var(--accent2);font-weight:400;text-align:right;letter-spacing:0.5px;}
+
+/* CALENDAR */
+.cal-page-header{display:flex;align-items:center;justify-content:space-between;padding:20px 20px 16px;}
+.cal-page-month{font-family:'Noto Serif KR',serif;font-size:18px;font-weight:600;color:var(--text);}
+.cal-nav-row{display:flex;gap:4px;}
+.cal-nav-btn{width:28px;height:28px;border:1px solid var(--border);color:var(--muted);font-size:12px;display:flex;align-items:center;justify-content:center;background:var(--surface);}
+.cal-full-grid{display:grid;grid-template-columns:repeat(7,1fr);background:var(--border);border:1px solid var(--border);margin:0 20px;gap:1px;}
+.cal-full-dow{text-align:center;font-size:9px;color:var(--muted);padding:8px 0 6px;font-weight:400;letter-spacing:1px;background:var(--surface2);}
+.cal-full-day{aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:12px;cursor:pointer;background:var(--surface);gap:1px;padding:2px;font-weight:300;transition:background .1s;}
+.cal-full-day:active{background:var(--surface2);}
+.cal-full-day.today{background:var(--accent);color:white;font-weight:500;}
+.cal-full-day.selected{background:var(--surface2);outline:1px solid var(--border2);}
+.cal-full-day.other{color:var(--light);}
+.cal-emojis{font-size:7px;display:flex;flex-wrap:wrap;justify-content:center;}
+.selected-day-detail{margin:12px 20px 0;border:1px solid var(--border);background:var(--surface);}
+.sel-day-title{font-family:'Noto Serif KR',serif;font-size:14px;font-weight:600;padding:14px 16px 10px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);}
+.sel-edit-btn{font-size:10px;color:var(--muted);border:1px solid var(--border);padding:3px 10px;background:var(--bg2);cursor:pointer;font-weight:300;letter-spacing:0.3px;}
+.sel-body{padding:12px 16px;}
+.sel-emotions{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;}
+.sel-emotion-chip{display:flex;align-items:center;gap:4px;background:var(--surface2);border:1px solid var(--border);padding:3px 9px;font-size:11px;font-weight:300;}
+.sel-section{margin-top:10px;}
+.sel-section-title{font-size:9px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:4px;font-weight:400;}
+.sel-item{font-size:12px;line-height:1.7;padding:1px 0;color:var(--text2);font-weight:300;}
+.sel-empty{font-size:12px;color:var(--light);font-weight:300;padding:20px 0;text-align:center;}
+
+/* PRAYER */
+.prayer-wrap{margin:20px 20px 0;border:1px solid var(--border);background:var(--accent);position:relative;overflow:hidden;}
+.prayer-inner{padding:20px;position:relative;z-index:1;}
+.prayer-title{font-family:'Noto Serif KR',serif;font-size:14px;font-weight:600;color:#F5F0E8;margin-bottom:2px;letter-spacing:-0.3px;}
+.prayer-sub{font-size:10px;color:rgba(245,240,232,.4);font-weight:300;margin-bottom:16px;letter-spacing:0.3px;}
+.prayer-textarea{width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);padding:12px 14px;font-size:13px;color:#F5F0E8;resize:none;outline:none;min-height:100px;line-height:1.8;margin-bottom:12px;font-weight:300;}
+.prayer-textarea::placeholder{color:rgba(245,240,232,.25);}
 .prayer-bottom{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;}
-.prayer-verse{font-size:9.5px;color:rgba(240,232,200,.32);font-style:italic;line-height:1.65;flex:1;}
-.prayer-send-btn{display:flex;align-items:center;gap:6px;background:rgba(240,232,200,.12);color:#f0e8c8;border:1px solid rgba(240,232,200,.3);border-radius:11px;padding:11px 16px;font-size:13px;font-weight:600;white-space:nowrap;cursor:pointer;}
-.drawer-toggle{width:100%;display:flex;align-items:center;justify-content:space-between;background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r);padding:14px 16px;}
+.prayer-verse{font-size:9.5px;color:rgba(245,240,232,.25);font-style:italic;line-height:1.65;flex:1;font-weight:300;}
+.prayer-send-btn{display:flex;align-items:center;gap:5px;background:rgba(245,240,232,.1);color:#F5F0E8;border:1px solid rgba(245,240,232,.2);padding:10px 16px;font-size:12px;font-weight:400;white-space:nowrap;cursor:pointer;letter-spacing:0.5px;}
+.drawer-toggle{width:100%;display:flex;align-items:center;justify-content:space-between;border:1px solid var(--border);border-top:none;background:var(--surface);padding:14px 16px;margin:0 20px;margin-top:0;}
 .drawer-toggle-left{display:flex;align-items:center;gap:10px;}
-.drawer-toggle-title{font-family:'Noto Serif KR',serif;font-size:14px;font-weight:600;}
-.drawer-toggle-count{font-size:11px;color:rgba(200,162,39,.9);background:rgba(200,162,39,.12);border:1px solid rgba(200,162,39,.25);border-radius:20px;padding:2px 9px;}
-.prayer-letters{display:flex;flex-direction:column;gap:8px;margin-top:10px;}
-.prayer-letter{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r);padding:14px;}
+.drawer-toggle-title{font-size:12px;font-weight:400;color:var(--text2);}
+.drawer-toggle-count{font-size:10px;color:var(--muted);background:var(--surface2);border:1px solid var(--border);padding:1px 8px;font-weight:300;}
+.prayer-letters{display:flex;flex-direction:column;gap:0;margin:0 20px;}
+.prayer-letter{background:var(--surface);border:1px solid var(--border);border-top:none;padding:14px 16px;}
 .prayer-letter-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
 .prayer-letter-date{font-size:10px;color:var(--light);font-family:'DM Mono',monospace;}
-.prayer-letter-text{font-size:13px;line-height:1.75;white-space:pre-wrap;}
+.prayer-letter-text{font-size:12px;line-height:1.8;white-space:pre-wrap;color:var(--text2);font-weight:300;}
 .prayer-letter-actions{display:flex;gap:10px;margin-top:8px;}
-.prayer-letter-edit{font-size:11px;color:var(--gold);cursor:pointer;}
-.prayer-letter-del{font-size:11px;color:var(--light);cursor:pointer;}
-.prayer-empty{text-align:center;padding:32px 20px;color:var(--light);font-size:13px;line-height:2;}
-.prayer-empty-icon{font-size:40px;display:block;margin-bottom:10px;}
-.ascension-overlay{position:fixed;inset:0;background:radial-gradient(ellipse at center bottom,#0d0825,#1a1040 45%,#080520);z-index:1000;display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .5s;}
+.prayer-letter-edit{font-size:10px;color:var(--muted);cursor:pointer;font-weight:300;}
+.prayer-letter-del{font-size:10px;color:var(--light);cursor:pointer;font-weight:300;}
+.prayer-empty{text-align:center;padding:32px 20px;color:var(--light);font-size:12px;line-height:2;font-weight:300;}
+.prayer-empty-icon{font-size:32px;display:block;margin-bottom:8px;}
+
+/* ASCENSION */
+.ascension-overlay{position:fixed;inset:0;background:#0D0B09;z-index:1000;display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .5s;}
 .ascension-overlay.show{opacity:1;pointer-events:all;}
 .asc-stars{position:absolute;inset:0;overflow:hidden;}
-.asc-star{position:absolute;background:white;border-radius:50%;animation:asc-twinkle var(--dur) ease-in-out infinite;animation-delay:var(--delay);}
-@keyframes asc-twinkle{0%,100%{opacity:.08;}50%{opacity:.8;}}
+.asc-star{position:absolute;background:#F5F0E8;border-radius:50%;animation:asc-twinkle var(--dur) ease-in-out infinite;animation-delay:var(--delay);}
+@keyframes asc-twinkle{0%,100%{opacity:.05;}50%{opacity:.6;}}
 .asc-content{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;}
-.asc-envelope{font-size:56px;animation:asc-rise 3s cubic-bezier(.2,0,.4,1) forwards;filter:drop-shadow(0 0 18px rgba(232,200,74,.8));}
-@keyframes asc-rise{0%{transform:translateY(80px) scale(.75);opacity:0;}12%{transform:translateY(40px) scale(1.05);opacity:1;}60%{transform:translateY(-50px);opacity:1;}85%{transform:translateY(-150px) scale(.88);opacity:.6;}100%{transform:translateY(-280px) scale(.4);opacity:0;}}
-.asc-bowl-section{margin-top:28px;display:flex;flex-direction:column;align-items:center;gap:8px;animation:bowl-appear .7s ease .3s both;}
-@keyframes bowl-appear{from{opacity:0;transform:scale(.75) translateY(14px);}to{opacity:1;transform:none;}}
-.asc-bowl{font-size:72px;animation:bowl-glow 2.2s ease-in-out infinite;}
-@keyframes bowl-glow{0%,100%{filter:drop-shadow(0 0 18px rgba(232,200,74,.6));}50%{filter:drop-shadow(0 0 32px rgba(232,200,74,1));}}
-.bowl-bar{width:120px;height:5px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden;}
-.bowl-bar-fill{height:100%;background:linear-gradient(90deg,#C9A227,#E8C84A);border-radius:3px;width:0%;transition:width 1.4s ease .5s;}
-.bowl-count{font-family:'Noto Serif KR',serif;font-size:12px;color:rgba(240,232,200,.5);}
-.asc-msg{margin-top:22px;font-family:'Noto Serif KR',serif;font-size:17px;color:#f0e8c8;text-align:center;line-height:1.85;animation:asc-msg-in .8s ease 2.2s both;}
-.asc-msg-sub{font-size:11px;color:rgba(240,232,200,.38);font-style:italic;}
-@keyframes asc-msg-in{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
-.asc-close{margin-top:24px;font-size:12px;color:rgba(240,232,200,.35);border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:7px 20px;background:none;cursor:pointer;animation:asc-msg-in .8s ease 2.8s both;}
-.sheet-overlay{position:fixed;inset:0;background:rgba(44,36,24,.45);backdrop-filter:blur(3px);z-index:400;opacity:0;pointer-events:none;transition:opacity .25s;display:flex;align-items:flex-end;justify-content:center;}
+.asc-envelope{font-size:48px;animation:asc-rise 3s cubic-bezier(.2,0,.4,1) forwards;}
+@keyframes asc-rise{0%{transform:translateY(60px);opacity:0;}12%{transform:translateY(30px);opacity:1;}60%{transform:translateY(-40px);opacity:1;}85%{transform:translateY(-120px);opacity:.5;}100%{transform:translateY(-220px);opacity:0;}}
+.asc-bowl-section{margin-top:24px;display:flex;flex-direction:column;align-items:center;gap:6px;animation:bowl-appear .7s ease .3s both;}
+@keyframes bowl-appear{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
+.asc-bowl{font-size:60px;}
+.bowl-bar{width:100px;height:3px;background:rgba(245,240,232,.1);overflow:hidden;}
+.bowl-bar-fill{height:100%;background:#F5F0E8;width:0%;transition:width 1.4s ease .5s;}
+.bowl-count{font-family:'DM Mono',monospace;font-size:11px;color:rgba(245,240,232,.4);}
+.asc-msg{margin-top:20px;font-family:'Noto Serif KR',serif;font-size:16px;color:#F5F0E8;text-align:center;line-height:1.9;animation:asc-msg-in .8s ease 2.2s both;}
+.asc-msg-sub{font-size:10px;color:rgba(245,240,232,.3);font-style:italic;font-weight:300;}
+@keyframes asc-msg-in{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+.asc-close{margin-top:20px;font-size:11px;color:rgba(245,240,232,.25);border:1px solid rgba(245,240,232,.1);padding:6px 18px;background:none;cursor:pointer;animation:asc-msg-in .8s ease 2.8s both;letter-spacing:0.5px;font-weight:300;}
+
+/* SHEETS */
+.sheet-overlay{position:fixed;inset:0;background:rgba(28,25,23,.5);z-index:400;opacity:0;pointer-events:none;transition:opacity .22s;display:flex;align-items:flex-end;justify-content:center;}
 .sheet-overlay.open{opacity:1;pointer-events:all;}
-.sheet{width:100%;max-width:480px;background:var(--surface);border-radius:22px 22px 0 0;max-height:88vh;display:flex;flex-direction:column;transform:translateY(100%);transition:transform .28s cubic-bezier(.32,0,.67,0);}
+.sheet{width:100%;max-width:480px;background:var(--surface);max-height:88vh;display:flex;flex-direction:column;transform:translateY(100%);transition:transform .26s cubic-bezier(.32,0,.67,0);}
 .sheet-overlay.open .sheet{transform:translateY(0);transition-timing-function:cubic-bezier(.33,1,.68,1);}
-.sheet-handle{width:38px;height:4px;background:var(--border);border-radius:2px;margin:12px auto 0;flex-shrink:0;}
+.sheet-handle{width:32px;height:3px;background:var(--border2);margin:12px auto 0;flex-shrink:0;}
 .sheet-header{padding:14px 20px 12px;border-bottom:1px solid var(--border);flex-shrink:0;}
-.sheet-title{font-family:'Noto Serif KR',serif;font-size:16px;font-weight:600;}
-.sheet-sub{font-size:12px;color:var(--muted);margin-top:3px;}
+.sheet-title{font-family:'Noto Serif KR',serif;font-size:15px;font-weight:600;color:var(--text);}
+.sheet-sub{font-size:11px;color:var(--muted);margin-top:2px;font-weight:300;}
 .sheet-body{overflow-y:auto;flex:1;padding:16px 20px 20px;}
 .sheet-footer{padding:12px 20px;border-top:1px solid var(--border);display:flex;gap:8px;flex-shrink:0;}
-.btn{padding:12px 20px;border-radius:12px;font-size:14px;border:none;cursor:pointer;}
-.btn-ghost{background:var(--surface2);color:var(--muted);}
-.btn-primary{background:var(--accent);color:white;flex:1;font-weight:600;}
-.emotion-picker{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px;}
-.emotion-opt{border:1.5px solid var(--border);border-radius:10px;padding:10px 4px;text-align:center;cursor:pointer;background:var(--bg);}
-.emotion-opt.sel{border-color:var(--accent);background:var(--accent-bg);}
-.e-emoji{font-size:22px;display:block;margin-bottom:3px;}.e-name{font-size:10px;color:var(--muted);}
+.btn{padding:11px 18px;font-size:12px;border:none;cursor:pointer;font-weight:400;letter-spacing:0.3px;}
+.btn-ghost{background:var(--surface2);color:var(--muted);border:1px solid var(--border);}
+.btn-primary{background:var(--accent);color:#F5F0E8;flex:1;}
+.emotion-picker{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:14px;}
+.emotion-opt{border:1px solid var(--border);padding:10px 4px;text-align:center;cursor:pointer;background:var(--bg);transition:background .1s;}
+.emotion-opt.sel{border-color:var(--accent);background:var(--surface2);}
+.e-emoji{font-size:20px;display:block;margin-bottom:3px;}
+.e-name{font-size:9px;color:var(--muted);font-weight:300;}
 .emotion-opt.sel .e-name{color:var(--accent);}
-.custom-row{display:flex;gap:8px;margin-top:12px;}
-.custom-emoji{width:50px;border:1.5px solid var(--border);border-radius:var(--rs);padding:10px;font-size:18px;text-align:center;background:var(--bg);color:var(--text);}
-.custom-text{flex:1;border:1.5px solid var(--border);border-radius:var(--rs);padding:10px 13px;font-size:14px;background:var(--bg);color:var(--text);outline:none;}
-.existing-items{display:flex;flex-direction:column;gap:6px;margin-bottom:12px;}
-.existing-item{display:flex;align-items:center;justify-content:space-between;padding:9px 12px;background:var(--surface2);border-radius:var(--rs);font-size:13px;}
-.del-item{color:var(--light);font-size:18px;line-height:1;}
-.add-textarea{width:100%;border:1.5px solid var(--border);border-radius:var(--rs);padding:12px 14px;font-size:14px;background:var(--bg);color:var(--text);resize:none;outline:none;min-height:80px;line-height:1.65;}
-.sticker-cats{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;}
-.sticker-cat-btn{font-size:11px;padding:5px 11px;border-radius:20px;border:1.5px solid var(--border);color:var(--muted);background:none;}
-.sticker-cat-btn.active{background:var(--accent);border-color:var(--accent);color:white;}
-.sticker-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;}
-.sticker-opt{font-size:28px;text-align:center;padding:8px 2px;border-radius:10px;cursor:pointer;border:2px solid transparent;}
-.sticker-opt.sel{border-color:var(--accent);background:var(--accent-bg);}
-.signal-card{background:var(--surface);border:1.5px solid #B5AEED;border-radius:var(--r);padding:14px;position:relative;overflow:hidden;}
-.signal-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--purple);}
-.signal-card-title{font-size:12px;font-weight:600;color:var(--purple);margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;}
-.signal-item{background:var(--surface2);border-radius:var(--rs);padding:10px 12px;margin-bottom:6px;}
-.signal-item-text{font-size:13px;line-height:1.55;color:var(--text);margin-bottom:4px;}
-.signal-item-meta{display:flex;align-items:center;justify-content:space-between;margin-top:6px;}
-.signal-item-time{font-size:10px;color:var(--light);font-family:'DM Mono',monospace;}
-.signal-item-emotion{font-size:11px;color:var(--purple);background:#F0EEFA;border-radius:20px;padding:2px 8px;}
-.signal-del{color:var(--light);font-size:14px;background:none;border:none;cursor:pointer;}
-.quote-box{margin-top:10px;background:linear-gradient(135deg,#F0EEFA,#FDEEE9);border-radius:var(--rs);padding:12px 14px;border-left:3px solid var(--purple);}
-.quote-text{font-family:'Noto Serif KR',serif;font-size:13px;color:var(--text);line-height:1.7;font-style:italic;}
-.quote-author{font-size:10px;color:var(--muted);margin-top:6px;text-align:right;}
-.quote-refresh{font-size:10px;color:var(--purple);background:none;border:none;cursor:pointer;margin-top:4px;display:flex;align-items:center;gap:3px;}
-.cheer-card{background:linear-gradient(135deg,#FFF0F4,#FFF8F0);border:1.5px solid #F5C6D0;border-radius:var(--r);padding:14px;position:relative;overflow:hidden;}
-.cheer-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--pink);}
-.cheer-card-title{font-size:12px;font-weight:600;color:var(--pink);margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;}
-.cheer-item{background:white;border-radius:var(--rs);padding:12px 14px;margin-bottom:6px;border:1px solid #F5C6D0;position:relative;}
-.cheer-item-text{font-family:'Noto Serif KR',serif;font-size:13px;line-height:1.75;color:var(--text);}
-.cheer-item-time{font-size:10px;color:var(--light);font-family:'DM Mono',monospace;margin-top:6px;}
-.cheer-del{position:absolute;top:8px;right:8px;color:var(--light);font-size:14px;background:none;border:none;cursor:pointer;}
-.verse-card{background:linear-gradient(135deg,#F0EBE3,#E8DDD0);border:1px solid var(--border);border-radius:var(--r);padding:18px;margin-top:8px;}
-.verse-ko{font-family:'Noto Serif KR',serif;font-size:14px;color:var(--text);line-height:1.9;margin-bottom:8px;}
-.verse-en{font-size:12px;color:var(--muted);line-height:1.7;font-style:italic;margin-bottom:8px;}
-.verse-ref{font-size:11px;color:var(--accent);font-weight:600;text-align:right;}
-.settings-btn{background:none;border:none;font-size:20px;cursor:pointer;padding:4px;}
-.settings-overlay{position:fixed;inset:0;background:rgba(44,36,24,.45);backdrop-filter:blur(3px);z-index:500;opacity:0;pointer-events:none;transition:opacity .25s;display:flex;align-items:flex-end;justify-content:center;}
+.custom-row{display:flex;gap:6px;margin-top:10px;}
+.custom-emoji{width:46px;border:1px solid var(--border);padding:9px;font-size:16px;text-align:center;background:var(--bg);color:var(--text);}
+.custom-text{flex:1;border:1px solid var(--border);padding:9px 12px;font-size:13px;background:var(--bg);color:var(--text);outline:none;font-weight:300;}
+.existing-items{display:flex;flex-direction:column;gap:4px;margin-bottom:10px;}
+.existing-item{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:var(--surface2);border:1px solid var(--border);font-size:12px;font-weight:300;}
+.del-item{color:var(--light);font-size:16px;line-height:1;}
+.add-textarea{width:100%;border:1px solid var(--border);padding:11px 13px;font-size:13px;background:var(--bg);color:var(--text);resize:none;outline:none;min-height:80px;line-height:1.7;font-weight:300;}
+.sticker-cats{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:10px;}
+.sticker-cat-btn{font-size:10px;padding:4px 10px;border:1px solid var(--border);color:var(--muted);background:var(--bg);font-weight:300;letter-spacing:0.3px;}
+.sticker-cat-btn.active{background:var(--accent);border-color:var(--accent);color:#F5F0E8;}
+.sticker-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;}
+.sticker-opt{font-size:26px;text-align:center;padding:8px 2px;cursor:pointer;border:1px solid transparent;}
+.sticker-opt.sel{border-color:var(--border2);background:var(--surface2);}
+
+/* SETTINGS */
+.settings-overlay{position:fixed;inset:0;background:rgba(28,25,23,.5);z-index:500;opacity:0;pointer-events:none;transition:opacity .22s;display:flex;align-items:flex-end;justify-content:center;}
 .settings-overlay.open{opacity:1;pointer-events:all;}
-.settings-sheet{width:100%;max-width:480px;background:var(--surface);border-radius:22px 22px 0 0;padding:20px;transform:translateY(100%);transition:transform .28s cubic-bezier(.32,0,.67,0);}
+.settings-sheet{width:100%;max-width:480px;background:var(--surface);padding:20px;transform:translateY(100%);transition:transform .26s cubic-bezier(.32,0,.67,0);}
 .settings-overlay.open .settings-sheet{transform:translateY(0);transition-timing-function:cubic-bezier(.33,1,.68,1);}
-.settings-handle{width:38px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 20px;}
-.settings-title{font-family:'Noto Serif KR',serif;font-size:16px;font-weight:600;margin-bottom:16px;}
-.settings-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border);}
+.settings-handle{width:32px;height:3px;background:var(--border2);margin:0 auto 20px;}
+.settings-title{font-family:'Noto Serif KR',serif;font-size:15px;font-weight:600;margin-bottom:16px;color:var(--text);}
+.settings-row{display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid var(--border);}
 .settings-row:last-child{border-bottom:none;}
-.settings-row-left{display:flex;align-items:center;gap:10px;font-size:14px;}
-.settings-row-icon{font-size:20px;}
-.settings-row-desc{font-size:11px;color:var(--muted);margin-top:2px;}
-.toggle{width:44px;height:26px;background:var(--border);border-radius:13px;position:relative;cursor:pointer;transition:background .2s;}
+.settings-row-left{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:300;color:var(--text2);}
+.settings-row-icon{font-size:18px;}
+.settings-row-desc{font-size:10px;color:var(--light);margin-top:1px;font-weight:300;}
+.toggle{width:40px;height:22px;background:var(--border2);border-radius:11px;position:relative;cursor:pointer;transition:background .2s;}
 .toggle.on{background:var(--accent);}
-.toggle-knob{position:absolute;top:3px;left:3px;width:20px;height:20px;background:white;border-radius:50%;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.2);}
+.toggle-knob{position:absolute;top:2px;left:2px;width:18px;height:18px;background:var(--surface);border-radius:50%;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.15);}
 .toggle.on .toggle-knob{transform:translateX(18px);}
-body.dark{--bg:#1A1714;--surface:#242018;--surface2:#2E2920;--border:#3D3630;--text:#F0EBE3;--muted:#A09080;--light:#5C4E42;}
-body.dark .verse-card{background:linear-gradient(135deg,#2E2920,#3D3630);}
-body.dark .verse-ko{color:#F0EBE3;}
+
+/* DARK MODE */
+body.dark{--bg:#141210;--bg2:#1A1816;--surface:#1E1C1A;--surface2:#252220;--border:#2E2B28;--border2:#3D3A36;--text:#F0EBE3;--text2:#C8C0B8;--muted:#7A7268;--light:#4A4540;--accent:#F0EBE3;--accent2:#C8B89A;}
+body.dark .prayer-wrap{background:#0D0B09;border-color:#2E2B28;}
+body.dark .verse-card{background:var(--surface2);}
+
+/* WEATHER SHEET */
+.weather-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+.weather-opt{border:1px solid var(--border);padding:14px 4px;text-align:center;cursor:pointer;background:var(--bg);font-size:11px;color:var(--muted);font-weight:300;}
+.weather-opt:active{background:var(--surface2);}
+.weather-opt.sel{border-color:var(--accent);background:var(--surface2);color:var(--text);}
+.weather-emoji{font-size:24px;display:block;margin-bottom:4px;}
 </style>
 </head>
 <body>
 <div class="app">
   <div class="topbar">
     <div class="logo">하루<span>결</span></div>
-    <div class="topbar-date" id="topDate"></div>
-    <div class="topbar-streak">🔥 <strong id="streakNum">0</strong>일째</div>
-    <button class="settings-btn" onclick="openSettings()">⚙️</button>
+    <div class="topbar-center">
+      <div class="topbar-date" id="topDate"></div>
+      <button class="weather-btn" id="weatherBtn" onclick="openWeatherSheet()">—</button>
+    </div>
+    <button class="settings-btn" onclick="openSettings()">⚙</button>
   </div>
   <div class="pages">
     <div class="page active" id="page-today">
+      <div class="today-header">
+        <textarea class="today-oneline" id="todayOneline" placeholder="오늘의 제목, 다짐, 깨달은 것..." rows="1" oninput="autoResize(this);saveTodayOneline()"></textarea>
+        <div class="today-meta">
+          <div class="today-date-full" id="todayDateFull"></div>
+        </div>
+      </div>
       <div class="section-label" id="todayLabel">감정 기록</div>
       <div class="emotion-grid">
-        <div class="emotion-card morning" onclick="openEmotionSheet('morning')"><div class="emotion-time">☀️ 아침</div><div class="emotion-display" id="disp-morning"><span class="emotion-empty">기분이 어때요?</span></div></div>
-        <div class="emotion-card noon" onclick="openEmotionSheet('noon')"><div class="emotion-time">🌤 점심</div><div class="emotion-display" id="disp-noon"><span class="emotion-empty">기분이 어때요?</span></div></div>
-        <div class="emotion-card evening" onclick="openEmotionSheet('evening')"><div class="emotion-time">🌆 저녁</div><div class="emotion-display" id="disp-evening"><span class="emotion-empty">기분이 어때요?</span></div></div>
-        <div class="emotion-card night" onclick="openEmotionSheet('night')"><div class="emotion-time">🌙 자기 전</div><div class="emotion-display" id="disp-night"><span class="emotion-empty">기분이 어때요?</span></div></div>
+        <div class="emotion-card" onclick="openEmotionSheet('morning')"><div class="emotion-time">아침</div><div class="emotion-display" id="disp-morning"><span class="emotion-empty">기분이 어때요?</span></div></div>
+        <div class="emotion-card" onclick="openEmotionSheet('noon')"><div class="emotion-time">점심</div><div class="emotion-display" id="disp-noon"><span class="emotion-empty">기분이 어때요?</span></div></div>
+        <div class="emotion-card" onclick="openEmotionSheet('evening')"><div class="emotion-time">저녁</div><div class="emotion-display" id="disp-evening"><span class="emotion-empty">기분이 어때요?</span></div></div>
+        <div class="emotion-card" onclick="openEmotionSheet('night')"><div class="emotion-time">자기 전</div><div class="emotion-display" id="disp-night"><span class="emotion-empty">기분이 어때요?</span></div></div>
       </div>
       <div class="section-label">오늘의 기록</div>
       <div class="record-list">
-        <div class="record-card"><div class="record-card-title gratitude">🌱 감사한 것 <button class="add-item-btn" onclick="openAddSheet('gratitude')">+ 추가</button></div><div class="record-items" id="list-gratitude"></div></div>
-        <div class="record-card"><div class="record-card-title resolved">🌀 걱정이 별일 없이 <button class="add-item-btn" onclick="openAddSheet('resolved')">+ 추가</button></div><div class="record-items" id="list-resolved"></div></div>
-        <div class="record-card"><div class="record-card-title strength">✨ 힘이 되었던 것 <button class="add-item-btn" onclick="openAddSheet('strength')">+ 추가</button></div><div class="record-items" id="list-strength"></div></div>
+        <div class="record-card"><div class="record-card-title">🌱 감사하고 좋았던 것 <button class="add-item-btn" onclick="openAddSheet('gratitude')">+ 추가</button></div><div class="record-items" id="list-gratitude"></div></div>
+        <div class="record-card"><div class="record-card-title">🌀 걱정이 별일 없이 <button class="add-item-btn" onclick="openAddSheet('resolved')">+ 추가</button></div><div class="record-items" id="list-resolved"></div></div>
+        <div class="record-card"><div class="record-card-title">✨ 힘이 되었던 것 <button class="add-item-btn" onclick="openAddSheet('strength')">+ 추가</button></div><div class="record-items" id="list-strength"></div></div>
       </div>
       <div class="section-label">마음의 신호</div>
       <div class="signal-card">
-        <div class="signal-card-title">🫧 지금 이 순간 알아차린 것 <button class="add-item-btn" onclick="openSignalSheet()" style="color:var(--purple);">+ 추가</button></div>
-        <div id="signalList"></div>
+        <div class="signal-card-title">🫧 지금 이 순간 알아차린 것 <button class="add-item-btn" onclick="openSignalSheet()">+ 추가</button></div>
+        <div class="signal-body" id="signalList"></div>
       </div>
       <div class="section-label">나에게 건네는 말</div>
       <div class="cheer-card">
-        <div class="cheer-card-title">💌 오늘의 나에게 <button class="add-item-btn" onclick="openCheerSheet()" style="color:var(--pink);">+ 추가</button></div>
-        <div id="cheerList"></div>
+        <div class="cheer-card-title">💌 오늘의 나에게 <button class="add-item-btn" onclick="openCheerSheet()">+ 추가</button></div>
+        <div class="cheer-body" id="cheerList"></div>
       </div>
       <div class="section-label">감정 스티커</div>
       <div class="sticker-board-wrap">
-        <div class="sticker-board-header"><div class="sticker-board-title">🎀 오늘을 꾸며보세요</div><button class="sticker-add-btn" onclick="openStickerSheet()">+ 스티커</button></div>
+        <div class="sticker-board-header"><div class="sticker-board-title">오늘을 꾸며보세요</div><button class="sticker-add-btn" onclick="openStickerSheet()">+ 스티커</button></div>
         <div class="sticker-board" id="stickerBoard"></div>
       </div>
       <div class="section-label">오늘의 말씀</div>
@@ -243,6 +311,7 @@ body.dark .verse-ko{color:#F0EBE3;}
         <div class="verse-en" id="verseEn"></div>
         <div class="verse-ref" id="verseRef"></div>
       </div>
+      <div style="height:20px;"></div>
     </div>
     <div class="page" id="page-calendar">
       <div class="cal-page-header"><div class="cal-page-month" id="calPageMonth"></div><div class="cal-nav-row"><button class="cal-nav-btn" onclick="changeMonth(-1)">←</button><button class="cal-nav-btn" onclick="changeMonth(1)">→</button></div></div>
@@ -251,112 +320,119 @@ body.dark .verse-ko{color:#F0EBE3;}
     </div>
     <div class="page" id="page-prayer">
       <div class="prayer-wrap">
-        <div class="prayer-stars" id="prayerStars"></div>
         <div class="prayer-inner">
-          <div class="prayer-title">🙏 하나님께 드리는 감사의 기도</div>
+          <div class="prayer-title">하나님께 드리는 기도</div>
           <div class="prayer-sub">오늘 하루를 주님께 올려드려요</div>
           <textarea class="prayer-textarea" id="prayerInput" placeholder="주님, 오늘 하루도..."></textarea>
           <div class="prayer-bottom">
-            <div class="prayer-verse">"이 대접들은 성도의<br>기도들이라" — 계 5:8</div>
-            <button class="prayer-send-btn" id="prayerSendBtn" onclick="sendPrayer()">✉️ 올려드리기</button>
+            <div class="prayer-verse">"이 대접들은 성도의 기도들이라" — 계 5:8</div>
+            <button class="prayer-send-btn" id="prayerSendBtn" onclick="sendPrayer()">✉ 올려드리기</button>
           </div>
         </div>
       </div>
-      <button class="drawer-toggle" onclick="toggleDrawer()">
-        <div class="drawer-toggle-left"><span style="font-size:22px;">🏺</span><div><div class="drawer-toggle-title">하나님의 서랍</div><div style="font-size:11px;color:var(--muted);margin-top:1px;">쌓인 기도를 볼 수 있어요</div></div></div>
-        <div style="display:flex;align-items:center;gap:8px;"><span class="drawer-toggle-count" id="prayerCountBadge">0편</span><span style="font-size:16px;color:var(--light);" id="drawerArrow">›</span></div>
+      <button class="drawer-toggle" onclick="toggleDrawer()" style="width:calc(100% - 40px);border-top:none;">
+        <div class="drawer-toggle-left"><span style="font-size:18px;">🏺</span><div><div class="drawer-toggle-title">하나님의 서랍</div></div></div>
+        <div style="display:flex;align-items:center;gap:8px;"><span class="drawer-toggle-count" id="prayerCountBadge">0편</span><span style="font-size:14px;color:var(--light);" id="drawerArrow">›</span></div>
       </button>
       <div id="drawerLetters" style="display:none;"><div class="prayer-letters" id="prayerLetterList"></div></div>
     </div>
   </div>
   <nav class="bottom-nav">
-    <button class="nav-btn active" data-page="today" onclick="switchPage('today')"><span class="nav-icon">☀️</span>오늘</button>
+    <button class="nav-btn active" data-page="today" onclick="switchPage('today')"><span class="nav-icon">☀</span>오늘</button>
     <button class="nav-btn" data-page="calendar" onclick="switchPage('calendar')"><span class="nav-icon">📅</span>달력</button>
     <button class="nav-btn" data-page="prayer" onclick="switchPage('prayer')"><span class="nav-icon">🙏</span>기도</button>
   </nav>
 </div>
+
 <div class="ascension-overlay" id="ascOverlay">
   <div class="asc-stars" id="ascStars"></div>
   <div class="asc-content">
-    <div style="position:relative;display:flex;flex-direction:column;align-items:center;"><div class="asc-envelope">✉️</div></div>
+    <div class="asc-envelope">✉</div>
     <div class="asc-bowl-section"><div class="asc-bowl">🏺</div><div class="bowl-bar"><div class="bowl-bar-fill" id="bowlFill"></div></div><div class="bowl-count" id="bowlCount"></div></div>
     <div class="asc-msg">기도가 올려졌습니다<br><span class="asc-msg-sub">금 대접에 향기로 쌓여 있어요</span></div>
     <button class="asc-close" onclick="closeAscension()">닫기</button>
   </div>
 </div>
+
 <div class="settings-overlay" id="settingsOverlay" onclick="closeSettingsOnBg(event)">
   <div class="settings-sheet">
     <div class="settings-handle"></div>
-    <div class="settings-title">⚙️ 설정</div>
+    <div class="settings-title">설정</div>
     <div class="settings-row">
-      <div class="settings-row-left">
-        <span class="settings-row-icon">🌙</span>
-        <div><div>다크모드</div><div class="settings-row-desc">어두운 테마로 변경해요</div></div>
-      </div>
+      <div class="settings-row-left"><span class="settings-row-icon">🌙</span><div><div>다크모드</div><div class="settings-row-desc">어두운 테마로 변경해요</div></div></div>
       <div class="toggle" id="darkToggle" onclick="toggleDark()"><div class="toggle-knob"></div></div>
     </div>
     <div class="settings-row">
-      <div class="settings-row-left">
-        <span class="settings-row-icon">📦</span>
-        <div><div>데이터 백업</div><div class="settings-row-desc">일기·기도 데이터를 파일로 저장해요</div></div>
-      </div>
-      <button class="btn btn-primary" style="flex:0;padding:8px 16px;font-size:12px;" onclick="backupData()">백업</button>
+      <div class="settings-row-left"><span class="settings-row-icon">📦</span><div><div>데이터 백업</div><div class="settings-row-desc">일기·기도 데이터를 파일로 저장해요</div></div></div>
+      <button class="btn btn-ghost" style="flex:0;padding:6px 14px;font-size:11px;" onclick="backupData()">백업</button>
     </div>
     <div class="settings-row">
-      <div class="settings-row-left">
-        <span class="settings-row-icon">📥</span>
-        <div><div>데이터 복원</div><div class="settings-row-desc">백업 파일로 데이터를 복원해요</div></div>
-      </div>
-      <label class="btn btn-primary" style="flex:0;padding:8px 16px;font-size:12px;cursor:pointer;">복원<input type="file" accept=".json" style="display:none;" onchange="restoreData(event)"></label>
+      <div class="settings-row-left"><span class="settings-row-icon">📥</span><div><div>데이터 복원</div><div class="settings-row-desc">백업 파일로 데이터를 복원해요</div></div></div>
+      <label class="btn btn-ghost" style="flex:0;padding:6px 14px;font-size:11px;cursor:pointer;">복원<input type="file" accept=".json" style="display:none;" onchange="restoreData(event)"></label>
     </div>
   </div>
 </div>
+
+<div class="sheet-overlay" id="weatherSheetOverlay" onclick="closeSheetOnBg(event,'weatherSheetOverlay')">
+  <div class="sheet"><div class="sheet-handle"></div>
+  <div class="sheet-header"><div class="sheet-title">오늘의 날씨</div><div class="sheet-sub">오늘 날씨를 선택해요</div></div>
+  <div class="sheet-body">
+    <div class="weather-grid" id="weatherGrid"></div>
+  </div>
+  <div class="sheet-footer"><button class="btn btn-ghost" onclick="closeSheet('weatherSheetOverlay')">닫기</button></div></div>
+</div>
+
 <div class="sheet-overlay" id="emotionSheetOverlay" onclick="closeSheetOnBg(event,'emotionSheetOverlay')">
   <div class="sheet"><div class="sheet-handle"></div><div class="sheet-header"><div class="sheet-title" id="emotionSheetTitle">감정 기록</div><div class="sheet-sub">이 순간의 감정에 이름을 붙여보세요</div></div>
-  <div class="sheet-body"><div style="font-size:11px;color:var(--muted);margin-bottom:8px;">감정 선택</div><div class="emotion-picker" id="emotionPicker"></div><div style="font-size:11px;color:var(--muted);margin-bottom:8px;">직접 입력</div><div class="custom-row"><input class="custom-emoji" id="customEmoji" placeholder="🙂" maxlength="2"><input class="custom-text" id="customName" placeholder="감정 이름을 직접 입력해요..."></div></div>
+  <div class="sheet-body"><div style="font-size:10px;color:var(--muted);margin-bottom:8px;letter-spacing:0.5px;">감정 선택</div><div class="emotion-picker" id="emotionPicker"></div><div style="font-size:10px;color:var(--muted);margin-bottom:8px;letter-spacing:0.5px;">직접 입력</div><div class="custom-row"><input class="custom-emoji" id="customEmoji" placeholder="🙂" maxlength="2"><input class="custom-text" id="customName" placeholder="감정 이름을 직접 입력해요..."></div></div>
   <div class="sheet-footer"><button class="btn btn-ghost" onclick="closeSheet('emotionSheetOverlay')">취소</button><button class="btn btn-primary" onclick="saveEmotion()">저장하기</button></div></div>
 </div>
+
 <div class="sheet-overlay" id="addSheetOverlay" onclick="closeSheetOnBg(event,'addSheetOverlay')">
   <div class="sheet"><div class="sheet-handle"></div><div class="sheet-header"><div class="sheet-title" id="addSheetTitle"></div><div class="sheet-sub" id="addSheetSub"></div></div>
   <div class="sheet-body"><div class="existing-items" id="existingItems"></div><textarea class="add-textarea" id="addTextarea"></textarea></div>
   <div class="sheet-footer"><button class="btn btn-ghost" onclick="closeSheet('addSheetOverlay')">취소</button><button class="btn btn-primary" onclick="saveRecord()">추가하기</button></div></div>
 </div>
+
 <div class="sheet-overlay" id="signalSheetOverlay" onclick="closeSheetOnBg(event,'signalSheetOverlay')">
   <div class="sheet"><div class="sheet-handle"></div>
-  <div class="sheet-header"><div class="sheet-title">🫧 마음의 신호</div><div class="sheet-sub">지금 알아차린 것을 적어요</div></div>
+  <div class="sheet-header"><div class="sheet-title">마음의 신호</div><div class="sheet-sub">지금 알아차린 것을 적어요</div></div>
   <div class="sheet-body">
     <textarea class="add-textarea" id="signalTextarea" placeholder="무엇이 느껴졌나요..."></textarea>
-    <div style="font-size:11px;color:var(--muted);margin:14px 0 8px;">이 순간 느낀 감정 선택</div>
+    <div style="font-size:10px;color:var(--muted);margin:12px 0 8px;letter-spacing:0.5px;">이 순간 느낀 감정 선택</div>
     <div class="emotion-picker" id="signalEmotionPicker"></div>
-    <div style="font-size:11px;color:var(--muted);margin:8px 0 6px;">직접 입력</div>
-    <div class="custom-row">
-      <input class="custom-emoji" id="signalCustomEmoji" placeholder="🙂" maxlength="2">
-      <input class="custom-text" id="signalCustomName" placeholder="감정을 직접 입력해요...">
-    </div>
+    <div style="font-size:10px;color:var(--muted);margin:8px 0 6px;letter-spacing:0.5px;">직접 입력</div>
+    <div class="custom-row"><input class="custom-emoji" id="signalCustomEmoji" placeholder="🙂" maxlength="2"><input class="custom-text" id="signalCustomName" placeholder="감정을 직접 입력해요..."></div>
     <div id="signalQuoteBox"></div>
   </div>
   <div class="sheet-footer"><button class="btn btn-ghost" onclick="closeSheet('signalSheetOverlay')">취소</button><button class="btn btn-primary" onclick="saveSignal()">저장하기</button></div></div>
 </div>
+
 <div class="sheet-overlay" id="cheerSheetOverlay" onclick="closeSheetOnBg(event,'cheerSheetOverlay')">
   <div class="sheet"><div class="sheet-handle"></div>
-  <div class="sheet-header"><div class="sheet-title">💌 나에게 건네는 말</div><div class="sheet-sub">오늘의 나에게 다정하고 따뜻한 말을 건네요</div></div>
-  <div class="sheet-body">
-    <textarea class="add-textarea" id="cheerTextarea" placeholder="괜찮아, 오늘도 잘 해냈어&#10;수고했어, 네가 있어서 좋아..."></textarea>
-  </div>
+  <div class="sheet-header"><div class="sheet-title">나에게 건네는 말</div><div class="sheet-sub">오늘의 나에게 다정하고 따뜻한 말을 건네요</div></div>
+  <div class="sheet-body"><textarea class="add-textarea" id="cheerTextarea" placeholder="괜찮아, 오늘도 잘 해냈어&#10;수고했어, 네가 있어서 좋아..."></textarea></div>
   <div class="sheet-footer"><button class="btn btn-ghost" onclick="closeSheet('cheerSheetOverlay')">취소</button><button class="btn btn-primary" onclick="saveCheer()">저장하기</button></div></div>
 </div>
+
 <div class="sheet-overlay" id="prayerEditSheetOverlay" onclick="closeSheetOnBg(event,'prayerEditSheetOverlay')">
   <div class="sheet"><div class="sheet-handle"></div>
-  <div class="sheet-header"><div class="sheet-title">✏️ 기도 수정</div><div class="sheet-sub">기도문을 수정할 수 있어요</div></div>
+  <div class="sheet-header"><div class="sheet-title">기도 수정</div><div class="sheet-sub">기도문을 수정할 수 있어요</div></div>
   <div class="sheet-body"><textarea class="add-textarea" id="prayerEditTextarea" style="min-height:160px;"></textarea></div>
   <div class="sheet-footer"><button class="btn btn-ghost" onclick="closeSheet('prayerEditSheetOverlay')">취소</button><button class="btn btn-primary" onclick="savePrayerEdit()">수정 저장</button></div></div>
 </div>
+
 <div class="sheet-overlay" id="stickerSheetOverlay" onclick="closeSheetOnBg(event,'stickerSheetOverlay')">
-  <div class="sheet"><div class="sheet-handle"></div><div class="sheet-header"><div class="sheet-title">감정 스티커 고르기</div><div class="sheet-sub">스티커를 눌러 선택하고 보드에 붙여요</div></div>
+  <div class="sheet"><div class="sheet-handle"></div><div class="sheet-header"><div class="sheet-title">감정 스티커</div><div class="sheet-sub">스티커를 눌러 선택하고 보드에 붙여요</div></div>
   <div class="sheet-body"><div class="sticker-cats" id="stickerCats"></div><div class="sticker-grid" id="stickerGrid"></div></div>
   <div class="sheet-footer"><button class="btn btn-ghost" onclick="closeSheet('stickerSheetOverlay')">취소</button><button class="btn btn-primary" onclick="addSticker()">붙이기</button></div></div>
-</div>
+</div>  
 <script>
+const WEATHER_LIST=[
+  {emoji:'☀️',label:'맑음'},{emoji:'🌤',label:'구름조금'},{emoji:'⛅',label:'흐림'},
+  {emoji:'🌧',label:'비'},{emoji:'⛈',label:'천둥비'},{emoji:'🌨',label:'눈'},
+  {emoji:'🌫',label:'안개'},{emoji:'🌬',label:'바람'}
+];
 const EMOTIONS=[
   {emoji:'😊',name:'기쁨'},{emoji:'😌',name:'평온'},{emoji:'🥰',name:'사랑스러움'},{emoji:'😤',name:'뿌듯함'},
   {emoji:'🤗',name:'따뜻함'},{emoji:'😴',name:'피곤함'},{emoji:'🫠',name:'멍함'},
@@ -369,134 +445,585 @@ const EMOTIONS=[
   {emoji:'😟',name:'걱정스러움'}
 ];
 const QUOTES={
-  '기쁨':['즐거움이 있는 곳에 하나님도 계신다. — 마르틴 루터','감사하는 마음이 기쁨의 뿌리다. — 데이비드 스타인들-라스트','오늘의 기쁨을 충분히 누려라. 그것이 내일의 힘이 된다.','작은 것에 기뻐할 수 있는 사람이 진정 행복한 사람이다.','기쁨으로 가득 찬 하루는 하나님의 선물이다.'],
-  '평온':['고요함 속에 하나님의 음성이 들린다.','내 마음이 평온할 때 세상이 아름다워 보인다.','평화는 밖에서 찾는 것이 아니라 안에서 발견하는 것이다.','잠잠하라 내가 하나님임을 알지어다. — 시편 46:10','고요한 물이 깊이 흐른다.'],
-  '사랑스러움':['사랑은 오래 참고 온유하며. — 고린도전서 13:4','사랑받고 있음을 아는 것이 모든 것의 시작이다.','당신은 사랑받기 위해 태어난 사람.','작은 사랑의 표현이 세상을 바꾼다. — 마더 테레사','사랑은 가장 강한 힘이다.'],
-  '뿌듯함':['수고하고 무거운 짐 진 자들아 다 내게로 오라. — 마태복음 11:28','오늘의 노력이 내일의 열매가 된다.','작은 성취도 충분히 기뻐할 가치가 있다.','최선을 다한 하루는 그 자체로 완전하다.','땀 흘린 만큼 더 달콤한 결실이 온다.'],
-  '따뜻함':['사랑은 전염된다. 오늘 받은 따뜻함을 나누어라.','작은 친절이 세상을 바꾼다. — 마더 테레사','따뜻한 마음이 있는 곳에 하나님이 계신다.','오늘 누군가의 마음을 데워준 것이 가장 위대한 일이다.','사랑은 행동이다. — C.S. 루이스'],
-  '피곤함':['쉬어라. 들의 꽃도 쉬는 시간이 있다.','피곤함은 열심히 살았다는 증거다.','안식은 게으름이 아니라 지혜다. — 존 러스킨','내 영혼아 잠잠히 하나님만 바라라. — 시편 62:5','오늘 충분히 쉬는 것이 내일을 위한 가장 좋은 준비다.'],
-  '멍함':['고요함도 하나의 언어다.','아무것도 하지 않는 시간이 창조의 씨앗이 된다.','멍함 속에서 내면의 소리를 들을 수 있다.','쉬어가는 것도 여정의 일부다.','지금 이 순간 그냥 존재하는 것으로 충분하다.'],
-  '담담함':['흔들리지 않는 것이 강한 것이다.','담담함은 내면이 깊어진 증거다.','모든 것을 있는 그대로 받아들이는 것이 지혜의 시작이다.','잠잠하고 평온한 마음이 가장 큰 힘이다.','오늘의 고요함이 내일의 뿌리가 된다.'],
-  '무덤덤함':['감정이 잦아드는 것도 회복의 한 방법이다.','지금 이 평온함을 충분히 누려도 괜찮다.','무덤덤함 뒤에는 깊은 안정이 있다.','모든 감정에는 때가 있다. 지금은 쉬어가는 때다.','고요한 바다도 깊은 곳에 흐름이 있다.'],
-  '심심함':['비어있는 시간이 창의성을 부른다.','아무것도 하지 않는 것도 하나의 선택이다.','심심함은 새로운 것을 찾아 나서라는 신호다.','지루함 속에서 진짜 하고 싶은 것이 떠오른다.','여백이 있어야 그림이 완성된다.'],
-  '어리둥절함':['모르는 것이 배움의 시작이다.','당황스러움은 새로운 것을 만난 증거다.','모든 것을 이해할 필요는 없다. 시간이 답을 준다.','지금 혼란스럽다면 곧 더 선명해질 것이다.','하나님은 우리가 이해하지 못할 때도 일하신다.'],
-  '복잡함':['복잡한 마음도 천천히 풀어나갈 수 있다.','한 번에 하나씩 생각해도 충분하다.','얽힌 실도 끝을 찾으면 풀린다.','지금 복잡한 것은 그만큼 많은 것을 품고 있기 때문이다.','하나님은 복잡한 상황 속에서도 길을 내신다.'],
-  '슬픔':['눈물을 흘리며 씨를 뿌리는 자는 기쁨으로 거두리로다. — 시편 126:5','슬픔도 지나간다. 이 또한 지나가리라.','울어도 괜찮다. 비 온 뒤에 땅이 굳는다.','하나님은 상한 마음 가까이 계신다. — 시편 34:18','슬픔은 더 깊이 사랑할 수 있게 해주는 선물이다.'],
-  '불안':['내가 너와 함께 하노라 두려워하지 말라. — 이사야 41:10','너희 염려를 다 주께 맡기라 이는 그가 너희를 돌보심이라. — 베드로전서 5:7','지금 이 순간에 집중하라. 불안은 미래를 상상할 때 온다.','두려움은 믿음의 반대가 아니다. 두 가지가 함께 있어도 괜찮다.','폭풍 속에도 배는 항구로 돌아온다.'],
-  '화남':['분을 내어도 죄를 짓지 말며. — 에베소서 4:26','감정을 느끼는 것과 그것에 지배당하는 것은 다르다.','화는 내 안의 무언가가 상처받았다는 신호다.','깊이 숨을 들이쉬어라. 폭풍도 잠잠해진다.','내 반응을 선택할 자유가 내게 있다. — 빅터 프랭클'],
-  '서러움':['하나님이 모든 눈물을 그 눈에서 닦아 주실 것이라. — 요한계시록 21:4','서러움은 깊이 느꼈다는 증거다. 그만큼 소중했던 것이다.','마음의 상처도 시간이 치유한다.','혼자가 아니다. 누군가 늘 함께한다.','이 슬픔도 나를 더 단단하게 만들 것이다.'],
-  '공허함':['주님 당신 안에 쉬기까지 내 마음은 쉬지 못합니다. — 아우구스티누스','공허함은 채워질 무언가를 기다리는 공간이다.','나의 영혼이 잠잠히 하나님만 바람이여. — 시편 62:5','지금의 공허함은 더 깊은 충만함을 위한 준비다.','작은 것에 감사할 때 공허함이 채워지기 시작한다.'],
-  '억울함':['하나님은 모든 것을 보고 계신다. 억울함도 아신다.','지금 억울해도 괜찮다. 감정을 충분히 느껴도 된다.','내가 할 수 없는 것은 하나님께 맡기는 것이 지혜다.','억울함 뒤에는 반드시 회복이 온다.','진실은 언제나 드러난다. 인내하라.'],
-  '외로움':['하나님이 고독한 자를 가족과 함께 살게 하신다. — 시편 68:6','외로움은 더 깊은 관계를 원한다는 신호다.','혼자인 시간이 나를 더 깊게 만든다.','지금 외롭더라도 당신은 혼자가 아니다.','고요한 시간 속에서 하나님의 임재를 느낄 수 있다.'],
-  '지침':['쉬는 것도 용기다.','지침은 열심히 살아왔다는 증거다.','오늘은 쉬어도 괜찮다. 내일은 또 새로운 날이다.','나의 영혼이 잠잠히 하나님만 바람이여. — 시편 62:5','몸과 마음이 쉬어야 더 멀리 갈 수 있다.'],
-  '두려움':['내가 너와 함께 하노라 두려워하지 말라. — 이사야 41:10','두려움은 중요한 것 앞에 서 있다는 신호다.','용기는 두려움이 없는 것이 아니라 두려움에도 나아가는 것이다.','하나님은 두려워하는 자와 함께 걸으신다.','두려움을 인정하는 것이 극복의 첫 걸음이다.'],
-  '부끄러움':['완벽하지 않아도 괜찮다. 우리는 모두 성장 중이다.','부끄러움은 더 나아지고 싶다는 마음의 표현이다.','하나님 앞에서 있는 그대로의 나도 충분하다.','실수는 배움의 기회다. 자책하지 말라.','은혜는 부끄러움보다 항상 크다.'],
-  '죄책감':['진정한 회개 후에는 자유가 온다.','하나님의 용서는 우리의 죄보다 크다.','자책보다 더 나은 선택을 하려는 의지가 중요하다.','죄책감을 느낀다는 것은 양심이 살아있다는 증거다.','용서받은 자로 살아가는 것이 은혜에 보답하는 길이다.'],
-  '실망감':['실망은 기대했다는 증거다. 그만큼 소중했던 것이다.','모든 실망 뒤에는 새로운 방향이 있다.','하나님의 계획은 우리의 기대보다 크다.','이번 실망이 더 좋은 것을 위한 준비일 수 있다.','기대가 무너진 자리에서 믿음이 자란다.'],
-  '막막함':['한 걸음씩만 가도 된다. 전부 보이지 않아도 괜찮다.','막막할 때는 가장 작은 것부터 시작하면 된다.','보라 내가 새 일을 행하리니 광야에 길을 사막에 강을 내리리라. — 이사야 43:19','안개가 걷히면 길이 보인다. 지금은 기다릴 때다.','막막함은 새로운 시작 직전에 찾아온다.'],
-  '걱정스러움':['너희 염려를 다 주께 맡기라 이는 그가 너희를 돌보심이라. — 베드로전서 5:7','걱정은 내일의 슬픔을 없애주지 않는다. 오늘의 힘을 빼앗을 뿐이다.','지금 이 순간에 집중하라. 걱정은 아직 오지 않은 것에 대한 것이다.','하나님은 내일도 함께 하신다. 오늘은 오늘의 것으로 충분하다.','두려워하지 말라 내가 너와 함께 함이라. — 이사야 41:10']
+  '기쁨':['즐거움이 있는 곳에 하나님도 계신다. — 마르틴 루터','감사하는 마음이 기쁨의 뿌리다.','기쁨으로 가득 찬 하루는 하나님의 선물이다.'],
+  '평온':['고요함 속에 하나님의 음성이 들린다.','잠잠하라 내가 하나님임을 알지어다. — 시편 46:10','고요한 물이 깊이 흐른다.'],
+  '사랑스러움':['사랑은 오래 참고 온유하며. — 고린도전서 13:4','당신은 사랑받기 위해 태어난 사람.','사랑은 가장 강한 힘이다.'],
+  '뿌듯함':['최선을 다한 하루는 그 자체로 완전하다.','오늘의 노력이 내일의 열매가 된다.','작은 성취도 충분히 기뻐할 가치가 있다.'],
+  '따뜻함':['작은 친절이 세상을 바꾼다. — 마더 테레사','따뜻한 마음이 있는 곳에 하나님이 계신다.','사랑은 행동이다. — C.S. 루이스'],
+  '피곤함':['쉬어라. 들의 꽃도 쉬는 시간이 있다.','안식은 게으름이 아니라 지혜다.','내 영혼아 잠잠히 하나님만 바라라. — 시편 62:5'],
+  '멍함':['고요함도 하나의 언어다.','지금 이 순간 그냥 존재하는 것으로 충분하다.','쉬어가는 것도 여정의 일부다.'],
+  '담담함':['흔들리지 않는 것이 강한 것이다.','오늘의 고요함이 내일의 뿌리가 된다.','담담함은 내면이 깊어진 증거다.'],
+  '무덤덤함':['감정이 잦아드는 것도 회복의 한 방법이다.','모든 감정에는 때가 있다. 지금은 쉬어가는 때다.','고요한 바다도 깊은 곳에 흐름이 있다.'],
+  '심심함':['비어있는 시간이 창의성을 부른다.','여백이 있어야 그림이 완성된다.','심심함은 새로운 것을 찾아 나서라는 신호다.'],
+  '어리둥절함':['모르는 것이 배움의 시작이다.','하나님은 우리가 이해하지 못할 때도 일하신다.','모든 것을 이해할 필요는 없다. 시간이 답을 준다.'],
+  '복잡함':['복잡한 마음도 천천히 풀어나갈 수 있다.','한 번에 하나씩 생각해도 충분하다.','하나님은 복잡한 상황 속에서도 길을 내신다.'],
+  '슬픔':['눈물을 흘리며 씨를 뿌리는 자는 기쁨으로 거두리로다. — 시편 126:5','울어도 괜찮다. 비 온 뒤에 땅이 굳는다.','하나님은 상한 마음 가까이 계신다. — 시편 34:18'],
+  '불안':['내가 너와 함께 하노라 두려워하지 말라. — 이사야 41:10','너희 염려를 다 주께 맡기라. — 베드로전서 5:7','지금 이 순간에 집중하라. 불안은 미래를 상상할 때 온다.'],
+  '화남':['분을 내어도 죄를 짓지 말며. — 에베소서 4:26','화는 내 안의 무언가가 상처받았다는 신호다.','깊이 숨을 들이쉬어라. 폭풍도 잠잠해진다.'],
+  '서러움':['하나님이 모든 눈물을 닦아 주실 것이라. — 요한계시록 21:4','서러움은 깊이 느꼈다는 증거다.','이 슬픔도 나를 더 단단하게 만들 것이다.'],
+  '공허함':['주님 안에 쉬기까지 내 마음은 쉬지 못합니다. — 아우구스티누스','공허함은 채워질 무언가를 기다리는 공간이다.','작은 것에 감사할 때 공허함이 채워지기 시작한다.'],
+  '억울함':['하나님은 모든 것을 보고 계신다. 억울함도 아신다.','진실은 언제나 드러난다. 인내하라.','억울함 뒤에는 반드시 회복이 온다.'],
+  '외로움':['하나님이 고독한 자를 가족과 함께 살게 하신다. — 시편 68:6','혼자인 시간이 나를 더 깊게 만든다.','지금 외롭더라도 당신은 혼자가 아니다.'],
+  '지침':['쉬는 것도 용기다.','몸과 마음이 쉬어야 더 멀리 갈 수 있다.','오늘은 쉬어도 괜찮다. 내일은 또 새로운 날이다.'],
+  '두려움':['내가 너와 함께 하노라 두려워하지 말라. — 이사야 41:10','용기는 두려움이 없는 것이 아니라 두려움에도 나아가는 것이다.','두려움을 인정하는 것이 극복의 첫 걸음이다.'],
+  '부끄러움':['완벽하지 않아도 괜찮다. 우리는 모두 성장 중이다.','은혜는 부끄러움보다 항상 크다.','실수는 배움의 기회다.'],
+  '죄책감':['진정한 회개 후에는 자유가 온다.','하나님의 용서는 우리의 죄보다 크다.','용서받은 자로 살아가는 것이 은혜에 보답하는 길이다.'],
+  '실망감':['실망은 기대했다는 증거다. 그만큼 소중했던 것이다.','하나님의 계획은 우리의 기대보다 크다.','기대가 무너진 자리에서 믿음이 자란다.'],
+  '막막함':['한 걸음씩만 가도 된다. 전부 보이지 않아도 괜찮다.','보라 내가 새 일을 행하리니. — 이사야 43:19','안개가 걷히면 길이 보인다. 지금은 기다릴 때다.'],
+  '걱정스러움':['너희 염려를 다 주께 맡기라. — 베드로전서 5:7','걱정은 내일의 슬픔을 없애주지 않는다. 오늘의 힘을 빼앗을 뿐이다.','하나님은 내일도 함께 하신다.']
 };
 const VERSES=[
   {ko:'여호와는 나의 목자시니 내게 부족함이 없으리로다',en:'The Lord is my shepherd, I shall not want.',ref:'시편 23:1 / Psalm 23:1'},
-  {ko:'내가 너와 함께 하노라 두려워하지 말라 내가 너의 하나님이 됨이라 내가 너를 굳세게 하리라 참으로 너를 도와 주리라 참으로 나의 의로운 오른손으로 너를 붙들리라',en:'Do not fear, for I am with you; do not anxiously look about you, for I am your God. I will strengthen you, surely I will help you, surely I will uphold you with My righteous right hand.',ref:'이사야 41:10 / Isaiah 41:10'},
+  {ko:'내가 너와 함께 하노라 두려워하지 말라 내가 너의 하나님이 됨이라 내가 너를 굳세게 하리라 참으로 너를 도와 주리라 참으로 나의 의로운 오른손으로 너를 붙들리라',en:'Do not fear, for I am with you; do not anxiously look about you, for I am your God. I will strengthen you, surely I will help you.',ref:'이사야 41:10 / Isaiah 41:10'},
   {ko:'수고하고 무거운 짐 진 자들아 다 내게로 오라 내가 너희를 쉬게 하리라',en:'Come to Me, all who are weary and heavy-laden, and I will give you rest.',ref:'마태복음 11:28 / Matthew 11:28'},
-  {ko:'항상 기뻐하라 쉬지 말고 기도하라 범사에 감사하라 이것이 그리스도 예수 안에서 너희를 향하신 하나님의 뜻이니라',en:'Rejoice always; pray without ceasing; in everything give thanks; for this is God\'s will for you in Christ Jesus.',ref:'데살로니가전서 5:16-18 / 1 Thessalonians 5:16-18'},
+  {ko:'항상 기뻐하라 쉬지 말고 기도하라 범사에 감사하라 이것이 그리스도 예수 안에서 너희를 향하신 하나님의 뜻이니라',en:'Rejoice always; pray without ceasing; in everything give thanks.',ref:'데살로니가전서 5:16-18 / 1 Thessalonians 5:16-18'},
   {ko:'여호와를 기뻐하라 그가 네 마음의 소원을 네게 이루어 주시리로다',en:'Delight yourself in the Lord; and He will give you the desires of your heart.',ref:'시편 37:4 / Psalm 37:4'},
-  {ko:'이르시되 너희는 손을 놓고 내가 하나님 됨을 알지어다 내가 뭇 나라 중에서 높임을 받으리라 내가 세계 중에서 높임을 받으리라 하시도다',en:'Cease striving and know that I am God; I will be exalted among the nations, I will be exalted in the earth.',ref:'시편 46:10 / Psalm 46:10'},
+  {ko:'이르시되 너희는 손을 놓고 내가 하나님 됨을 알지어다',en:'Cease striving and know that I am God.',ref:'시편 46:10 / Psalm 46:10'},
   {ko:'내게 능력 주시는 자 안에서 내가 모든 것을 할 수 있느니라',en:'I can do all things through Him who strengthens me.',ref:'빌립보서 4:13 / Philippians 4:13'},
   {ko:'하나님은 우리의 피난처시요 힘이시니 환난 중에 만날 큰 도움이시라',en:'God is our refuge and strength, a very present help in trouble.',ref:'시편 46:1 / Psalm 46:1'},
   {ko:'여호와는 너를 지키시는 이시라 여호와께서 네 오른쪽에서 네 그늘이 되시나니',en:'The Lord is your keeper; the Lord is your shade on your right hand.',ref:'시편 121:5 / Psalm 121:5'},
   {ko:'나의 영혼이 잠잠히 하나님만 바람이여 나의 구원이 그에게서 나오는도다',en:'My soul, wait in silence for God only, for my hope is from Him.',ref:'시편 62:5 / Psalm 62:5'},
   {ko:'눈물을 흘리며 씨를 뿌리는 자는 기쁨으로 거두리로다',en:'Those who sow in tears shall reap with joyful shouting.',ref:'시편 126:5 / Psalm 126:5'},
-  {ko:'오직 여호와를 앙망하는 자는 새 힘을 얻으리니 독수리가 날개치며 올라감 같을 것이요 달음박질하여도 곤비하지 아니하겠고 걸어가도 피곤하지 아니하리로다',en:'Yet those who wait for the Lord will gain new strength; they will mount up with wings like eagles, they will run and not get tired, they will walk and not become weary.',ref:'이사야 40:31 / Isaiah 40:31'},
-  {ko:'하나님이 세상을 이처럼 사랑하사 독생자를 주셨으니 이는 그를 믿는 자마다 멸망하지 않고 영생을 얻게 하려 하심이라',en:'For God so loved the world, that He gave His only begotten Son, that whoever believes in Him shall not perish, but have eternal life.',ref:'요한복음 3:16 / John 3:16'},
+  {ko:'오직 여호와를 앙망하는 자는 새 힘을 얻으리니 독수리가 날개치며 올라감 같을 것이요 달음박질하여도 곤비하지 아니하겠고 걸어가도 피곤하지 아니하리로다',en:'Yet those who wait for the Lord will gain new strength; they will mount up with wings like eagles.',ref:'이사야 40:31 / Isaiah 40:31'},
+  {ko:'하나님이 세상을 이처럼 사랑하사 독생자를 주셨으니 이는 그를 믿는 자마다 멸망하지 않고 영생을 얻게 하려 하심이라',en:'For God so loved the world, that He gave His only begotten Son.',ref:'요한복음 3:16 / John 3:16'},
   {ko:'사람이 마음으로 자기의 길을 계획할지라도 그의 걸음을 인도하시는 이는 여호와시니라',en:'The mind of man plans his way, but the Lord directs his steps.',ref:'잠언 16:9 / Proverbs 16:9'},
   {ko:'여호와는 내 편이라 내가 두려워하지 아니하리니 사람이 내게 어찌할까',en:'The Lord is for me; I will not fear; what can man do to me?',ref:'시편 118:6 / Psalm 118:6'},
   {ko:'나의 힘이신 여호와여 내가 주를 사랑하나이다',en:'I love You, O Lord, my strength.',ref:'시편 18:1 / Psalm 18:1'},
-  {ko:'하나님은 사랑이심이라 사랑 안에 거하는 자는 하나님 안에 거하고 하나님도 그의 안에 거하시느니라',en:'God is love, and the one who abides in love abides in God, and God abides in him.',ref:'요한일서 4:16 / 1 John 4:16'},
-  {ko:'내가 사망의 음침한 골짜기로 다닐지라도 해를 두려워하지 않을 것은 주께서 나와 함께 하심이라 주의 지팡이와 막대기가 나를 안위하시나이다',en:'Even though I walk through the valley of the shadow of death, I fear no evil, for You are with me; Your rod and Your staff, they comfort me.',ref:'시편 23:4 / Psalm 23:4'},
+  {ko:'하나님은 사랑이심이라 사랑 안에 거하는 자는 하나님 안에 거하고 하나님도 그의 안에 거하시느니라',en:'God is love, and the one who abides in love abides in God.',ref:'요한일서 4:16 / 1 John 4:16'},
+  {ko:'내가 사망의 음침한 골짜기로 다닐지라도 해를 두려워하지 않을 것은 주께서 나와 함께 하심이라 주의 지팡이와 막대기가 나를 안위하시나이다',en:'Even though I walk through the valley of the shadow of death, I fear no evil, for You are with me.',ref:'시편 23:4 / Psalm 23:4'},
   {ko:'너희 염려를 다 주께 맡기라 이는 그가 너희를 돌보심이라',en:'Cast all your anxiety on Him, because He cares for you.',ref:'베드로전서 5:7 / 1 Peter 5:7'},
   {ko:'우리가 선을 행하되 낙심하지 말지니 포기하지 아니하면 때가 이르매 거두리라',en:'Let us not lose heart in doing good, for in due time we will reap if we do not grow weary.',ref:'갈라디아서 6:9 / Galatians 6:9'},
   {ko:'주 안에서 항상 기뻐하라 내가 다시 말하노니 기뻐하라',en:'Rejoice in the Lord always; again I will say, rejoice!',ref:'빌립보서 4:4 / Philippians 4:4'},
   {ko:'이는 내가 네 하나님 여호와로 네 오른손을 붙들고 네게 이르기를 두려워하지 말라 내가 너를 도우리라 할 것임이니라',en:'For I am the Lord your God, who upholds your right hand, who says to you, Do not fear, I will help you.',ref:'이사야 41:13 / Isaiah 41:13'},
-  {ko:'감사함으로 그의 문에 들어가며 찬송함으로 그의 궁정에 들어가서 그에게 감사하며 그의 이름을 송축할지어다',en:'Enter His gates with thanksgiving and His courts with praise. Give thanks to Him, bless His name.',ref:'시편 100:4 / Psalm 100:4'},
-  {ko:'그리하면 모든 지각에 뛰어난 하나님의 평강이 그리스도 예수 안에서 너희 마음과 생각을 지키시리라',en:'The peace of God, which surpasses all comprehension, will guard your hearts and your minds in Christ Jesus.',ref:'빌립보서 4:7 / Philippians 4:7'},
-  {ko:'나는 포도나무요 너희는 가지라 그가 내 안에 내가 그 안에 거하면 사람이 열매를 많이 맺나니 나를 떠나서는 너희가 아무것도 할 수 없음이라',en:'I am the vine, you are the branches; he who abides in Me and I in him, he bears much fruit, for apart from Me you can do nothing.',ref:'요한복음 15:5 / John 15:5'},
+  {ko:'감사함으로 그의 문에 들어가며 찬송함으로 그의 궁정에 들어가서 그에게 감사하며 그의 이름을 송축할지어다',en:'Enter His gates with thanksgiving and His courts with praise.',ref:'시편 100:4 / Psalm 100:4'},
+  {ko:'그리하면 모든 지각에 뛰어난 하나님의 평강이 그리스도 예수 안에서 너희 마음과 생각을 지키시리라',en:'The peace of God, which surpasses all comprehension, will guard your hearts and your minds.',ref:'빌립보서 4:7 / Philippians 4:7'},
+  {ko:'나는 포도나무요 너희는 가지라 그가 내 안에 내가 그 안에 거하면 사람이 열매를 많이 맺나니 나를 떠나서는 너희가 아무것도 할 수 없음이라',en:'I am the vine, you are the branches; he who abides in Me bears much fruit.',ref:'요한복음 15:5 / John 15:5'},
   {ko:'강하고 담대하라 두려워하지 말며 놀라지 말라 네가 어디로 가든지 네 하나님 여호와가 너와 함께 하느니라',en:'Be strong and courageous! Do not tremble or be dismayed, for the Lord your God is with you wherever you go.',ref:'여호수아 1:9 / Joshua 1:9'},
-  {ko:'보라 내가 새 일을 행하리니 이제 나타낼 것이라 너희가 그것을 알지 못하겠느냐 반드시 내가 광야에 길을 사막에 강을 내리니',en:'Behold, I will do something new, now it will spring forth; I will even make a roadway in the wilderness, rivers in the desert.',ref:'이사야 43:19 / Isaiah 43:19'},
+  {ko:'보라 내가 새 일을 행하리니 이제 나타낼 것이라 반드시 내가 광야에 길을 사막에 강을 내리니',en:'Behold, I will do something new; I will even make a roadway in the wilderness, rivers in the desert.',ref:'이사야 43:19 / Isaiah 43:19'},
   {ko:'주는 나의 피난처시요 나의 방패시라 내가 주의 말씀을 바라나이다',en:'You are my hiding place and my shield; I wait for Your word.',ref:'시편 119:114 / Psalm 119:114'},
-  {ko:'오직 성령의 열매는 사랑과 희락과 화평과 오래 참음과 자비와 양선과 충성과 온유와 절제니 이같은 것을 금지할 법이 없느니라',en:'The fruit of the Spirit is love, joy, peace, patience, kindness, goodness, faithfulness, gentleness, self-control; against such things there is no law.',ref:'갈라디아서 5:22-23 / Galatians 5:22-23'},
-  {ko:'내가 주께 감사하옴은 나를 지으심이 심히 기묘하심이라 주께서 하시는 일이 기이함을 내 영혼이 잘 아나이다',en:'I will give thanks to You, for I am fearfully and wonderfully made; wonderful are Your works, and my soul knows it very well.',ref:'시편 139:14 / Psalm 139:14'}
+  {ko:'오직 성령의 열매는 사랑과 희락과 화평과 오래 참음과 자비와 양선과 충성과 온유와 절제니',en:'The fruit of the Spirit is love, joy, peace, patience, kindness, goodness, faithfulness, gentleness, self-control.',ref:'갈라디아서 5:22-23 / Galatians 5:22-23'},
+  {ko:'내가 주께 감사하옴은 나를 지으심이 심히 기묘하심이라 주께서 하시는 일이 기이함을 내 영혼이 잘 아나이다',en:'I will give thanks to You, for I am fearfully and wonderfully made.',ref:'시편 139:14 / Psalm 139:14'}
 ];
-const STICKER_CATS=[{label:'💛 감정',s:['😊','😌','🥰','😤','😔','😰','😠','🥲','😶','😴','🤗','🫠','😍','🤩','😎','🥳']},{label:'🌿 자연',s:['🌸','🌺','🌻','🌹','🌷','🍀','🌿','🍃','🌱','🪴','🌾','🍂','🌊','🌙','⭐','✨']},{label:'☕ 일상',s:['☕','🍵','🫖','🍰','🧁','🎵','🎶','📖','✏️','🕯️','🏡','🎨','🧸','💌','📷','🌠']},{label:'💬 마음',s:['💛','💙','💚','🧡','💜','🤍','💗','💖','💝','💫','🙏','👏','🫂','💪','💐','🎁']}];
-const ADD_CFG={gratitude:{title:'🌱 감사한 것',sub:'오늘 감사한 순간, 사람, 작은 것들',placeholder:'오늘 감사했던 것은...'},resolved:{title:'🌀 걱정이 별일 없이',sub:'걱정했지만 잘 지나간 일들',placeholder:'걱정했지만 괜찮았던 것은...'},strength:{title:'✨ 힘이 되었던 것',sub:'존재, 문장, 장면 — 무엇이든',placeholder:'힘이 되었던 사람, 말, 순간은...'}};
-const SLOT_LABELS={morning:'☀️ 아침',noon:'🌤 점심',evening:'🌆 저녁',night:'🌙 자기 전'};
+const STICKER_CATS=[
+  {label:'감정',s:['😊','😌','🥰','😤','😔','😰','😠','🥲','😶','😴','🤗','🫠','😍','🤩','😎','🥳']},
+  {label:'자연',s:['🌸','🌺','🌻','🌹','🌷','🍀','🌿','🍃','🌱','🪴','🌾','🍂','🌊','🌙','⭐','✨']},
+  {label:'일상',s:['☕','🍵','🫖','🍰','🧁','🎵','🎶','📖','✏️','🕯️','🏡','🎨','🧸','💌','📷','🌠']},
+  {label:'마음',s:['💛','💙','💚','🧡','💜','🤍','💗','💖','💝','💫','🙏','👏','🫂','💪','💐','🎁']}
+];
+const ADD_CFG={
+  gratitude:{title:'감사하고 좋았던 것',sub:'오늘 감사했던 순간, 사람, 작은 것들',placeholder:'오늘 감사했던 것은...'},
+  resolved:{title:'걱정이 별일 없이',sub:'걱정했지만 잘 지나간 일들',placeholder:'걱정했지만 괜찮았던 것은...'},
+  strength:{title:'힘이 되었던 것',sub:'존재, 문장, 장면 — 무엇이든',placeholder:'힘이 되었던 사람, 말, 순간은...'}
+};
+const SLOT_LABELS={morning:'아침',noon:'점심',evening:'저녁',night:'자기 전'};
+
 let appData=JSON.parse(localStorage.getItem('hg')||'{}');
 let prayers=JSON.parse(localStorage.getItem('hg-p')||'[]');
 let currentKey=getKey(new Date()),todayKey=getKey(new Date());
 let calYear=new Date().getFullYear(),calMonth=new Date().getMonth(),selCalDate=todayKey;
-let curSlot='',curType='',selEmo=null,selStk=null,curStkCat=0,drawerOpen=false,selSignalEmo=null,editingPrayerIdx=-1;
+let curSlot='',curType='',selEmo=null,selStk=null,curStkCat=0,drawerOpen=false,selSignalEmo=null,editingPrayerIdx=-1,selWeather=null;
+
 function getKey(d){return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
-function getDay(k){return appData[k]||{emotions:{},gratitude:[],resolved:[],strength:[],stickers:[],signals:[],cheers:[]};}
+function getDay(k){return appData[k]||{emotions:{},gratitude:[],resolved:[],strength:[],stickers:[],signals:[],cheers:[],oneline:'',weather:''};}
 function saveDay(k,d){appData[k]=d;localStorage.setItem('hg',JSON.stringify(appData));}
 function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 function getRandomQuote(name){const q=QUOTES[name];if(!q)return null;return q[Math.floor(Math.random()*q.length)];}
 function getTodayVerse(){const d=new Date(currentKey);const idx=(d.getFullYear()*366+d.getMonth()*31+d.getDate())%VERSES.length;return VERSES[idx];}
-function init(){renderTopDate();renderEmotions();renderLists();renderSignals();renderCheers();renderStickers();renderCalendar();updateStreak();initPrayerStars();renderPrayerDrawer();renderVerse();}
+function autoResize(el){el.style.height='auto';el.style.height=el.scrollHeight+'px';}
+
+function init(){
+  renderTopDate();
+  renderEmotions();
+  renderLists();
+  renderSignals();
+  renderCheers();
+  renderStickers();
+  renderCalendar();
+  initPrayerStars();
+  renderPrayerDrawer();
+  renderVerse();
+  loadTodayOneline();
+  loadWeather();
+  if(localStorage.getItem('hg-dark')==='1')document.body.classList.add('dark');
+}
+
 function renderVerse(){const v=getTodayVerse();document.getElementById('verseText').textContent=v.ko;document.getElementById('verseEn').textContent=v.en;document.getElementById('verseRef').textContent=v.ref;}
-function switchPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));document.getElementById('page-'+id).classList.add('active');document.querySelector('[data-page="'+id+'"]').classList.add('active');}
-function renderTopDate(){const days=['일','월','화','수','목','금','토'],d=new Date();document.getElementById('topDate').textContent=`${d.getMonth()+1}월 ${d.getDate()}일 (${days[d.getDay()]})`;}
-function updateStreak(){let s=0,d=new Date(todayKey);while(true){const k=getKey(d),e=appData[k];if(!e)break;const has=Object.keys(e.emotions||{}).length||(e.gratitude||[]).length||(e.resolved||[]).length||(e.strength||[]).length||(e.signals||[]).length||(e.cheers||[]).length;if(!has)break;s++;d.setDate(d.getDate()-1);}document.getElementById('streakNum').textContent=s;}
-function renderEmotions(){const d=getDay(currentKey);const isToday=currentKey===todayKey;document.getElementById('todayLabel').textContent=isToday?'감정 기록':currentKey.replace(/-/g,'년 ').replace(/-/,'월 ')+'일 감정 기록';['morning','noon','evening','night'].forEach(slot=>{const el=document.getElementById('disp-'+slot),e=d.emotions[slot];el.innerHTML=e?`<span class="emotion-emoji">${e.emoji}</span><span class="emotion-name">${e.name}</span>`:`<span class="emotion-empty">기분이 어때요?</span>`;});}
-function renderLists(){const d=getDay(currentKey);['gratitude','resolved','strength'].forEach(type=>{document.getElementById('list-'+type).innerHTML=(d[type]||[]).map(item=>`<div class="record-item"><span class="record-dot"></span><span>${esc(item)}</span></div>`).join('');});}
-function renderSignals(){const d=getDay(currentKey);const list=document.getElementById('signalList');const signals=d.signals||[];if(!signals.length){list.innerHTML='<div style="font-size:12px;color:var(--light);font-style:italic;padding:8px 0;">아직 알아차린 신호가 없어요</div>';return;}list.innerHTML=signals.map((s,i)=>`<div class="signal-item"><div class="signal-item-text">${esc(s.text)}</div><div class="signal-item-meta"><span class="signal-item-time">${s.time}</span><div style="display:flex;align-items:center;gap:6px;">${s.emotion?`<span class="signal-item-emotion">${s.emotion.emoji} ${s.emotion.name}</span>`:''}<button class="signal-del" onclick="deleteSignal(${i})">×</button></div></div>${s.emotion&&s.quote?`<div class="quote-box"><div class="quote-text">"${esc(s.quote.text)}"</div><div class="quote-author">— ${esc(s.quote.author)}</div><button class="quote-refresh" onclick="refreshQuote(${i})">🔄 다른 명언</button></div>`:''}</div>`).join('');}
-function renderCheers(){const d=getDay(currentKey);const list=document.getElementById('cheerList');const cheers=d.cheers||[];if(!cheers.length){list.innerHTML='<div style="font-size:12px;color:var(--light);font-style:italic;padding:8px 0;">오늘의 나에게 따뜻한 말을 건네보세요 💌</div>';return;}list.innerHTML=cheers.map((c,i)=>`<div class="cheer-item"><button class="cheer-del" onclick="deleteCheer(${i})">×</button><div class="cheer-item-text">${esc(c.text)}</div><div class="cheer-item-time">${c.time}</div></div>`).join('');}
+
+function switchPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  document.querySelector('[data-page="'+id+'"]').classList.add('active');
+}
+
+function renderTopDate(){
+  const days=['일','월','화','수','목','금','토'],d=new Date();
+  const str=`${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')} (${days[d.getDay()]})`;
+  document.getElementById('topDate').textContent=str;
+  document.getElementById('todayDateFull').textContent=str;
+}
+
+function loadTodayOneline(){
+  const d=getDay(currentKey);
+  const el=document.getElementById('todayOneline');
+  el.value=d.oneline||'';
+  autoResize(el);
+}
+
+function saveTodayOneline(){
+  const d=getDay(currentKey);
+  d.oneline=document.getElementById('todayOneline').value;
+  saveDay(currentKey,d);
+}
+
+function loadWeather(){
+  const d=getDay(currentKey);
+  const btn=document.getElementById('weatherBtn');
+  btn.textContent=d.weather||'—';
+}
+
+function openWeatherSheet(){
+  const d=getDay(currentKey);
+  selWeather=d.weather||null;
+  const grid=document.getElementById('weatherGrid');
+  grid.innerHTML='';
+  WEATHER_LIST.forEach(w=>{
+    const el=document.createElement('div');
+    el.className='weather-opt'+(selWeather===w.emoji?' sel':'');
+    el.innerHTML=`<span class="weather-emoji">${w.emoji}</span>${w.label}`;
+    el.onclick=()=>{
+      selWeather=w.emoji;
+      document.querySelectorAll('.weather-opt').forEach(o=>o.classList.remove('sel'));
+      el.classList.add('sel');
+      const day=getDay(currentKey);
+      day.weather=w.emoji;
+      saveDay(currentKey,day);
+      document.getElementById('weatherBtn').textContent=w.emoji;
+      closeSheet('weatherSheetOverlay');
+    };
+    grid.appendChild(el);
+  });
+  openSheet('weatherSheetOverlay');
+}
+
+function renderEmotions(){
+  const d=getDay(currentKey);
+  const isToday=currentKey===todayKey;
+  document.getElementById('todayLabel').textContent=isToday?'감정 기록':`${currentKey} 감정 기록`;
+  ['morning','noon','evening','night'].forEach(slot=>{
+    const el=document.getElementById('disp-'+slot),e=d.emotions[slot];
+    el.innerHTML=e?`<span class="emotion-emoji">${e.emoji}</span><span class="emotion-name">${e.name}</span>`:`<span class="emotion-empty">기분이 어때요?</span>`;
+  });
+  if(currentKey===todayKey){
+    const el=document.getElementById('todayOneline');
+    el.value=d.oneline||'';
+    autoResize(el);
+    document.getElementById('weatherBtn').textContent=d.weather||'—';
+  }
+}
+
+function renderLists(){
+  const d=getDay(currentKey);
+  ['gratitude','resolved','strength'].forEach(type=>{
+    document.getElementById('list-'+type).innerHTML=(d[type]||[]).map(item=>`<div class="record-item"><span class="record-dot"></span><span>${esc(item)}</span></div>`).join('');
+  });
+}
+
+function renderSignals(){
+  const d=getDay(currentKey);
+  const list=document.getElementById('signalList');
+  const signals=d.signals||[];
+  if(!signals.length){list.innerHTML='<div class="signal-empty">아직 알아차린 신호가 없어요</div>';return;}
+  list.innerHTML=signals.map((s,i)=>`
+    <div class="signal-item">
+      <div class="signal-item-text">${esc(s.text)}</div>
+      <div class="signal-item-meta">
+        <span class="signal-item-time">${s.time}</span>
+        <div style="display:flex;align-items:center;gap:6px;">
+          ${s.emotion?`<span class="signal-item-emotion">${s.emotion.emoji} ${s.emotion.name}</span>`:''}
+          <button class="signal-del" onclick="deleteSignal(${i})">×</button>
+        </div>
+      </div>
+      ${s.emotion&&s.quote?`<div class="quote-box"><div class="quote-text">"${esc(s.quote.text)}"</div>${s.quote.author?`<div class="quote-author">— ${esc(s.quote.author)}</div>`:''}<button class="quote-refresh" onclick="refreshQuote(${i})">↻ 다른 명언</button></div>`:''}
+    </div>`).join('');
+}
+
+function renderCheers(){
+  const d=getDay(currentKey);
+  const list=document.getElementById('cheerList');
+  const cheers=d.cheers||[];
+  if(!cheers.length){list.innerHTML='<div class="cheer-empty">오늘의 나에게 따뜻한 말을 건네보세요</div>';return;}
+  list.innerHTML=cheers.map((c,i)=>`<div class="cheer-item"><button class="cheer-del" onclick="deleteCheer(${i})">×</button><div class="cheer-item-text">${esc(c.text)}</div><div class="cheer-item-time">${c.time}</div></div>`).join('');
+}
+
 function openCheerSheet(){document.getElementById('cheerTextarea').value='';openSheet('cheerSheetOverlay');}
-function saveCheer(){const text=document.getElementById('cheerTextarea').value.trim();if(!text){closeSheet('cheerSheetOverlay');return;}const now=new Date();const time=now.toTimeString().slice(0,5);const d=getDay(currentKey);if(!d.cheers)d.cheers=[];d.cheers.push({text,time});saveDay(currentKey,d);renderCheers();updateStreak();closeSheet('cheerSheetOverlay');}
+function saveCheer(){
+  const text=document.getElementById('cheerTextarea').value.trim();
+  if(!text){closeSheet('cheerSheetOverlay');return;}
+  const now=new Date(),time=now.toTimeString().slice(0,5);
+  const d=getDay(currentKey);
+  if(!d.cheers)d.cheers=[];
+  d.cheers.push({text,time});
+  saveDay(currentKey,d);
+  renderCheers();
+  closeSheet('cheerSheetOverlay');
+}
 function deleteCheer(idx){const d=getDay(currentKey);d.cheers.splice(idx,1);saveDay(currentKey,d);renderCheers();}
-function openSignalSheet(){selSignalEmo=null;document.getElementById('signalTextarea').value='';document.getElementById('signalQuoteBox').innerHTML='';document.getElementById('signalCustomEmoji').value='';document.getElementById('signalCustomName').value='';const picker=document.getElementById('signalEmotionPicker');picker.innerHTML='';EMOTIONS.forEach(e=>{const d=document.createElement('div');d.className='emotion-opt';d.innerHTML=`<span class="e-emoji">${e.emoji}</span><span class="e-name">${e.name}</span>`;d.onclick=()=>{document.querySelectorAll('#signalEmotionPicker .emotion-opt').forEach(o=>o.classList.remove('sel'));d.classList.add('sel');selSignalEmo=e;document.getElementById('signalCustomEmoji').value='';document.getElementById('signalCustomName').value='';showSignalQuote(e.name);};picker.appendChild(d);});openSheet('signalSheetOverlay');}
-function showSignalQuote(name){const q=getRandomQuote(name);if(!q)return;const parts=q.split(' — ');document.getElementById('signalQuoteBox').innerHTML=`<div class="quote-box"><div class="quote-text">"${esc(parts[0])}"</div>${parts[1]?`<div class="quote-author">— ${esc(parts[1])}</div>`:''}<button class="quote-refresh" onclick="showSignalQuote('${name}')">🔄 다른 명언</button></div>`;}
-function saveSignal(){const text=document.getElementById('signalTextarea').value.trim();if(!text){closeSheet('signalSheetOverlay');return;}const now=new Date();const time=now.toTimeString().slice(0,5);const customEmoji=document.getElementById('signalCustomEmoji').value.trim();const customName=document.getElementById('signalCustomName').value.trim();let emotion=selSignalEmo;if(customName)emotion={emoji:customEmoji||'💭',name:customName};let quote=null;if(emotion&&QUOTES[emotion.name]){const q=getRandomQuote(emotion.name);if(q){const parts=q.split(' — ');quote={text:parts[0],author:parts[1]||''};}}const d=getDay(currentKey);if(!d.signals)d.signals=[];d.signals.push({text,time,emotion,quote});saveDay(currentKey,d);renderSignals();updateStreak();closeSheet('signalSheetOverlay');}
+
+function openSignalSheet(){
+  selSignalEmo=null;
+  document.getElementById('signalTextarea').value='';
+  document.getElementById('signalQuoteBox').innerHTML='';
+  document.getElementById('signalCustomEmoji').value='';
+  document.getElementById('signalCustomName').value='';
+  const picker=document.getElementById('signalEmotionPicker');
+  picker.innerHTML='';
+  EMOTIONS.forEach(e=>{
+    const d=document.createElement('div');
+    d.className='emotion-opt';
+    d.innerHTML=`<span class="e-emoji">${e.emoji}</span><span class="e-name">${e.name}</span>`;
+    d.onclick=()=>{
+      document.querySelectorAll('#signalEmotionPicker .emotion-opt').forEach(o=>o.classList.remove('sel'));
+      d.classList.add('sel');
+      selSignalEmo=e;
+      document.getElementById('signalCustomEmoji').value='';
+      document.getElementById('signalCustomName').value='';
+      showSignalQuote(e.name);
+    };
+    picker.appendChild(d);
+  });
+  openSheet('signalSheetOverlay');
+}
+
+function showSignalQuote(name){
+  const q=getRandomQuote(name);
+  if(!q)return;
+  const parts=q.split(' — ');
+  document.getElementById('signalQuoteBox').innerHTML=`<div class="quote-box"><div class="quote-text">"${esc(parts[0])}"</div>${parts[1]?`<div class="quote-author">— ${esc(parts[1])}</div>`:''}<button class="quote-refresh" onclick="showSignalQuote('${name}')">↻ 다른 명언</button></div>`;
+}
+
+function saveSignal(){
+  const text=document.getElementById('signalTextarea').value.trim();
+  if(!text){closeSheet('signalSheetOverlay');return;}
+  const now=new Date(),time=now.toTimeString().slice(0,5);
+  const customEmoji=document.getElementById('signalCustomEmoji').value.trim();
+  const customName=document.getElementById('signalCustomName').value.trim();
+  let emotion=selSignalEmo;
+  if(customName)emotion={emoji:customEmoji||'💭',name:customName};
+  let quote=null;
+  if(emotion&&QUOTES[emotion.name]){
+    const q=getRandomQuote(emotion.name);
+    if(q){const parts=q.split(' — ');quote={text:parts[0],author:parts[1]||''};}
+  }
+  const d=getDay(currentKey);
+  if(!d.signals)d.signals=[];
+  d.signals.push({text,time,emotion,quote});
+  saveDay(currentKey,d);
+  renderSignals();
+  closeSheet('signalSheetOverlay');
+}
+
 function deleteSignal(idx){const d=getDay(currentKey);d.signals.splice(idx,1);saveDay(currentKey,d);renderSignals();}
-function refreshQuote(idx){const d=getDay(currentKey);const signal=d.signals[idx];if(!signal||!signal.emotion)return;const q=getRandomQuote(signal.emotion.name);if(q){const parts=q.split(' — ');signal.quote={text:parts[0],author:parts[1]||''};}saveDay(currentKey,d);renderSignals();}
-function openEmotionSheet(slot){curSlot=slot;selEmo=null;document.getElementById('emotionSheetTitle').textContent=SLOT_LABELS[slot]+' 감정 기록';document.getElementById('customEmoji').value='';document.getElementById('customName').value='';const current=getDay(currentKey).emotions[slot];const picker=document.getElementById('emotionPicker');picker.innerHTML='';EMOTIONS.forEach(e=>{const d=document.createElement('div');d.className='emotion-opt'+(current&&current.name===e.name?' sel':'');d.innerHTML=`<span class="e-emoji">${e.emoji}</span><span class="e-name">${e.name}</span>`;d.onclick=()=>{document.querySelectorAll('#emotionPicker .emotion-opt').forEach(o=>o.classList.remove('sel'));d.classList.add('sel');selEmo=e;document.getElementById('customEmoji').value='';document.getElementById('customName').value='';};picker.appendChild(d);});if(current&&!EMOTIONS.find(e=>e.name===current.name)){document.getElementById('customEmoji').value=current.emoji;document.getElementById('customName').value=current.name;}openSheet('emotionSheetOverlay');}
-function saveEmotion(){const emoji=document.getElementById('customEmoji').value.trim();const name=document.getElementById('customName').value.trim();let em=selEmo;if(name)em={emoji:emoji||'💭',name};if(!em){closeSheet('emotionSheetOverlay');return;}const d=getDay(currentKey);d.emotions[curSlot]=em;saveDay(currentKey,d);renderEmotions();renderCalendar();updateStreak();closeSheet('emotionSheetOverlay');}
-function openAddSheet(type){curType=type;const cfg=ADD_CFG[type];document.getElementById('addSheetTitle').textContent=cfg.title;document.getElementById('addSheetSub').textContent=cfg.sub;document.getElementById('addTextarea').placeholder=cfg.placeholder;document.getElementById('addTextarea').value='';const items=getDay(currentKey)[type]||[];document.getElementById('existingItems').innerHTML=items.map((item,i)=>`<div class="existing-item"><span>${esc(item)}</span><button class="del-item" onclick="deleteRecord('${type}',${i})">×</button></div>`).join('');openSheet('addSheetOverlay');}
-function saveRecord(){const val=document.getElementById('addTextarea').value.trim();if(!val){closeSheet('addSheetOverlay');return;}const d=getDay(currentKey);if(!d[curType])d[curType]=[];d[curType].push(val);saveDay(currentKey,d);renderLists();updateStreak();closeSheet('addSheetOverlay');}
-function deleteRecord(type,idx){const d=getDay(currentKey);d[type].splice(idx,1);saveDay(currentKey,d);renderLists();openAddSheet(type);}
-function renderStickers(){const board=document.getElementById('stickerBoard');board.innerHTML='';const d=getDay(currentKey);(d.stickers||[]).forEach((s,idx)=>{const el=document.createElement('div');el.className='sticker';el.style.left=s.x+'px';el.style.top=s.y+'px';el.textContent=s.emoji;makeDraggable(el,board,s,idx);board.appendChild(el);});}
-function makeDraggable(el,board,s,idx){let sx,sy,ox,oy,drag=false;el.addEventListener('mousedown',e=>{e.preventDefault();drag=true;sx=e.clientX;sy=e.clientY;ox=s.x;oy=s.y;el.classList.add('dragging');});document.addEventListener('mousemove',e=>{if(!drag)return;const r=board.getBoundingClientRect();s.x=Math.max(0,Math.min(r.width-36,ox+e.clientX-sx));s.y=Math.max(0,Math.min(r.height-36,oy+e.clientY-sy));el.style.left=s.x+'px';el.style.top=s.y+'px';});document.addEventListener('mouseup',()=>{if(!drag)return;drag=false;el.classList.remove('dragging');persistSticker(idx,s);});el.addEventListener('touchstart',e=>{const t=e.touches[0];sx=t.clientX;sy=t.clientY;ox=s.x;oy=s.y;el.classList.add('dragging');},{passive:true});el.addEventListener('touchmove',e=>{e.preventDefault();const t=e.touches[0],r=board.getBoundingClientRect();s.x=Math.max(0,Math.min(r.width-36,ox+t.clientX-sx));s.y=Math.max(0,Math.min(r.height-36,oy+t.clientY-sy));el.style.left=s.x+'px';el.style.top=s.y+'px';},{passive:false});el.addEventListener('touchend',()=>{el.classList.remove('dragging');persistSticker(idx,s);});let lp;el.addEventListener('touchstart',()=>{lp=setTimeout(()=>deleteSticker(idx),600);},{passive:true});el.addEventListener('touchend',()=>clearTimeout(lp));el.addEventListener('touchmove',()=>clearTimeout(lp));el.addEventListener('dblclick',()=>deleteSticker(idx));}
+
+function refreshQuote(idx){
+  const d=getDay(currentKey);
+  const signal=d.signals[idx];
+  if(!signal||!signal.emotion)return;
+  const q=getRandomQuote(signal.emotion.name);
+  if(q){const parts=q.split(' — ');signal.quote={text:parts[0],author:parts[1]||''};}
+  saveDay(currentKey,d);
+  renderSignals();
+}
+
+function openEmotionSheet(slot){
+  curSlot=slot;selEmo=null;
+  document.getElementById('emotionSheetTitle').textContent=SLOT_LABELS[slot]+' 감정 기록';
+  document.getElementById('customEmoji').value='';
+  document.getElementById('customName').value='';
+  const current=getDay(currentKey).emotions[slot];
+  const picker=document.getElementById('emotionPicker');
+  picker.innerHTML='';
+  EMOTIONS.forEach(e=>{
+    const d=document.createElement('div');
+    d.className='emotion-opt'+(current&&current.name===e.name?' sel':'');
+    d.innerHTML=`<span class="e-emoji">${e.emoji}</span><span class="e-name">${e.name}</span>`;
+    d.onclick=()=>{
+      document.querySelectorAll('#emotionPicker .emotion-opt').forEach(o=>o.classList.remove('sel'));
+      d.classList.add('sel');selEmo=e;
+      document.getElementById('customEmoji').value='';
+      document.getElementById('customName').value='';
+    };
+    picker.appendChild(d);
+  });
+  if(current&&!EMOTIONS.find(e=>e.name===current.name)){
+    document.getElementById('customEmoji').value=current.emoji;
+    document.getElementById('customName').value=current.name;
+  }
+  openSheet('emotionSheetOverlay');
+}
+
+function saveEmotion(){
+  const emoji=document.getElementById('customEmoji').value.trim();
+  const name=document.getElementById('customName').value.trim();
+  let em=selEmo;
+  if(name)em={emoji:emoji||'💭',name};
+  if(!em){closeSheet('emotionSheetOverlay');return;}
+  const d=getDay(currentKey);
+  d.emotions[curSlot]=em;
+  saveDay(currentKey,d);
+  renderEmotions();
+  renderCalendar();
+  closeSheet('emotionSheetOverlay');
+}
+
+function openAddSheet(type){
+  curType=type;
+  const cfg=ADD_CFG[type];
+  document.getElementById('addSheetTitle').textContent=cfg.title;
+  document.getElementById('addSheetSub').textContent=cfg.sub;
+  document.getElementById('addTextarea').placeholder=cfg.placeholder;
+  document.getElementById('addTextarea').value='';
+  const items=getDay(currentKey)[type]||[];
+  document.getElementById('existingItems').innerHTML=items.map((item,i)=>`<div class="existing-item"><span>${esc(item)}</span><button class="del-item" onclick="deleteRecord('${type}',${i})">×</button></div>`).join('');
+  openSheet('addSheetOverlay');
+}
+
+function saveRecord(){
+  const val=document.getElementById('addTextarea').value.trim();
+  if(!val){closeSheet('addSheetOverlay');return;}
+  const d=getDay(currentKey);
+  if(!d[curType])d[curType]=[];
+  d[curType].push(val);
+  saveDay(currentKey,d);
+  renderLists();
+  closeSheet('addSheetOverlay');
+}
+
+function deleteRecord(type,idx){
+  const d=getDay(currentKey);
+  d[type].splice(idx,1);
+  saveDay(currentKey,d);
+  renderLists();
+  openAddSheet(type);
+}
+
+function renderStickers(){
+  const board=document.getElementById('stickerBoard');
+  board.innerHTML='';
+  const d=getDay(currentKey);
+  (d.stickers||[]).forEach((s,idx)=>{
+    const el=document.createElement('div');
+    el.className='sticker';
+    el.style.left=s.x+'px';
+    el.style.top=s.y+'px';
+    el.textContent=s.emoji;
+    makeDraggable(el,board,s,idx);
+    board.appendChild(el);
+  });
+}
+
+function makeDraggable(el,board,s,idx){
+  let sx,sy,ox,oy,drag=false;
+  el.addEventListener('mousedown',e=>{e.preventDefault();drag=true;sx=e.clientX;sy=e.clientY;ox=s.x;oy=s.y;el.classList.add('dragging');});
+  document.addEventListener('mousemove',e=>{if(!drag)return;const r=board.getBoundingClientRect();s.x=Math.max(0,Math.min(r.width-36,ox+e.clientX-sx));s.y=Math.max(0,Math.min(r.height-36,oy+e.clientY-sy));el.style.left=s.x+'px';el.style.top=s.y+'px';});
+  document.addEventListener('mouseup',()=>{if(!drag)return;drag=false;el.classList.remove('dragging');persistSticker(idx,s);});
+  el.addEventListener('touchstart',e=>{const t=e.touches[0];sx=t.clientX;sy=t.clientY;ox=s.x;oy=s.y;el.classList.add('dragging');},{passive:true});
+  el.addEventListener('touchmove',e=>{e.preventDefault();const t=e.touches[0],r=board.getBoundingClientRect();s.x=Math.max(0,Math.min(r.width-36,ox+t.clientX-sx));s.y=Math.max(0,Math.min(r.height-36,oy+t.clientY-sy));el.style.left=s.x+'px';el.style.top=s.y+'px';},{passive:false});
+  el.addEventListener('touchend',()=>{el.classList.remove('dragging');persistSticker(idx,s);});
+  let lp;
+  el.addEventListener('touchstart',()=>{lp=setTimeout(()=>deleteSticker(idx),600);},{passive:true});
+  el.addEventListener('touchend',()=>clearTimeout(lp));
+  el.addEventListener('touchmove',()=>clearTimeout(lp));
+  el.addEventListener('dblclick',()=>deleteSticker(idx));
+}
+
 function persistSticker(idx,s){const d=getDay(currentKey);if(d.stickers&&d.stickers[idx]){d.stickers[idx].x=s.x;d.stickers[idx].y=s.y;saveDay(currentKey,d);}}
 function deleteSticker(idx){const d=getDay(currentKey);d.stickers.splice(idx,1);saveDay(currentKey,d);renderStickers();}
+
 function openStickerSheet(){selStk=null;curStkCat=0;renderStickerCats();renderStickerGrid(0);openSheet('stickerSheetOverlay');}
-function renderStickerCats(){const el=document.getElementById('stickerCats');el.innerHTML='';STICKER_CATS.forEach((c,i)=>{const b=document.createElement('button');b.className='sticker-cat-btn'+(i===curStkCat?' active':'');b.textContent=c.label;b.onclick=()=>{curStkCat=i;renderStickerCats();renderStickerGrid(i);};el.appendChild(b);});}
-function renderStickerGrid(ci){const el=document.getElementById('stickerGrid');el.innerHTML='';STICKER_CATS[ci].s.forEach(emoji=>{const d=document.createElement('div');d.className='sticker-opt'+(selStk===emoji?' sel':'');d.textContent=emoji;d.onclick=()=>{document.querySelectorAll('.sticker-opt').forEach(o=>o.classList.remove('sel'));d.classList.add('sel');selStk=emoji;};el.appendChild(d);});}
-function addSticker(){if(!selStk){closeSheet('stickerSheetOverlay');return;}const board=document.getElementById('stickerBoard'),bw=board.offsetWidth,bh=board.offsetHeight;const d=getDay(currentKey);if(!d.stickers)d.stickers=[];d.stickers.push({emoji:selStk,x:Math.random()*(bw-40)+4,y:Math.random()*(bh-40)+4});saveDay(currentKey,d);renderStickers();closeSheet('stickerSheetOverlay');}
-function renderCalendar(){const MONTHS=['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];const DOWS=['일','월','화','수','목','금','토'];document.getElementById('calPageMonth').textContent=`${calYear}년 ${MONTHS[calMonth]}`;const grid=document.getElementById('calFullGrid');grid.innerHTML='';DOWS.forEach(d=>{const el=document.createElement('div');el.className='cal-full-dow';el.textContent=d;grid.appendChild(el);});const today=getKey(new Date()),first=new Date(calYear,calMonth,1).getDay(),days=new Date(calYear,calMonth+1,0).getDate(),prev=new Date(calYear,calMonth,0).getDate();for(let i=first-1;i>=0;i--){const el=document.createElement('div');el.className='cal-full-day other';el.textContent=prev-i;grid.appendChild(el);}for(let d=1;d<=days;d++){const key=`${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;const el=document.createElement('div');let cls='cal-full-day';if(key===today)cls+=' today';if(key===selCalDate)cls+=' selected';const dd=appData[key],emojis=dd?.emotions?Object.values(dd.emotions).map(e=>e.emoji).filter(Boolean).join(''):'';el.className=cls;el.innerHTML=`<span>${d}</span>${emojis?`<span class="cal-emojis">${emojis}</span>`:''}`;el.onclick=()=>{selCalDate=key;renderCalendar();renderSelDetail();};grid.appendChild(el);}renderSelDetail();}
+function renderStickerCats(){
+  const el=document.getElementById('stickerCats');
+  el.innerHTML='';
+  STICKER_CATS.forEach((c,i)=>{
+    const b=document.createElement('button');
+    b.className='sticker-cat-btn'+(i===curStkCat?' active':'');
+    b.textContent=c.label;
+    b.onclick=()=>{curStkCat=i;renderStickerCats();renderStickerGrid(i);};
+    el.appendChild(b);
+  });
+}
+function renderStickerGrid(ci){
+  const el=document.getElementById('stickerGrid');
+  el.innerHTML='';
+  STICKER_CATS[ci].s.forEach(emoji=>{
+    const d=document.createElement('div');
+    d.className='sticker-opt'+(selStk===emoji?' sel':'');
+    d.textContent=emoji;
+    d.onclick=()=>{document.querySelectorAll('.sticker-opt').forEach(o=>o.classList.remove('sel'));d.classList.add('sel');selStk=emoji;};
+    el.appendChild(d);
+  });
+}
+function addSticker(){
+  if(!selStk){closeSheet('stickerSheetOverlay');return;}
+  const board=document.getElementById('stickerBoard'),bw=board.offsetWidth,bh=board.offsetHeight;
+  const d=getDay(currentKey);
+  if(!d.stickers)d.stickers=[];
+  d.stickers.push({emoji:selStk,x:Math.random()*(bw-40)+4,y:Math.random()*(bh-40)+4});
+  saveDay(currentKey,d);
+  renderStickers();
+  closeSheet('stickerSheetOverlay');
+}
+
+function renderCalendar(){
+  const MONTHS=['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
+  const DOWS=['일','월','화','수','목','금','토'];
+  document.getElementById('calPageMonth').textContent=`${calYear}년 ${MONTHS[calMonth]}`;
+  const grid=document.getElementById('calFullGrid');
+  grid.innerHTML='';
+  DOWS.forEach(d=>{const el=document.createElement('div');el.className='cal-full-dow';el.textContent=d;grid.appendChild(el);});
+  const today=getKey(new Date()),first=new Date(calYear,calMonth,1).getDay(),days=new Date(calYear,calMonth+1,0).getDate(),prev=new Date(calYear,calMonth,0).getDate();
+  for(let i=first-1;i>=0;i--){const el=document.createElement('div');el.className='cal-full-day other';el.textContent=prev-i;grid.appendChild(el);}
+  for(let d=1;d<=days;d++){
+    const key=`${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const el=document.createElement('div');
+    let cls='cal-full-day';
+    if(key===today)cls+=' today';
+    if(key===selCalDate)cls+=' selected';
+    if(new Date(calYear,calMonth,d).getDay()===0)cls+=' other';
+    const dd=appData[key],emojis=dd?.emotions?Object.values(dd.emotions).map(e=>e.emoji).filter(Boolean).join(''):'';
+    el.className=cls;
+    el.innerHTML=`<span>${d}</span>${emojis?`<span class="cal-emojis">${emojis}</span>`:''}`;
+    el.onclick=()=>{selCalDate=key;renderCalendar();renderSelDetail();};
+    grid.appendChild(el);
+  }
+  renderSelDetail();
+}
+
 function changeMonth(dir){calMonth+=dir;if(calMonth<0){calMonth=11;calYear--;}if(calMonth>11){calMonth=0;calYear++;}renderCalendar();}
-function renderSelDetail(){const el=document.getElementById('selDayDetail');const d=appData[selCalDate];const[y,m,day]=selCalDate.split('-');const isToday=selCalDate===todayKey;el.innerHTML=`<div class="sel-day-title"><span>${parseInt(m)}월 ${parseInt(day)}일</span><button class="sel-edit-btn" onclick="goToDate('${selCalDate}')">${isToday?'오늘 기록':'이 날 기록하기'}</button></div>`;if(!d){el.innerHTML+=`<div class="sel-empty">이 날의 기록이 없어요</div>`;return;}const chips=Object.entries(d.emotions||{}).map(([k,v])=>`<span class="sel-emotion-chip">${v.emoji}<span>${v.name}</span></span>`).join('');if(chips)el.innerHTML+=`<div class="sel-emotions">${chips}</div>`;[{key:'gratitude',label:'🌱 감사한 것'},{key:'resolved',label:'🌀 걱정이 별일 없이'},{key:'strength',label:'✨ 힘이 되었던 것'},{key:'signals',label:'🫧 마음의 신호'},{key:'cheers',label:'💌 나에게 건네는 말'}].forEach(r=>{const items=(d[r.key]||[]);if(!items.length)return;const itemsHtml=(r.key==='signals')?items.map(s=>`<div class="sel-item">· ${esc(s.text)} <span style="color:var(--light);font-size:10px;">${s.time}</span></div>`).join(''):(r.key==='cheers')?items.map(c=>`<div class="sel-item">· ${esc(c.text)}</div>`).join(''):items.map(i=>`<div class="sel-item">· ${esc(i)}</div>`).join('');el.innerHTML+=`<div class="sel-section"><div class="sel-section-title">${r.label}</div>${itemsHtml}</div>`;});if(!chips&&!['gratitude','resolved','strength','signals','cheers'].some(k=>(d[k]||[]).length))el.innerHTML+=`<div class="sel-empty">이 날의 기록이 없어요</div>`;}
-function goToDate(key){currentKey=key;switchPage('today');renderEmotions();renderLists();renderSignals();renderCheers();renderStickers();renderVerse();}
-function initPrayerStars(){const c=document.getElementById('prayerStars');c.innerHTML='';for(let i=0;i<22;i++){const s=document.createElement('div'),sz=Math.random()*2+1;s.className='prayer-star';s.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--dur:${(Math.random()*3+2).toFixed(1)}s;--delay:${(Math.random()*3).toFixed(1)}s`;c.appendChild(s);}}
-function sendPrayer(){const text=document.getElementById('prayerInput').value.trim();if(!text)return;const btn=document.getElementById('prayerSendBtn');btn.disabled=true;const now=new Date(),dateStr=`${now.getFullYear()}년 ${now.getMonth()+1}월 ${now.getDate()}일`,timeStr=now.toTimeString().slice(0,5);prayers.unshift({text,date:dateStr,time:timeStr,ts:now.getTime()});localStorage.setItem('hg-p',JSON.stringify(prayers));showAscension(prayers.length);document.getElementById('prayerInput').value='';renderPrayerDrawer();btn.disabled=false;}
-function showAscension(count){const overlay=document.getElementById('ascOverlay'),starsEl=document.getElementById('ascStars');starsEl.innerHTML='';for(let i=0;i<50;i++){const s=document.createElement('div'),sz=Math.random()*2.5+.5;s.className='asc-star';s.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--dur:${(Math.random()*3+2).toFixed(1)}s;--delay:${(Math.random()*4).toFixed(1)}s`;starsEl.appendChild(s);}document.getElementById('bowlCount').textContent=`${count}번째 기도`;overlay.classList.add('show');setTimeout(()=>{document.getElementById('bowlFill').style.width=Math.min(100,count*5)+'%';},500);}
+
+function renderSelDetail(){
+  const el=document.getElementById('selDayDetail');
+  const d=appData[selCalDate];
+  const[,m,day]=selCalDate.split('-');
+  const isToday=selCalDate===todayKey;
+  el.innerHTML=`<div class="sel-day-title"><span>${parseInt(m)}월 ${parseInt(day)}일${d?.weather?' '+d.weather:''}</span><button class="sel-edit-btn" onclick="goToDate('${selCalDate}')">${isToday?'오늘 기록':'이 날 기록하기'}</button></div><div class="sel-body">`;
+  if(!d){el.innerHTML+=`<div class="sel-empty">이 날의 기록이 없어요</div></div>`;return;}
+  if(d.oneline)el.innerHTML+=`<div style="font-size:13px;color:var(--text);line-height:1.7;margin-bottom:10px;font-weight:400;">${esc(d.oneline)}</div>`;
+  const chips=Object.entries(d.emotions||{}).map(([,v])=>`<span class="sel-emotion-chip">${v.emoji} ${v.name}</span>`).join('');
+  if(chips)el.innerHTML+=`<div class="sel-emotions">${chips}</div>`;
+  [{key:'gratitude',label:'감사한 것'},{key:'resolved',label:'걱정이 별일 없이'},{key:'strength',label:'힘이 되었던 것'},{key:'signals',label:'마음의 신호'},{key:'cheers',label:'나에게 건네는 말'}].forEach(r=>{
+    const items=(d[r.key]||[]);
+    if(!items.length)return;
+    const html=(r.key==='signals')?items.map(s=>`<div class="sel-item">· ${esc(s.text)}</div>`).join(''):(r.key==='cheers')?items.map(c=>`<div class="sel-item">· ${esc(c.text)}</div>`).join(''):items.map(i=>`<div class="sel-item">· ${esc(i)}</div>`).join('');
+    el.innerHTML+=`<div class="sel-section"><div class="sel-section-title">${r.label}</div>${html}</div>`;
+  });
+  if(!chips&&!['gratitude','resolved','strength','signals','cheers'].some(k=>(d[k]||[]).length)&&!d.oneline)el.innerHTML+=`<div class="sel-empty">이 날의 기록이 없어요</div>`;
+  el.innerHTML+='</div>';
+}
+
+function goToDate(key){
+  currentKey=key;
+  switchPage('today');
+  renderEmotions();
+  renderLists();
+  renderSignals();
+  renderCheers();
+  renderStickers();
+  renderVerse();
+  loadTodayOneline();
+  loadWeather();
+}
+
+function initPrayerStars(){}
+
+function sendPrayer(){
+  const text=document.getElementById('prayerInput').value.trim();
+  if(!text)return;
+  const btn=document.getElementById('prayerSendBtn');
+  btn.disabled=true;
+  const now=new Date(),dateStr=`${now.getFullYear()}년 ${now.getMonth()+1}월 ${now.getDate()}일`,timeStr=now.toTimeString().slice(0,5);
+  prayers.unshift({text,date:dateStr,time:timeStr,ts:now.getTime()});
+  localStorage.setItem('hg-p',JSON.stringify(prayers));
+  showAscension(prayers.length);
+  document.getElementById('prayerInput').value='';
+  renderPrayerDrawer();
+  btn.disabled=false;
+}
+
+function showAscension(count){
+  const overlay=document.getElementById('ascOverlay'),starsEl=document.getElementById('ascStars');
+  starsEl.innerHTML='';
+  for(let i=0;i<40;i++){const s=document.createElement('div'),sz=Math.random()*2+.5;s.className='asc-star';s.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--dur:${(Math.random()*3+2).toFixed(1)}s;--delay:${(Math.random()*4).toFixed(1)}s`;starsEl.appendChild(s);}
+  document.getElementById('bowlCount').textContent=`${count}번째 기도`;
+  overlay.classList.add('show');
+  setTimeout(()=>{document.getElementById('bowlFill').style.width=Math.min(100,count*5)+'%';},500);
+}
+
 function closeAscension(){document.getElementById('ascOverlay').classList.remove('show');document.getElementById('bowlFill').style.width='0%';}
-function toggleDrawer(){drawerOpen=!drawerOpen;document.getElementById('drawerLetters').style.display=drawerOpen?'block':'none';document.getElementById('drawerArrow').textContent=drawerOpen?'˅':'›';}
-function renderPrayerDrawer(){document.getElementById('prayerCountBadge').textContent=prayers.length+'편';const list=document.getElementById('prayerLetterList');if(!prayers.length){list.innerHTML='<div class="prayer-empty"><span class="prayer-empty-icon">🏺</span>아직 올려드린 기도가 없어요</div>';return;}list.innerHTML=prayers.map((p,i)=>`<div class="prayer-letter"><div class="prayer-letter-meta"><span class="prayer-letter-date">${p.date} ${p.time}</span><span>✉️</span></div><div class="prayer-letter-text">${esc(p.text)}</div><div class="prayer-letter-actions"><button class="prayer-letter-edit" onclick="openPrayerEdit(${i})">✏️ 수정</button><button class="prayer-letter-del" onclick="deletePrayer(${i})">삭제</button></div></div>`).join('');}
+
+function toggleDrawer(){
+  drawerOpen=!drawerOpen;
+  document.getElementById('drawerLetters').style.display=drawerOpen?'block':'none';
+  document.getElementById('drawerArrow').textContent=drawerOpen?'˅':'›';
+}
+
+function renderPrayerDrawer(){
+  document.getElementById('prayerCountBadge').textContent=prayers.length+'편';
+  const list=document.getElementById('prayerLetterList');
+  if(!prayers.length){list.innerHTML='<div class="prayer-empty"><span class="prayer-empty-icon">🏺</span>아직 올려드린 기도가 없어요</div>';return;}
+  list.innerHTML=prayers.map((p,i)=>`<div class="prayer-letter"><div class="prayer-letter-meta"><span class="prayer-letter-date">${p.date} ${p.time}</span><span>✉</span></div><div class="prayer-letter-text">${esc(p.text)}</div><div class="prayer-letter-actions"><button class="prayer-letter-edit" onclick="openPrayerEdit(${i})">수정</button><button class="prayer-letter-del" onclick="deletePrayer(${i})">삭제</button></div></div>`).join('');
+}
+
 function openPrayerEdit(idx){editingPrayerIdx=idx;document.getElementById('prayerEditTextarea').value=prayers[idx].text;openSheet('prayerEditSheetOverlay');}
-function savePrayerEdit(){const text=document.getElementById('prayerEditTextarea').value.trim();if(!text){closeSheet('prayerEditSheetOverlay');return;}prayers[editingPrayerIdx].text=text;localStorage.setItem('hg-p',JSON.stringify(prayers));renderPrayerDrawer();closeSheet('prayerEditSheetOverlay');}
+function savePrayerEdit(){
+  const text=document.getElementById('prayerEditTextarea').value.trim();
+  if(!text){closeSheet('prayerEditSheetOverlay');return;}
+  prayers[editingPrayerIdx].text=text;
+  localStorage.setItem('hg-p',JSON.stringify(prayers));
+  renderPrayerDrawer();
+  closeSheet('prayerEditSheetOverlay');
+}
 function deletePrayer(idx){prayers.splice(idx,1);localStorage.setItem('hg-p',JSON.stringify(prayers));renderPrayerDrawer();}
-function openSettings(){document.getElementById('settingsOverlay').classList.add('open');const dark=localStorage.getItem('hg-dark')==='1';document.getElementById('darkToggle').classList.toggle('on',dark);}
+
+function openSettings(){document.getElementById('settingsOverlay').classList.add('open');document.getElementById('darkToggle').classList.toggle('on',localStorage.getItem('hg-dark')==='1');}
 function closeSettings(){document.getElementById('settingsOverlay').classList.remove('open');}
 function closeSettingsOnBg(e){if(e.target.id==='settingsOverlay')closeSettings();}
 function toggleDark(){const isDark=document.body.classList.toggle('dark');localStorage.setItem('hg-dark',isDark?'1':'0');document.getElementById('darkToggle').classList.toggle('on',isDark);}
-function backupData(){const backup={version:1,date:new Date().toISOString(),diary:appData,prayers:prayers};const blob=new Blob([JSON.stringify(backup,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`하루결_백업_${new Date().toLocaleDateString('ko-KR').replace(/\./g,'').replace(/ /g,'_')}.json`;a.click();}
-function restoreData(e){const file=e.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=function(ev){try{const backup=JSON.parse(ev.target.result);if(backup.diary)appData=backup.diary;if(backup.prayers)prayers=backup.prayers;localStorage.setItem('hg',JSON.stringify(appData));localStorage.setItem('hg-p',JSON.stringify(prayers));renderEmotions();renderLists();renderSignals();renderCheers();renderStickers();renderCalendar();updateStreak();renderPrayerDrawer();renderVerse();alert('복원이 완료되었어요 😊');closeSettings();}catch(err){alert('파일을 읽을 수 없어요. 올바른 백업 파일인지 확인해주세요.');}};reader.readAsText(file);}
+
+function backupData(){
+  const backup={version:1,date:new Date().toISOString(),diary:appData,prayers:prayers};
+  const blob=new Blob([JSON.stringify(backup,null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=`하루결_백업_${new Date().toLocaleDateString('ko-KR').replace(/\./g,'').replace(/ /g,'_')}.json`;
+  a.click();
+}
+
+function restoreData(e){
+  const file=e.target.files[0];
+  if(!file)return;
+  const reader=new FileReader();
+  reader.onload=function(ev){
+    try{
+      const backup=JSON.parse(ev.target.result);
+      if(backup.diary)appData=backup.diary;
+      if(backup.prayers)prayers=backup.prayers;
+      localStorage.setItem('hg',JSON.stringify(appData));
+      localStorage.setItem('hg-p',JSON.stringify(prayers));
+      renderEmotions();renderLists();renderSignals();renderCheers();renderStickers();renderCalendar();renderPrayerDrawer();renderVerse();
+      alert('복원이 완료되었어요 😊');
+      closeSettings();
+    }catch(err){alert('파일을 읽을 수 없어요.');}
+  };
+  reader.readAsText(file);
+}
+
 function openSheet(id){document.getElementById(id).classList.add('open');}
 function closeSheet(id){document.getElementById(id).classList.remove('open');}
 function closeSheetOnBg(e,id){if(e.target.id===id)closeSheet(id);}
 document.getElementById('ascOverlay').addEventListener('click',e=>{if(e.target.id==='ascOverlay')closeAscension();});
-if(localStorage.getItem('hg-dark')==='1')document.body.classList.add('dark');
+
 init();
 </script>
 </body>
-</html>
+</html>  
