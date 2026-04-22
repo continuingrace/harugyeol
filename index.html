@@ -179,7 +179,7 @@ textarea,input{font-family:inherit;}
 .verse-en{font-size:12px;color:var(--muted);line-height:1.7;font-style:italic;margin-bottom:8px;}
 .verse-ref{font-size:11px;color:var(--accent);font-weight:600;text-align:right;}
 .settings-btn{background:none;border:none;font-size:20px;cursor:pointer;padding:4px;}
-.settings-overlay{position:fixed;inset:0;background:rgba(44,36,24,.45);backdrop-filter:blur(3px);z-index:400;opacity:0;pointer-events:none;transition:opacity .25s;display:flex;align-items:flex-end;justify-content:center;}
+.settings-overlay{position:fixed;inset:0;background:rgba(44,36,24,.45);backdrop-filter:blur(3px);z-index:500;opacity:0;pointer-events:none;transition:opacity .25s;display:flex;align-items:flex-end;justify-content:center;}
 .settings-overlay.open{opacity:1;pointer-events:all;}
 .settings-sheet{width:100%;max-width:480px;background:var(--surface);border-radius:22px 22px 0 0;padding:20px;transform:translateY(100%);transition:transform .28s cubic-bezier(.32,0,.67,0);}
 .settings-overlay.open .settings-sheet{transform:translateY(0);transition-timing-function:cubic-bezier(.33,1,.68,1);}
@@ -243,7 +243,7 @@ body.dark .verse-ko{color:#F0EBE3;}
         <div class="verse-en" id="verseEn"></div>
         <div class="verse-ref" id="verseRef"></div>
       </div>
-    </div>  
+    </div>
     <div class="page" id="page-calendar">
       <div class="cal-page-header"><div class="cal-page-month" id="calPageMonth"></div><div class="cal-nav-row"><button class="cal-nav-btn" onclick="changeMonth(-1)">←</button><button class="cal-nav-btn" onclick="changeMonth(1)">→</button></div></div>
       <div class="cal-full-grid" id="calFullGrid"></div>
@@ -269,12 +269,20 @@ body.dark .verse-ko{color:#F0EBE3;}
       <div id="drawerLetters" style="display:none;"><div class="prayer-letters" id="prayerLetterList"></div></div>
     </div>
   </div>
-  </div>
   <nav class="bottom-nav">
     <button class="nav-btn active" data-page="today" onclick="switchPage('today')"><span class="nav-icon">☀️</span>오늘</button>
     <button class="nav-btn" data-page="calendar" onclick="switchPage('calendar')"><span class="nav-icon">📅</span>달력</button>
     <button class="nav-btn" data-page="prayer" onclick="switchPage('prayer')"><span class="nav-icon">🙏</span>기도</button>
   </nav>
+</div>
+<div class="ascension-overlay" id="ascOverlay">
+  <div class="asc-stars" id="ascStars"></div>
+  <div class="asc-content">
+    <div style="position:relative;display:flex;flex-direction:column;align-items:center;"><div class="asc-envelope">✉️</div></div>
+    <div class="asc-bowl-section"><div class="asc-bowl">🏺</div><div class="bowl-bar"><div class="bowl-bar-fill" id="bowlFill"></div></div><div class="bowl-count" id="bowlCount"></div></div>
+    <div class="asc-msg">기도가 올려졌습니다<br><span class="asc-msg-sub">금 대접에 향기로 쌓여 있어요</span></div>
+    <button class="asc-close" onclick="closeAscension()">닫기</button>
+  </div>
 </div>
 <div class="settings-overlay" id="settingsOverlay" onclick="closeSettingsOnBg(event)">
   <div class="settings-sheet">
@@ -301,15 +309,6 @@ body.dark .verse-ko{color:#F0EBE3;}
       </div>
       <label class="btn btn-primary" style="flex:0;padding:8px 16px;font-size:12px;cursor:pointer;">복원<input type="file" accept=".json" style="display:none;" onchange="restoreData(event)"></label>
     </div>
-  </div>
-</div>
-  <div class="ascension-overlay" id="ascOverlay">
-  <div class="asc-stars" id="ascStars"></div>
-  <div class="asc-content">
-    <div style="position:relative;display:flex;flex-direction:column;align-items:center;"><div class="asc-envelope">✉️</div></div>
-    <div class="asc-bowl-section"><div class="asc-bowl">🏺</div><div class="bowl-bar"><div class="bowl-bar-fill" id="bowlFill"></div></div><div class="bowl-count" id="bowlCount"></div></div>
-    <div class="asc-msg">기도가 올려졌습니다<br><span class="asc-msg-sub">금 대접에 향기로 쌓여 있어요</span></div>
-    <button class="asc-close" onclick="closeAscension()">닫기</button>
   </div>
 </div>
 <div class="sheet-overlay" id="emotionSheetOverlay" onclick="closeSheetOnBg(event,'emotionSheetOverlay')">
@@ -382,20 +381,20 @@ const QUOTES={
   '심심함':['비어있는 시간이 창의성을 부른다.','아무것도 하지 않는 것도 하나의 선택이다.','심심함은 새로운 것을 찾아 나서라는 신호다.','지루함 속에서 진짜 하고 싶은 것이 떠오른다.','여백이 있어야 그림이 완성된다.'],
   '어리둥절함':['모르는 것이 배움의 시작이다.','당황스러움은 새로운 것을 만난 증거다.','모든 것을 이해할 필요는 없다. 시간이 답을 준다.','지금 혼란스럽다면 곧 더 선명해질 것이다.','하나님은 우리가 이해하지 못할 때도 일하신다.'],
   '복잡함':['복잡한 마음도 천천히 풀어나갈 수 있다.','한 번에 하나씩 생각해도 충분하다.','얽힌 실도 끝을 찾으면 풀린다.','지금 복잡한 것은 그만큼 많은 것을 품고 있기 때문이다.','하나님은 복잡한 상황 속에서도 길을 내신다.'],
-  '슬픔':['눈물을 흘리는 자는 기쁨으로 거두리로다. — 시편 126:5','슬픔도 지나간다. 이 또한 지나가리라.','울어도 괜찮다. 비 온 뒤에 땅이 굳는다.','하나님은 상한 마음 가까이 계신다. — 시편 34:18','슬픔은 더 깊이 사랑할 수 있게 해주는 선물이다.'],
-  '불안':['내가 너와 함께 하노라 두려워하지 말라. — 이사야 41:10','염려를 주께 맡겨라. 그가 너를 돌보신다. — 베드로전서 5:7','지금 이 순간에 집중하라. 불안은 미래를 상상할 때 온다.','두려움은 믿음의 반대가 아니다. 두 가지가 함께 있어도 괜찮다.','폭풍 속에도 배는 항구로 돌아온다.'],
+  '슬픔':['눈물을 흘리며 씨를 뿌리는 자는 기쁨으로 거두리로다. — 시편 126:5','슬픔도 지나간다. 이 또한 지나가리라.','울어도 괜찮다. 비 온 뒤에 땅이 굳는다.','하나님은 상한 마음 가까이 계신다. — 시편 34:18','슬픔은 더 깊이 사랑할 수 있게 해주는 선물이다.'],
+  '불안':['내가 너와 함께 하노라 두려워하지 말라. — 이사야 41:10','너희 염려를 다 주께 맡기라 이는 그가 너희를 돌보심이라. — 베드로전서 5:7','지금 이 순간에 집중하라. 불안은 미래를 상상할 때 온다.','두려움은 믿음의 반대가 아니다. 두 가지가 함께 있어도 괜찮다.','폭풍 속에도 배는 항구로 돌아온다.'],
   '화남':['분을 내어도 죄를 짓지 말며. — 에베소서 4:26','감정을 느끼는 것과 그것에 지배당하는 것은 다르다.','화는 내 안의 무언가가 상처받았다는 신호다.','깊이 숨을 들이쉬어라. 폭풍도 잠잠해진다.','내 반응을 선택할 자유가 내게 있다. — 빅터 프랭클'],
-  '서러움':['하나님이 모든 눈물을 닦아 주실 것이다. — 요한계시록 21:4','서러움은 깊이 느꼈다는 증거다. 그만큼 소중했던 것이다.','마음의 상처도 시간이 치유한다.','혼자가 아니다. 누군가 늘 함께한다.','이 슬픔도 나를 더 단단하게 만들 것이다.'],
-  '공허함':['주님 당신 안에 쉬기까지 내 마음은 쉬지 못합니다. — 아우구스티누스','공허함은 채워질 무언가를 기다리는 공간이다.','잠잠히 기다리라. 새 힘을 얻으리니. — 이사야 40:31','지금의 공허함은 더 깊은 충만함을 위한 준비다.','작은 것에 감사할 때 공허함이 채워지기 시작한다.'],
+  '서러움':['하나님이 모든 눈물을 그 눈에서 닦아 주실 것이라. — 요한계시록 21:4','서러움은 깊이 느꼈다는 증거다. 그만큼 소중했던 것이다.','마음의 상처도 시간이 치유한다.','혼자가 아니다. 누군가 늘 함께한다.','이 슬픔도 나를 더 단단하게 만들 것이다.'],
+  '공허함':['주님 당신 안에 쉬기까지 내 마음은 쉬지 못합니다. — 아우구스티누스','공허함은 채워질 무언가를 기다리는 공간이다.','나의 영혼이 잠잠히 하나님만 바람이여. — 시편 62:5','지금의 공허함은 더 깊은 충만함을 위한 준비다.','작은 것에 감사할 때 공허함이 채워지기 시작한다.'],
   '억울함':['하나님은 모든 것을 보고 계신다. 억울함도 아신다.','지금 억울해도 괜찮다. 감정을 충분히 느껴도 된다.','내가 할 수 없는 것은 하나님께 맡기는 것이 지혜다.','억울함 뒤에는 반드시 회복이 온다.','진실은 언제나 드러난다. 인내하라.'],
-  '외로움':['하나님은 고독한 자를 가족으로 삼으신다. — 시편 68:6','외로움은 더 깊은 관계를 원한다는 신호다.','혼자인 시간이 나를 더 깊게 만든다.','지금 외롭더라도 당신은 혼자가 아니다.','고요한 시간 속에서 하나님의 임재를 느낄 수 있다.'],
-  '지침':['쉬는 것도 용기다.','지침은 열심히 살아왔다는 증거다.','오늘은 쉬어도 괜찮다. 내일은 또 새로운 날이다.','내 영혼아 잠잠히 하나님만 바라라. — 시편 62:5','몸과 마음이 쉬어야 더 멀리 갈 수 있다.'],
+  '외로움':['하나님이 고독한 자를 가족과 함께 살게 하신다. — 시편 68:6','외로움은 더 깊은 관계를 원한다는 신호다.','혼자인 시간이 나를 더 깊게 만든다.','지금 외롭더라도 당신은 혼자가 아니다.','고요한 시간 속에서 하나님의 임재를 느낄 수 있다.'],
+  '지침':['쉬는 것도 용기다.','지침은 열심히 살아왔다는 증거다.','오늘은 쉬어도 괜찮다. 내일은 또 새로운 날이다.','나의 영혼이 잠잠히 하나님만 바람이여. — 시편 62:5','몸과 마음이 쉬어야 더 멀리 갈 수 있다.'],
   '두려움':['내가 너와 함께 하노라 두려워하지 말라. — 이사야 41:10','두려움은 중요한 것 앞에 서 있다는 신호다.','용기는 두려움이 없는 것이 아니라 두려움에도 나아가는 것이다.','하나님은 두려워하는 자와 함께 걸으신다.','두려움을 인정하는 것이 극복의 첫 걸음이다.'],
   '부끄러움':['완벽하지 않아도 괜찮다. 우리는 모두 성장 중이다.','부끄러움은 더 나아지고 싶다는 마음의 표현이다.','하나님 앞에서 있는 그대로의 나도 충분하다.','실수는 배움의 기회다. 자책하지 말라.','은혜는 부끄러움보다 항상 크다.'],
   '죄책감':['진정한 회개 후에는 자유가 온다.','하나님의 용서는 우리의 죄보다 크다.','자책보다 더 나은 선택을 하려는 의지가 중요하다.','죄책감을 느낀다는 것은 양심이 살아있다는 증거다.','용서받은 자로 살아가는 것이 은혜에 보답하는 길이다.'],
   '실망감':['실망은 기대했다는 증거다. 그만큼 소중했던 것이다.','모든 실망 뒤에는 새로운 방향이 있다.','하나님의 계획은 우리의 기대보다 크다.','이번 실망이 더 좋은 것을 위한 준비일 수 있다.','기대가 무너진 자리에서 믿음이 자란다.'],
-  '막막함':['한 걸음씩만 가도 된다. 전부 보이지 않아도 괜찮다.','막막할 때는 가장 작은 것부터 시작하면 된다.','하나님은 어둠 속에서도 길을 내신다. — 이사야 43:19','안개가 걷히면 길이 보인다. 지금은 기다릴 때다.','막막함은 새로운 시작 직전에 찾아온다.'],
-  '걱정스러움':['염려를 주께 맡겨라. 그가 너를 돌보신다. — 베드로전서 5:7','걱정은 내일의 슬픔을 없애주지 않는다. 오늘의 힘을 빼앗을 뿐이다.','지금 이 순간에 집중하라. 걱정은 아직 오지 않은 것에 대한 것이다.','하나님은 내일도 함께 하신다. 오늘은 오늘의 것으로 충분하다.','두려워하지 말라. 내가 너의 하나님이 됨이라. — 이사야 41:10']
+  '막막함':['한 걸음씩만 가도 된다. 전부 보이지 않아도 괜찮다.','막막할 때는 가장 작은 것부터 시작하면 된다.','보라 내가 새 일을 행하리니 광야에 길을 사막에 강을 내리리라. — 이사야 43:19','안개가 걷히면 길이 보인다. 지금은 기다릴 때다.','막막함은 새로운 시작 직전에 찾아온다.'],
+  '걱정스러움':['너희 염려를 다 주께 맡기라 이는 그가 너희를 돌보심이라. — 베드로전서 5:7','걱정은 내일의 슬픔을 없애주지 않는다. 오늘의 힘을 빼앗을 뿐이다.','지금 이 순간에 집중하라. 걱정은 아직 오지 않은 것에 대한 것이다.','하나님은 내일도 함께 하신다. 오늘은 오늘의 것으로 충분하다.','두려워하지 말라 내가 너와 함께 함이라. — 이사야 41:10']
 };
 const VERSES=[
   {ko:'여호와는 나의 목자시니 내게 부족함이 없으리로다',en:'The Lord is my shepherd, I shall not want.',ref:'시편 23:1 / Psalm 23:1'},
