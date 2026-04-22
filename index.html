@@ -913,19 +913,20 @@ function renderSelDetail(){
   const d=appData[selCalDate];
   const[,m,day]=selCalDate.split('-');
   const isToday=selCalDate===todayKey;
-  el.innerHTML=`<div class="sel-day-title"><span>${parseInt(m)}월 ${parseInt(day)}일${d?.weather?' '+d.weather:''}</span><button class="sel-edit-btn" onclick="goToDate('${selCalDate}')">${isToday?'오늘 기록':'이 날 기록하기'}</button></div><div style="padding:12px 16px 16px;">`;
-  if(!d){el.innerHTML+=`<div class="sel-empty">이 날의 기록이 없어요</div></div>`;return;}
-  if(d.oneline)el.innerHTML+=`<div style="font-size:13px;color:var(--text);line-height:1.7;margin-bottom:10px;font-weight:400;padding:0;">${esc(d.oneline)}</div>`;
+  let html=`<div class="sel-day-title"><span>${parseInt(m)}월 ${parseInt(day)}일${d?.weather?' '+d.weather:''}</span><button class="sel-edit-btn" onclick="goToDate('${selCalDate}')">${isToday?'오늘 기록':'이 날 기록하기'}</button></div>`;
+  if(!d){el.innerHTML=html+`<div style="padding:12px 16px 16px;font-size:12px;color:var(--light);font-weight:300;text-align:center;">이 날의 기록이 없어요</div>`;return;}
+  let body='';
+  if(d.oneline)body+=`<div style="font-size:13px;color:var(--text);line-height:1.7;margin-bottom:10px;font-weight:400;">${esc(d.oneline)}</div>`;
   const chips=Object.entries(d.emotions||{}).map(([,v])=>`<span class="sel-emotion-chip">${v.emoji} ${v.name}</span>`).join('');
-  if(chips)el.innerHTML+=`<div class="sel-emotions">${chips}</div>`;
+  if(chips)body+=`<div class="sel-emotions">${chips}</div>`;
   [{key:'gratitude',label:'감사한 것'},{key:'resolved',label:'걱정이 별일 없이'},{key:'strength',label:'힘이 되었던 것'},{key:'signals',label:'마음의 신호'},{key:'cheers',label:'나에게 건네는 말'}].forEach(r=>{
     const items=(d[r.key]||[]);
     if(!items.length)return;
-    const html=(r.key==='signals')?items.map(s=>`<div class="sel-item">· ${esc(s.text)}</div>`).join(''):(r.key==='cheers')?items.map(c=>`<div class="sel-item">· ${esc(c.text)}</div>`).join(''):items.map(i=>`<div class="sel-item">· ${esc(i)}</div>`).join('');
-    el.innerHTML+=`<div style="margin-top:10px;"><div style="font-size:9px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:4px;font-weight:400;">${r.label}</div>${html}</div>`;
+    const itemHtml=(r.key==='signals')?items.map(s=>`<div class="sel-item">· ${esc(s.text)}</div>`).join(''):(r.key==='cheers')?items.map(c=>`<div class="sel-item">· ${esc(c.text)}</div>`).join(''):items.map(i=>`<div class="sel-item">· ${esc(i)}</div>`).join('');
+    body+=`<div style="margin-top:10px;"><div style="font-size:9px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:4px;font-weight:400;">${r.label}</div>${itemHtml}</div>`;
   });
-  if(!chips&&!['gratitude','resolved','strength','signals','cheers'].some(k=>(d[k]||[]).length)&&!d.oneline)el.innerHTML+=`<div class="sel-empty">이 날의 기록이 없어요</div>`;
-  el.innerHTML+='</div>';
+  if(!body)body=`<div style="font-size:12px;color:var(--light);font-weight:300;text-align:center;padding:8px 0;">이 날의 기록이 없어요</div>`;
+  el.innerHTML=html+`<div style="padding:12px 16px 16px;">`+body+`</div>`;
 }
 
 function goToDate(key){
