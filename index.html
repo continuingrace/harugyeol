@@ -298,6 +298,11 @@ body.dark .btn-primary{color:#1C1917;}
         <div class="record-card"><div class="record-card-title">🌀 걱정이 별일 없이 <button class="add-item-btn" onclick="openAddSheet('resolved')">+ 추가</button></div><div class="record-items" id="list-resolved"></div></div>
         <div class="record-card"><div class="record-card-title">✨ 힘이 되었던 것 <button class="add-item-btn" onclick="openAddSheet('strength')">+ 추가</button></div><div class="record-items" id="list-strength"></div></div>
       </div>
+      <div class="section-label">오늘의 선물</div>
+      <div class="record-list">
+        <div class="record-card"><div class="record-card-title">🎁 내가 선물한 것 <button class="add-item-btn" onclick="openAddSheet('gift_gave')">+ 추가</button></div><div class="record-items" id="list-gift_gave"></div></div>
+        <div class="record-card"><div class="record-card-title">🎀 받은 선물 <button class="add-item-btn" onclick="openAddSheet('gift_received')">+ 추가</button></div><div class="record-items" id="list-gift_received"></div></div>
+      </div>
       <div class="section-label">마음의 신호</div>
       <div class="signal-card">
         <div class="signal-card-title">🫧 지금 이 순간 알아차린 것 <button class="add-item-btn" onclick="openSignalSheet()">+ 추가</button></div>
@@ -521,7 +526,9 @@ const STICKER_CATS=[
 const ADD_CFG={
   gratitude:{title:'감사하고 좋았던 것',sub:'오늘 감사했던 순간, 사람, 작은 것들',placeholder:'오늘 감사했던 것은...'},
   resolved:{title:'걱정이 별일 없이',sub:'걱정했지만 잘 지나간 일들',placeholder:'걱정했지만 괜찮았던 것은...'},
-  strength:{title:'힘이 되었던 것',sub:'존재, 문장, 장면 — 무엇이든',placeholder:'힘이 되었던 사람, 말, 순간은...'}
+  strength:{title:'힘이 되었던 것',sub:'존재, 문장, 장면 — 무엇이든',placeholder:'힘이 되었던 사람, 말, 순간은...'},
+  gift_gave:{title:'🎁 내가 선물한 것',sub:'오늘 누군가에게 선물한 것',placeholder:'누구에게, 무엇을...'},
+  gift_received:{title:'🎀 받은 선물',sub:'오늘 누군가에게 받은 선물',placeholder:'누구에게서, 무엇을...'}
 };
 const SLOT_LABELS={morning:'아침',noon:'점심',evening:'저녁',night:'자기 전'};
 
@@ -532,7 +539,7 @@ let calYear=new Date().getFullYear(),calMonth=new Date().getMonth(),selCalDate=t
 let curSlot='',curType='',selEmo=null,selStk=null,curStkCat=0,drawerOpen=false,selSignalEmo=null,editingPrayerIdx=-1,selWeather=null;
 
 function getKey(d){return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
-function getDay(k){return appData[k]||{emotions:{},gratitude:[],resolved:[],strength:[],stickers:[],signals:[],cheers:[],oneline:'',weather:''};}
+function getDay(k){return appData[k]||{emotions:{},gratitude:[],resolved:[],strength:[],gift_gave:[],gift_received:[],stickers:[],signals:[],cheers:[],oneline:'',weather:''};}
 function saveDay(k,d){appData[k]=d;localStorage.setItem('hg',JSON.stringify(appData));}
 function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 function getRandomQuote(name){const q=QUOTES[name];if(!q)return null;return q[Math.floor(Math.random()*q.length)];}
@@ -632,7 +639,7 @@ function renderEmotions(){
 
 function renderLists(){
   const d=getDay(currentKey);
-  ['gratitude','resolved','strength'].forEach(type=>{
+  ['gratitude','resolved','strength','gift_gave','gift_received'].forEach(type=>{
     document.getElementById('list-'+type).innerHTML=(d[type]||[]).map(item=>`<div class="record-item"><span class="record-dot"></span><span>${esc(item)}</span></div>`).join('');
   });
 }
@@ -920,7 +927,7 @@ function renderSelDetail(){
   if(d.oneline)body+=`<div style="font-size:13px;color:var(--text);line-height:1.7;margin-bottom:10px;font-weight:400;">${esc(d.oneline)}</div>`;
   const chips=Object.entries(d.emotions||{}).map(([,v])=>`<span class="sel-emotion-chip">${v.emoji} ${v.name}</span>`).join('');
   if(chips)body+=`<div class="sel-emotions">${chips}</div>`;
-  [{key:'gratitude',label:'감사한 것'},{key:'resolved',label:'걱정이 별일 없이'},{key:'strength',label:'힘이 되었던 것'},{key:'signals',label:'마음의 신호'},{key:'cheers',label:'나에게 건네는 말'}].forEach(r=>{
+  [{key:'gratitude',label:'감사한 것'},{key:'resolved',label:'걱정이 별일 없이'},{key:'strength',label:'힘이 되었던 것'},{key:'gift_gave',label:'내가 선물한 것'},{key:'gift_received',label:'받은 선물'},{key:'signals',label:'마음의 신호'},{key:'cheers',label:'나에게 건네는 말'}].forEach(r=>{
     const items=(d[r.key]||[]);
     if(!items.length)return;
     const itemHtml=(r.key==='signals')?items.map(s=>`<div class="sel-item">· ${esc(s.text)}</div>`).join(''):(r.key==='cheers')?items.map(c=>`<div class="sel-item">· ${esc(c.text)}</div>`).join(''):items.map(i=>`<div class="sel-item">· ${esc(i)}</div>`).join('');
