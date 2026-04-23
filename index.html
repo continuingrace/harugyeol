@@ -569,6 +569,7 @@ function switchPage(id){
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('page-'+id).classList.add('active');
   document.querySelector('[data-page="'+id+'"]').classList.add('active');
+  if(id==='today'){currentKey=todayKey;renderEmotions();renderLists();renderSignals();renderCheers();renderStickers();renderVerse();loadTodayOneline();loadWeather();}
 }
 
 function renderTopDate(){
@@ -939,7 +940,10 @@ function renderSelDetail(){
 
 function goToDate(key){
   currentKey=key;
-  switchPage('today');
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('page-today').classList.add('active');
+  document.querySelector('[data-page="today"]').classList.add('active');
   renderEmotions();
   renderLists();
   renderSignals();
