@@ -9,12 +9,7 @@
 <meta name="apple-mobile-web-app-title" content="하루결">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500&family=Noto+Serif+KR:wght@400;600&family=DM+Mono&display=swap" rel="stylesheet">
 <style>
-:root{
-  --bg:#F5F2ED;--bg2:#EFEBE4;--surface:#FAF8F5;--surface2:#F0EDE8;
-  --border:#DDD8D0;--border2:#C8C2B8;--text:#1C1917;--text2:#4A4540;
-  --muted:#8A837A;--light:#B5AFA8;--accent:#2C2520;--accent2:#6B5E52;
-  --r:6px;--rs:4px;--nav:60px;
-}
+:root{--bg:#F5F2ED;--bg2:#EFEBE4;--surface:#FAF8F5;--surface2:#F0EDE8;--border:#DDD8D0;--border2:#C8C2B8;--text:#1C1917;--text2:#4A4540;--muted:#8A837A;--light:#B5AFA8;--accent:#2C2520;--accent2:#6B5E52;--r:6px;--rs:4px;--nav:60px;}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html,body{height:100%;font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);overflow:hidden;-webkit-tap-highlight-color:transparent;font-weight:300;}
 button{cursor:pointer;font-family:'Noto Sans KR',sans-serif;border:none;background:none;}
@@ -110,7 +105,6 @@ textarea,input{font-family:'Noto Sans KR',sans-serif;}
 .sel-emotions{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;}
 .sel-emotion-chip{display:flex;align-items:center;gap:4px;background:var(--surface2);border:1px solid var(--border);padding:3px 9px;font-size:11px;font-weight:300;flex-shrink:0;}
 .sel-item{font-size:12px;line-height:1.7;padding:1px 0;color:var(--text2);font-weight:300;word-break:break-word;overflow-wrap:break-word;}
-.sel-empty{font-size:12px;color:var(--light);font-weight:300;padding:20px 0;text-align:center;}
 .prayer-wrap{margin:20px 20px 0;border:1px solid var(--border);background:var(--accent);position:relative;overflow:hidden;}
 .prayer-inner{padding:20px;position:relative;z-index:1;}
 .prayer-title{font-family:'Noto Serif KR',serif;font-size:14px;font-weight:600;color:#F5F0E8;margin-bottom:2px;letter-spacing:-0.3px;}
@@ -478,6 +472,7 @@ const ADD_CFG={
   gift_received:{title:'🎀 받은 선물',sub:'오늘 누군가에게 받은 선물',placeholder:'누구에게서, 무엇을...'}
 };
 const SLOT_LABELS={morning:'아침',noon:'점심',evening:'저녁',night:'자기 전'};
+const WEEK_DAYS=['일','월','화','수','목','금','토'];
 
 let appData=JSON.parse(localStorage.getItem('hg')||'{}');
 let prayers=JSON.parse(localStorage.getItem('hg-p')||'[]');
@@ -493,6 +488,12 @@ function getRandomQuote(name){const q=QUOTES[name];if(!q)return null;return q[Ma
 function getTodayVerse(){const d=new Date(currentKey);const idx=(d.getFullYear()*366+d.getMonth()*31+d.getDate())%VERSES.length;return VERSES[idx];}
 function autoResize(el){el.style.height='auto';el.style.height=el.scrollHeight+'px';}
 
+function formatDateStr(key){
+  const d=new Date(key+'T00:00:00');
+  const [y,m,day]=key.split('-');
+  return`${y}.${m}.${day} (${WEEK_DAYS[d.getDay()]})`;
+}
+
 function init(){
   renderTopDate();renderEmotions();renderLists();renderSignals();renderCheers();
   renderStickers();renderCalendar();initPrayerStars();renderPrayerDrawer();
@@ -507,14 +508,15 @@ function switchPage(id){
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('page-'+id).classList.add('active');
   document.querySelector('[data-page="'+id+'"]').classList.add('active');
-  if(id==='today'){currentKey=todayKey;renderEmotions();renderLists();renderSignals();renderCheers();renderStickers();renderVerse();loadTodayOneline();loadWeather();}
+  if(id==='today'){
+    currentKey=todayKey;
+    renderEmotions();renderLists();renderSignals();renderCheers();renderStickers();renderVerse();loadTodayOneline();loadWeather();
+  }
 }
 
 function renderTopDate(){
-  const days=['일','월','화','수','목','금','토'],d=new Date();
-  const str=`${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')} (${days[d.getDay()]})`;
+  const str=formatDateStr(todayKey);
   document.getElementById('topDate').textContent=str;
-  document.getElementById('todayDateFull').textContent=str;
 }
 
 function loadTodayOneline(){const d=getDay(currentKey);const el=document.getElementById('todayOneline');el.value=d.oneline||'';autoResize(el);}
@@ -542,16 +544,17 @@ function openWeatherSheet(){
 }
 
 function renderEmotions(){
-  const d=getDay(currentKey);const isToday=currentKey===todayKey;
+  const d=getDay(currentKey);
+  const isToday=currentKey===todayKey;
   document.getElementById('todayLabel').textContent=isToday?'감정 기록':`${currentKey} 감정 기록`;
+  // ★ 핵심 수정: 본문 날짜를 currentKey 기준으로 표시
+  document.getElementById('todayDateFull').textContent=formatDateStr(currentKey);
   ['morning','noon','evening','night'].forEach(slot=>{
     const el=document.getElementById('disp-'+slot),e=d.emotions[slot];
     el.innerHTML=e?`<span class="emotion-emoji">${e.emoji}</span><span class="emotion-name">${e.name}</span>`:`<span class="emotion-empty">기분이 어때요?</span>`;
   });
-  if(currentKey===todayKey){
-    const el=document.getElementById('todayOneline');el.value=d.oneline||'';autoResize(el);
-    document.getElementById('weatherBtn').textContent=d.weather||'—';
-  }
+  const el=document.getElementById('todayOneline');el.value=d.oneline||'';autoResize(el);
+  document.getElementById('weatherBtn').textContent=d.weather||'—';
 }
 
 function renderLists(){
@@ -755,10 +758,9 @@ function addSticker(){
 
 function renderCalendar(){
   const MONTHS=['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
-  const DOWS=['일','월','화','수','목','금','토'];
   document.getElementById('calPageMonth').textContent=`${calYear}년 ${MONTHS[calMonth]}`;
   const grid=document.getElementById('calFullGrid');grid.innerHTML='';
-  DOWS.forEach(d=>{const el=document.createElement('div');el.className='cal-full-dow';el.textContent=d;grid.appendChild(el);});
+  WEEK_DAYS.forEach(d=>{const el=document.createElement('div');el.className='cal-full-dow';el.textContent=d;grid.appendChild(el);});
   const today=getKey(new Date()),first=new Date(calYear,calMonth,1).getDay(),days=new Date(calYear,calMonth+1,0).getDate(),prev=new Date(calYear,calMonth,0).getDate();
   for(let i=first-1;i>=0;i--){const el=document.createElement('div');el.className='cal-full-day other';el.textContent=prev-i;grid.appendChild(el);}
   for(let d=1;d<=days;d++){
