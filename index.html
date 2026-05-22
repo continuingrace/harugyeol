@@ -234,11 +234,16 @@ body.dark .btn-primary{color:#1C1917;}
         <div class="emotion-card" onclick="openEmotionSheet('evening')"><div class="emotion-time">저녁</div><div class="emotion-display" id="disp-evening"><span class="emotion-empty">기분이 어때요?</span></div></div>
         <div class="emotion-card" onclick="openEmotionSheet('night')"><div class="emotion-time">자기 전</div><div class="emotion-display" id="disp-night"><span class="emotion-empty">기분이 어때요?</span></div></div>
       </div>
+      <div class="section-label">오늘 바라는 것</div>
+      <div class="record-list">
+        <div class="record-card"><div class="record-card-title">🕊️ 오늘 이루어졌으면 하는 것 <button class="add-item-btn" onclick="openAddSheet('wishes')">+ 추가</button></div><div class="record-items" id="list-wishes"></div></div>
+      </div>
       <div class="section-label">오늘의 기록</div>
       <div class="record-list">
         <div class="record-card"><div class="record-card-title">🌱 감사하고 좋았던 것 <button class="add-item-btn" onclick="openAddSheet('gratitude')">+ 추가</button></div><div class="record-items" id="list-gratitude"></div></div>
         <div class="record-card"><div class="record-card-title">🌀 걱정이 별일 없이 <button class="add-item-btn" onclick="openAddSheet('resolved')">+ 추가</button></div><div class="record-items" id="list-resolved"></div></div>
         <div class="record-card"><div class="record-card-title">✨ 힘이 되었던 것 <button class="add-item-btn" onclick="openAddSheet('strength')">+ 추가</button></div><div class="record-items" id="list-strength"></div></div>
+        <div class="record-card"><div class="record-card-title">📖 하나님이 주신 말씀 <button class="add-item-btn" onclick="openAddSheet('scripture')">+ 추가</button></div><div class="record-items" id="list-scripture"></div></div>
       </div>
       <div class="section-label">오늘의 선물</div>
       <div class="record-list">
@@ -388,15 +393,22 @@ const WEATHER_LIST=[
   {emoji:'🌫',label:'안개'},{emoji:'🌬',label:'바람'}
 ];
 const EMOTIONS=[
-  {emoji:'😊',name:'기쁨'},{emoji:'😌',name:'평온'},{emoji:'🥰',name:'사랑스러움'},{emoji:'😤',name:'뿌듯함'},
-  {emoji:'🤗',name:'따뜻함'},{emoji:'😴',name:'피곤함'},{emoji:'🫠',name:'멍함'},
-  {emoji:'😐',name:'담담함'},{emoji:'😑',name:'무덤덤함'},{emoji:'🥱',name:'심심함'},
-  {emoji:'😵',name:'어리둥절함'},{emoji:'🤯',name:'복잡함'},
-  {emoji:'😔',name:'슬픔'},{emoji:'😰',name:'불안'},{emoji:'😠',name:'화남'},{emoji:'🥲',name:'서러움'},
-  {emoji:'😶',name:'공허함'},{emoji:'😤',name:'억울함'},{emoji:'😢',name:'외로움'},
-  {emoji:'😩',name:'지침'},{emoji:'😨',name:'두려움'},{emoji:'😳',name:'부끄러움'},
-  {emoji:'😞',name:'죄책감'},{emoji:'😟',name:'실망감'},{emoji:'😦',name:'막막함'},
-  {emoji:'😟',name:'걱정스러움'}
+  // 긍정
+  {emoji:'😊',name:'기쁨'},{emoji:'😌',name:'평온'},{emoji:'🥰',name:'사랑스러움'},{emoji:'🌟',name:'뿌듯함'},
+  {emoji:'🤗',name:'따뜻함'},{emoji:'🌿',name:'평안함'},{emoji:'☁️',name:'편안함'},{emoji:'🌻',name:'만족스러움'},
+  // 중립/피로
+  {emoji:'😴',name:'피곤함'},{emoji:'🫠',name:'멍함'},{emoji:'😐',name:'담담함'},{emoji:'😑',name:'무덤덤함'},
+  {emoji:'🥱',name:'심심함'},{emoji:'😵',name:'어리둥절함'},{emoji:'🤯',name:'복잡함'},{emoji:'🌫️',name:'알수없음'},
+  {emoji:'🪫',name:'고갈됨'},
+  // 부정
+  {emoji:'😔',name:'슬픔'},{emoji:'😰',name:'불안'},{emoji:'🌀',name:'불안함'},{emoji:'😠',name:'화남'},
+  {emoji:'🌩️',name:'짜증남'},{emoji:'🥲',name:'서러움'},{emoji:'💔',name:'속상함'},{emoji:'😶',name:'공허함'},
+  {emoji:'😤',name:'억울함'},{emoji:'😢',name:'외로움'},{emoji:'😩',name:'지침'},{emoji:'😨',name:'두려움'},
+  {emoji:'🌑',name:'무서움'},{emoji:'😳',name:'부끄러움'},{emoji:'😞',name:'죄책감'},{emoji:'😟',name:'실망감'},
+  {emoji:'😦',name:'막막함'},{emoji:'😟',name:'걱정스러움'},{emoji:'🌧️',name:'울적함'},{emoji:'🍂',name:'허무함'},
+  {emoji:'🌪️',name:'불만족'},
+  // 그리움/아쉬움
+  {emoji:'🙏',name:'미안함'},{emoji:'📮',name:'그리움'},{emoji:'💌',name:'보고싶음'},{emoji:'🍃',name:'아쉬움'}
 ];
 const QUOTES={
   '기쁨':['즐거움이 있는 곳에 하나님도 계신다. — 마르틴 루터','감사하는 마음이 기쁨의 뿌리다.','기쁨으로 가득 찬 하루는 하나님의 선물이다.'],
@@ -404,6 +416,9 @@ const QUOTES={
   '사랑스러움':['사랑은 오래 참고 온유하며. — 고린도전서 13:4','당신은 사랑받기 위해 태어난 사람.','사랑은 가장 강한 힘이다.'],
   '뿌듯함':['최선을 다한 하루는 그 자체로 완전하다.','오늘의 노력이 내일의 열매가 된다.','작은 성취도 충분히 기뻐할 가치가 있다.'],
   '따뜻함':['작은 친절이 세상을 바꾼다. — 마더 테레사','따뜻한 마음이 있는 곳에 하나님이 계신다.','사랑은 행동이다. — C.S. 루이스'],
+  '평안함':['이 평안은 하나님이 주시는 선물이다.','잠잠하라 내가 하나님임을 알지어다. — 시편 46:10','평안한 마음이 있는 곳에 하나님이 계신다.'],
+  '편안함':['편안함 속에서 감사를 발견하라.','안식은 하나님의 선물이다.','이 쉼도 하나님이 주신 은혜다.'],
+  '만족스러움':['감사하는 마음이 만족의 씨앗이다.','자족하는 법을 배웠노라. — 빌립보서 4:11','오늘의 만족이 내일의 감사가 된다.'],
   '피곤함':['쉬어라. 들의 꽃도 쉬는 시간이 있다.','안식은 게으름이 아니라 지혜다.','내 영혼아 잠잠히 하나님만 바라라. — 시편 62:5'],
   '멍함':['고요함도 하나의 언어다.','지금 이 순간 그냥 존재하는 것으로 충분하다.','쉬어가는 것도 여정의 일부다.'],
   '담담함':['흔들리지 않는 것이 강한 것이다.','오늘의 고요함이 내일의 뿌리가 된다.','담담함은 내면이 깊어진 증거다.'],
@@ -411,20 +426,33 @@ const QUOTES={
   '심심함':['비어있는 시간이 창의성을 부른다.','여백이 있어야 그림이 완성된다.','심심함은 새로운 것을 찾아 나서라는 신호다.'],
   '어리둥절함':['모르는 것이 배움의 시작이다.','하나님은 우리가 이해하지 못할 때도 일하신다.','모든 것을 이해할 필요는 없다. 시간이 답을 준다.'],
   '복잡함':['복잡한 마음도 천천히 풀어나갈 수 있다.','한 번에 하나씩 생각해도 충분하다.','하나님은 복잡한 상황 속에서도 길을 내신다.'],
+  '알수없음':['모든 것을 알 필요는 없다. 신뢰하는 것으로 충분하다.','안개가 걷히면 길이 보인다.','하나님의 길은 우리가 알 수 없을 때도 선하다.'],
+  '고갈됨':['쉬는 것도 사역이다.','내 영혼아 잠잠히 하나님만 바라라. — 시편 62:5','몸과 마음이 쉬어야 더 멀리 갈 수 있다.'],
   '슬픔':['눈물을 흘리며 씨를 뿌리는 자는 기쁨으로 거두리로다. — 시편 126:5','울어도 괜찮다. 비 온 뒤에 땅이 굳는다.','하나님은 상한 마음 가까이 계신다. — 시편 34:18'],
   '불안':['내가 너와 함께 하노라 두려워하지 말라. — 이사야 41:10','너희 염려를 다 주께 맡기라. — 베드로전서 5:7','지금 이 순간에 집중하라. 불안은 미래를 상상할 때 온다.'],
+  '불안함':['평안을 너희에게 끼치노니 곧 나의 평안을 주노라. — 요한복음 14:27','불안은 아직 오지 않은 것에 대한 두려움이다. 지금 이 순간에 머물라.','너희 염려를 다 주께 맡기라. — 베드로전서 5:7'],
   '화남':['분을 내어도 죄를 짓지 말며. — 에베소서 4:26','화는 내 안의 무언가가 상처받았다는 신호다.','깊이 숨을 들이쉬어라. 폭풍도 잠잠해진다.'],
+  '짜증남':['짜증도 내 마음이 무언가를 원한다는 신호다.','이 감정도 지나간다. 잠시 숨을 고르라.','작은 것에 흔들리지 않는 평온을 구하라.'],
   '서러움':['하나님이 모든 눈물을 닦아 주실 것이라. — 요한계시록 21:4','서러움은 깊이 느꼈다는 증거다.','이 슬픔도 나를 더 단단하게 만들 것이다.'],
+  '속상함':['속상함도 하나님께 가져가라.','눈물도 기도가 된다.','하나님은 상한 마음 가까이 계신다. — 시편 34:18'],
   '공허함':['주님 안에 쉬기까지 내 마음은 쉬지 못합니다. — 아우구스티누스','공허함은 채워질 무언가를 기다리는 공간이다.','작은 것에 감사할 때 공허함이 채워지기 시작한다.'],
   '억울함':['하나님은 모든 것을 보고 계신다. 억울함도 아신다.','진실은 언제나 드러난다. 인내하라.','억울함 뒤에는 반드시 회복이 온다.'],
   '외로움':['하나님이 고독한 자를 가족과 함께 살게 하신다. — 시편 68:6','혼자인 시간이 나를 더 깊게 만든다.','지금 외롭더라도 당신은 혼자가 아니다.'],
   '지침':['쉬는 것도 용기다.','몸과 마음이 쉬어야 더 멀리 갈 수 있다.','오늘은 쉬어도 괜찮다. 내일은 또 새로운 날이다.'],
   '두려움':['내가 너와 함께 하노라 두려워하지 말라. — 이사야 41:10','용기는 두려움이 없는 것이 아니라 두려움에도 나아가는 것이다.','두려움을 인정하는 것이 극복의 첫 걸음이다.'],
+  '무서움':['두려워하지 말라 내가 너와 함께 함이라. — 이사야 41:10','하나님은 우리의 피난처시요 힘이시니라. — 시편 46:1','용기는 두려움 속에서도 나아가는 것이다.'],
   '부끄러움':['완벽하지 않아도 괜찮다. 우리는 모두 성장 중이다.','은혜는 부끄러움보다 항상 크다.','실수는 배움의 기회다.'],
   '죄책감':['진정한 회개 후에는 자유가 온다.','하나님의 용서는 우리의 죄보다 크다.','용서받은 자로 살아가는 것이 은혜에 보답하는 길이다.'],
   '실망감':['실망은 기대했다는 증거다. 그만큼 소중했던 것이다.','하나님의 계획은 우리의 기대보다 크다.','기대가 무너진 자리에서 믿음이 자란다.'],
   '막막함':['한 걸음씩만 가도 된다. 전부 보이지 않아도 괜찮다.','보라 내가 새 일을 행하리니. — 이사야 43:19','안개가 걷히면 길이 보인다. 지금은 기다릴 때다.'],
-  '걱정스러움':['너희 염려를 다 주께 맡기라. — 베드로전서 5:7','걱정은 내일의 슬픔을 없애주지 않는다. 오늘의 힘을 빼앗을 뿐이다.','하나님은 내일도 함께 하신다.']
+  '걱정스러움':['너희 염려를 다 주께 맡기라. — 베드로전서 5:7','걱정은 내일의 슬픔을 없애주지 않는다. 오늘의 힘을 빼앗을 뿐이다.','하나님은 내일도 함께 하신다.'],
+  '울적함':['울적한 날에도 하나님은 함께 하신다.','비 온 뒤에 땅이 굳는다.','이 감정도 지나가리라. 내일은 새롭다.'],
+  '허무함':['허무함은 더 깊은 의미를 찾으라는 부름이다.','주님 안에 쉬기까지 내 마음은 쉬지 못합니다. — 아우구스티누스','작은 것에서 아름다움을 찾을 때 허무함이 채워진다.'],
+  '불만족':['불만족은 더 나아지고자 하는 마음의 표현이다.','하나님의 때를 기다리라. 그분의 계획은 선하다.','작은 것에 감사할 때 불만족이 줄어든다.'],
+  '미안함':['미안함을 느끼는 것은 사랑한다는 증거다.','진심 어린 사과는 관계를 회복시킨다.','용기를 내어 미안하다고 말하는 것이 치유의 시작이다.'],
+  '그리움':['그리움은 사랑했다는 증거다.','사랑하는 사람을 생각하는 것도 기도가 된다.','하나님은 우리의 그리움도 아신다.'],
+  '보고싶음':['보고 싶은 마음이 있다는 것은 축복이다.','사랑은 거리를 초월한다.','그 사람을 위해 기도하는 것이 보고 싶음을 전하는 방법이다.'],
+  '아쉬움':['아쉬움은 소중했다는 증거다.','모든 끝은 새로운 시작이다.','하나님은 아쉬움도 새로운 것으로 채우신다.']
 };
 const VERSES=[
   {ko:'여호와는 나의 목자시니 내게 부족함이 없으리로다',en:'The Lord is my shepherd, I shall not want.',ref:'시편 23:1 / Psalm 23:1'},
@@ -459,17 +487,19 @@ const VERSES=[
   {ko:'내가 주께 감사하옴은 나를 지으심이 심히 기묘하심이라 주께서 하시는 일이 기이함을 내 영혼이 잘 아나이다',en:'I will give thanks to You, for I am fearfully and wonderfully made.',ref:'시편 139:14 / Psalm 139:14'}
 ];
 const STICKER_CATS=[
-  {label:'감정',s:['😊','😌','🥰','😤','😔','😰','😠','🥲','😶','😴','🤗','🫠','😍','🤩','😎','🥳']},
+  {label:'감정',s:['😊','😌','🥰','😔','😰','😠','🥲','😶','😴','🤗','🫠','😍','🤩','😎','🥳','🌟']},
   {label:'자연',s:['🌸','🌺','🌻','🌹','🌷','🍀','🌿','🍃','🌱','🪴','🌾','🍂','🌊','🌙','⭐','✨']},
   {label:'일상',s:['☕','🍵','🫖','🍰','🧁','🎵','🎶','📖','✏️','🕯️','🏡','🎨','🧸','💌','📷','🌠']},
   {label:'마음',s:['💛','💙','💚','🧡','💜','🤍','💗','💖','💝','💫','🙏','👏','🫂','💪','💐','🎁']}
 ];
 const ADD_CFG={
+  wishes:{title:'오늘 바라는 것',sub:'오늘 이루어졌으면 하는 것들',placeholder:'오늘 바라는 것은...'},
   gratitude:{title:'감사하고 좋았던 것',sub:'오늘 감사했던 순간, 사람, 작은 것들',placeholder:'오늘 감사했던 것은...'},
   resolved:{title:'걱정이 별일 없이',sub:'걱정했지만 잘 지나간 일들',placeholder:'걱정했지만 괜찮았던 것은...'},
   strength:{title:'힘이 되었던 것',sub:'존재, 문장, 장면 — 무엇이든',placeholder:'힘이 되었던 사람, 말, 순간은...'},
-  gift_gave:{title:'🎁 내가 선물한 것',sub:'오늘 누군가에게 선물한 것',placeholder:'누구에게, 무엇을...'},
-  gift_received:{title:'🎀 받은 선물',sub:'오늘 누군가에게 받은 선물',placeholder:'누구에게서, 무엇을...'}
+  scripture:{title:'하나님이 주신 말씀',sub:'오늘 마음에 와닿은 말씀이나 구절',placeholder:'말씀을 적어요...'},
+  gift_gave:{title:'내가 선물한 것',sub:'오늘 누군가에게 선물한 것',placeholder:'누구에게, 무엇을...'},
+  gift_received:{title:'받은 선물',sub:'오늘 누군가에게 받은 선물',placeholder:'누구에게서, 무엇을...'}
 };
 const SLOT_LABELS={morning:'아침',noon:'점심',evening:'저녁',night:'자기 전'};
 const WEEK_DAYS=['일','월','화','수','목','금','토'];
@@ -481,16 +511,20 @@ let calYear=new Date().getFullYear(),calMonth=new Date().getMonth(),selCalDate=t
 let curSlot='',curType='',selEmo=null,selStk=null,curStkCat=0,drawerOpen=false,selSignalEmo=null,editingPrayerIdx=-1,selWeather=null;
 
 function getKey(d){return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
-function getDay(k){return appData[k]||{emotions:{},gratitude:[],resolved:[],strength:[],gift_gave:[],gift_received:[],stickers:[],signals:[],cheers:[],oneline:'',weather:''};}
+function getDay(k){
+  return appData[k]||{
+    emotions:{},wishes:[],gratitude:[],resolved:[],strength:[],scripture:[],
+    gift_gave:[],gift_received:[],stickers:[],signals:[],cheers:[],oneline:'',weather:''
+  };
+}
 function saveDay(k,d){appData[k]=d;localStorage.setItem('hg',JSON.stringify(appData));}
 function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 function getRandomQuote(name){const q=QUOTES[name];if(!q)return null;return q[Math.floor(Math.random()*q.length)];}
 function getTodayVerse(){const d=new Date(currentKey);const idx=(d.getFullYear()*366+d.getMonth()*31+d.getDate())%VERSES.length;return VERSES[idx];}
 function autoResize(el){el.style.height='auto';el.style.height=el.scrollHeight+'px';}
-
 function formatDateStr(key){
   const d=new Date(key+'T00:00:00');
-  const [y,m,day]=key.split('-');
+  const[y,m,day]=key.split('-');
   return`${y}.${m}.${day} (${WEEK_DAYS[d.getDay()]})`;
 }
 
@@ -515,8 +549,7 @@ function switchPage(id){
 }
 
 function renderTopDate(){
-  const str=formatDateStr(todayKey);
-  document.getElementById('topDate').textContent=str;
+  document.getElementById('topDate').textContent=formatDateStr(todayKey);
 }
 
 function loadTodayOneline(){const d=getDay(currentKey);const el=document.getElementById('todayOneline');el.value=d.oneline||'';autoResize(el);}
@@ -547,20 +580,20 @@ function renderEmotions(){
   const d=getDay(currentKey);
   const isToday=currentKey===todayKey;
   document.getElementById('todayLabel').textContent=isToday?'감정 기록':`${currentKey} 감정 기록`;
-  // ★ 핵심 수정: 본문 날짜를 currentKey 기준으로 표시
   document.getElementById('todayDateFull').textContent=formatDateStr(currentKey);
   ['morning','noon','evening','night'].forEach(slot=>{
     const el=document.getElementById('disp-'+slot),e=d.emotions[slot];
     el.innerHTML=e?`<span class="emotion-emoji">${e.emoji}</span><span class="emotion-name">${e.name}</span>`:`<span class="emotion-empty">기분이 어때요?</span>`;
   });
-  const el=document.getElementById('todayOneline');el.value=d.oneline||'';autoResize(el);
+  const ol=document.getElementById('todayOneline');ol.value=d.oneline||'';autoResize(ol);
   document.getElementById('weatherBtn').textContent=d.weather||'—';
 }
 
 function renderLists(){
   const d=getDay(currentKey);
-  ['gratitude','resolved','strength','gift_gave','gift_received'].forEach(type=>{
-    document.getElementById('list-'+type).innerHTML=(d[type]||[]).map(item=>`<div class="record-item"><span class="record-dot"></span><span>${esc(item)}</span></div>`).join('');
+  ['wishes','gratitude','resolved','strength','scripture','gift_gave','gift_received'].forEach(type=>{
+    const el=document.getElementById('list-'+type);
+    if(el)el.innerHTML=(d[type]||[]).map(item=>`<div class="record-item"><span class="record-dot"></span><span>${esc(item)}</span></div>`).join('');
   });
 }
 
@@ -791,7 +824,17 @@ function renderSelDetail(){
   if(d.oneline)body+=`<div style="font-size:13px;color:var(--text);line-height:1.7;margin-bottom:10px;font-weight:400;">${esc(d.oneline)}</div>`;
   const chips=Object.entries(d.emotions||{}).map(([,v])=>`<span class="sel-emotion-chip">${v.emoji} ${v.name}</span>`).join('');
   if(chips)body+=`<div class="sel-emotions">${chips}</div>`;
-  [{key:'gratitude',label:'감사한 것'},{key:'resolved',label:'걱정이 별일 없이'},{key:'strength',label:'힘이 되었던 것'},{key:'gift_gave',label:'내가 선물한 것'},{key:'gift_received',label:'받은 선물'},{key:'signals',label:'마음의 신호'},{key:'cheers',label:'나에게 건네는 말'}].forEach(r=>{
+  [
+    {key:'wishes',label:'오늘 바라는 것'},
+    {key:'gratitude',label:'감사한 것'},
+    {key:'resolved',label:'걱정이 별일 없이'},
+    {key:'strength',label:'힘이 되었던 것'},
+    {key:'scripture',label:'하나님이 주신 말씀'},
+    {key:'gift_gave',label:'내가 선물한 것'},
+    {key:'gift_received',label:'받은 선물'},
+    {key:'signals',label:'마음의 신호'},
+    {key:'cheers',label:'나에게 건네는 말'}
+  ].forEach(r=>{
     const items=(d[r.key]||[]);if(!items.length)return;
     const itemHtml=(r.key==='signals')?items.map(s=>`<div class="sel-item">· ${esc(s.text)}</div>`).join(''):(r.key==='cheers')?items.map(c=>`<div class="sel-item">· ${esc(c.text)}</div>`).join(''):items.map(i=>`<div class="sel-item">· ${esc(i)}</div>`).join('');
     body+=`<div style="margin-top:10px;"><div style="font-size:9px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:4px;font-weight:400;">${r.label}</div>${itemHtml}</div>`;
